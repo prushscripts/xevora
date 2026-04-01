@@ -16,13 +16,14 @@
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 :root{
   --bg:#03060D;--card:rgba(6,11,22,0.95);--blue:#2563EB;--blue2:#3B82F6;--blue3:#60A5FA;
-  --text:#F1F5FF;--muted:#4E6D92;--border:rgba(37,99,235,0.1);--ok:#34D399;--warn:#FBBF24;
+  --text:#F1F5FF;--muted:#4E6D92;--border:rgba(37,99,235,0.08);--ok:#34D399;--warn:#FBBF24;
+  --card-border:rgba(37,99,235,0.08);--stat-border:rgba(37,99,235,0.1);
 }
 html,body{width:100%;min-height:100%;background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;overflow-x:hidden}
 canvas{position:fixed;inset:0;z-index:0;pointer-events:none}
-.app{position:relative;z-index:5;display:flex;min-height:100vh}
+.app{position:relative;z-index:5;display:flex;min-height:100vh;background:#03060D}
 .sidebar{
-  width:220px;flex-shrink:0;background:rgba(5,10,18,0.92);border-right:1px solid var(--border);
+  width:220px;flex-shrink:0;background:#05080F;border-right:1px solid var(--border);
   display:flex;flex-direction:column;padding:18px 12px 14px;backdrop-filter:blur(16px)
 }
 .brand{display:flex;align-items:center;gap:10px;padding:6px 10px 18px}
@@ -35,29 +36,38 @@ canvas{position:fixed;inset:0;z-index:0;pointer-events:none}
 }
 .nav-item svg{width:14px;height:14px;flex-shrink:0}
 .nav-item:hover{color:var(--text);background:rgba(37,99,235,.08)}
-.nav-item.active{color:var(--blue3);border-left-color:var(--blue);background:rgba(37,99,235,.12)}
+.nav-item.active{
+  color:#F1F5FF;
+  border-left:2px solid #2563EB;
+  background:rgba(37,99,235,0.12);
+}
 .sidebar-bottom{margin-top:auto}
 .user{display:flex;align-items:center;gap:10px;padding:12px}
-.avatar{width:34px;height:34px;border-radius:50%;background:rgba(37,99,235,.2);display:grid;place-items:center;font-size:12px;font-weight:600}
-.user-meta b{display:block;font-size:12px}
-.user-meta span{font-size:11px;color:var(--muted)}
+.avatar{
+  width:34px;height:34px;border-radius:50%;background:#2563EB;color:#fff;
+  display:grid;place-items:center;font-size:12px;font-weight:600;
+}
+.user-meta .user-line{display:block;font-size:12px;line-height:1.35}
+.user-meta .user-name{color:#F1F5FF;font-weight:600}
+.user-meta .user-role{color:#4E6D92;font-weight:500}
+.user-meta .user-sub{display:block;font-size:11px;color:var(--muted);margin-top:2px}
 .signout{display:flex;align-items:center;gap:8px;padding:10px 12px;color:#9FB8D9;text-decoration:none;font-size:12px}
 .signout:hover{color:var(--text)}
-.main{flex:1;min-width:0;padding:20px 22px 88px}
+.main{flex:1;min-width:0;padding:20px 22px 88px;background:#03060D}
 .top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:16px}
-.greet h1{font-family:'Syne',sans-serif;font-weight:700;font-size:28px;letter-spacing:-.7px}
+.greet h1{font-family:'Syne',sans-serif;font-weight:700;font-size:28px;letter-spacing:-.7px;color:#F1F5FF}
 .greet p{color:var(--muted);margin-top:6px;font-size:13px}
 .top-actions{display:flex;align-items:center;gap:10px}
 .run-btn{
-  border:none;border-radius:12px;background:var(--blue);color:#fff;padding:11px 16px;cursor:pointer;
-  font-weight:500;box-shadow:0 6px 24px rgba(37,99,235,.45);transition:transform .2s,background .2s
+  border:none;border-radius:12px;background:#2563EB;color:#fff;padding:11px 16px;cursor:pointer;
+  font-weight:500;box-shadow:0 4px 20px rgba(37,99,235,0.4);transition:transform .2s,background .2s
 }
 .run-btn:hover{background:#1D4ED8;transform:translateY(-1px)}
-.bell{position:relative;border:1px solid var(--border);background:var(--card);width:40px;height:40px;border-radius:12px;display:grid;place-items:center}
+.bell{position:relative;border:1px solid var(--card-border);background:rgba(6,11,22,0.95);width:40px;height:40px;border-radius:12px;display:grid;place-items:center}
 .bell-badge{position:absolute;right:7px;top:7px;width:8px;height:8px;background:#F43F5E;border-radius:50%}
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px}
 .stat{
-  background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;position:relative;overflow:hidden;
+  background:rgba(6,11,22,0.95);border:1px solid var(--stat-border);border-radius:12px;padding:14px;position:relative;overflow:hidden;
   transition:border-color .2s,box-shadow .2s
 }
 .stat::before{content:"";position:absolute;left:0;right:0;top:0;height:1px;background:rgba(37,99,235,.22)}
@@ -66,43 +76,49 @@ canvas{position:fixed;inset:0;z-index:0;pointer-events:none}
 .value{font-family:'Syne',sans-serif;font-weight:700;font-size:30px;line-height:1.2;margin-top:7px}
 .sub{font-size:11px;color:var(--muted);margin-top:4px}.up{color:var(--ok)}.blue{color:var(--blue3)}
 .grid{display:grid;grid-template-columns:1.25fr .9fr;gap:12px}
-.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px}
+.card{background:rgba(6,11,22,0.95);border:1px solid var(--card-border);border-radius:12px;padding:14px}
 .head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
 .head h3{font-size:13px;font-weight:500}
-.badge{font-size:10px;padding:2px 8px;border-radius:999px;background:rgba(52,211,153,.15);color:var(--ok)}
-.live{display:flex;gap:8px;align-items:center;padding:8px 10px;border:1px solid rgba(52,211,153,.16);background:rgba(52,211,153,.06);border-radius:8px;margin-bottom:8px}
-.dot{width:6px;height:6px;border-radius:50%;background:var(--ok);box-shadow:0 0 8px var(--ok);animation:blink 1.8s ease-in-out infinite}
+.badge{font-size:10px;padding:2px 8px;border-radius:999px;background:rgba(37,99,235,0.15);color:#60A5FA}
+.live{
+  display:flex;gap:8px;align-items:center;padding:8px 10px;
+  border:1px solid rgba(37,99,235,0.2);background:rgba(37,99,235,0.08);border-radius:8px;margin-bottom:8px;
+}
+.live .dot{
+  width:6px;height:6px;border-radius:50%;flex-shrink:0;background:#2563EB;
+  box-shadow:0 0 8px rgba(37,99,235,0.85);animation:blink 1.8s ease-in-out infinite;
+}
 @keyframes blink{50%{opacity:.3}}
-.live span{font-size:11px;color:#90E5BE}.clock{margin-left:auto;color:var(--muted);font-size:11px}
+.live .live-label{font-size:11px;color:#93C5FD}.clock{margin-left:auto;color:var(--muted);font-size:11px}
 table{width:100%;border-collapse:collapse}
 th{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;text-align:left;padding-bottom:6px}
 td{padding:9px 0;border-top:1px solid rgba(37,99,235,.08);font-size:12px}
 tr:hover td{background:rgba(37,99,235,.04)}
 .st{padding:2px 7px;border-radius:999px;font-size:10px}
-.in{background:rgba(52,211,153,.15);color:var(--ok)}.br{background:rgba(251,191,36,.15);color:var(--warn)}.out{background:rgba(78,109,146,.2);color:#9BB4D5}
+.in{background:rgba(52,211,153,0.12);color:var(--ok)}.br{background:rgba(251,191,36,.15);color:var(--warn)}.out{background:rgba(78,109,146,.2);color:#9BB4D5}
 .approve{margin-top:10px;display:flex;justify-content:flex-end}
 .approve button{background:transparent;border:1px solid var(--border);color:#B2C7E3;padding:8px 12px;border-radius:10px;cursor:pointer}
 .pay-row{display:flex;justify-content:space-between;align-items:flex-start;padding:10px;border:1px solid rgba(37,99,235,.08);border-radius:9px;background:rgba(3,6,13,.5);margin-bottom:8px}
 .mut{color:var(--muted);font-size:11px}
-.ready{font-size:10px;background:rgba(52,211,153,.15);color:var(--ok);padding:2px 7px;border-radius:999px;display:inline-block;margin-top:3px}
-.run-wide{width:100%;border:none;border-radius:10px;padding:11px;background:var(--blue);color:#fff;cursor:pointer;box-shadow:0 6px 20px rgba(37,99,235,.4);margin-top:10px}
+.ready{font-size:10px;background:rgba(37,99,235,0.15);color:#60A5FA;padding:2px 7px;border-radius:999px;display:inline-block;margin-top:3px}
+.run-wide{width:100%;border:none;border-radius:10px;padding:11px;background:#2563EB;color:#fff;cursor:pointer;box-shadow:0 4px 20px rgba(37,99,235,0.4);margin-top:10px}
 .chart-wrap{margin-top:10px}.chart{height:70px;display:flex;align-items:flex-end;gap:6px}
 .bar{flex:1;background:rgba(37,99,235,.2);border-radius:4px 4px 0 0;transform:scaleY(0);transform-origin:bottom;will-change:transform}
 .bar:last-child{background:var(--blue)}
 .days{display:flex;gap:6px;margin-top:6px}.days span{flex:1;text-align:center;font-size:10px;color:var(--muted)}
 .quick{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px}
-.qa{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;transition:transform .2s,border-color .2s}
+.qa{background:rgba(6,11,22,0.95);border:1px solid var(--card-border);border-radius:12px;padding:14px;transition:transform .2s,border-color .2s}
 .qa:hover{transform:translateY(-2px);border-color:rgba(37,99,235,.3)}
 .qa h4{font-size:14px;margin-top:8px}.qa p{margin-top:4px;color:var(--muted);font-size:12px}
 .qa.ai{box-shadow:0 0 32px rgba(37,99,235,.18)}.beta{font-size:10px;color:var(--blue3);border:1px solid rgba(37,99,235,.35);border-radius:999px;padding:1px 6px}
-.checklist{margin-top:12px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px}
+.checklist{margin-top:12px;background:rgba(6,11,22,0.95);border:1px solid var(--card-border);border-radius:12px;padding:14px}
 .check-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
 .dismiss{font-size:12px;color:var(--muted);cursor:pointer}.dismiss:hover{color:var(--blue3)}
 .progress{height:6px;background:rgba(37,99,235,.15);border-radius:999px;overflow:hidden;margin:10px 0}
-.progress > i{display:block;height:100%;width:40%;background:var(--blue);transition:width .35s ease}
+.progress > i{display:block;height:100%;width:40%;background:#2563EB;transition:width .35s ease}
 .items{display:grid;gap:8px}
 .item{display:flex;align-items:center;gap:10px;cursor:pointer;color:#D4E2F8;font-size:13px}
-.item input{width:18px;height:18px}
+.item input{width:18px;height:18px;accent-color:#2563EB}
 .item.done span{text-decoration:line-through;color:var(--muted)}
 .reveal{opacity:0;transform:translateY(14px);will-change:opacity,transform}
 .reveal.in{opacity:1;transform:translateY(0);transition:transform .6s cubic-bezier(.16,1,.3,1),opacity .6s ease}
@@ -110,8 +126,8 @@ tr:hover td{background:rgba(37,99,235,.04)}
 @media(max-width:1024px){.stats{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}.quick{grid-template-columns:1fr 1fr}}
 @media(max-width:768px){
   .sidebar{display:none}.main{padding:14px 14px 92px}.top{flex-direction:column;align-items:flex-start}
-  .quick{grid-template-columns:1fr}.bottom-tabs{
-    position:fixed;left:0;right:0;bottom:0;z-index:30;display:flex;background:rgba(5,10,18,.95);
+  .quick{grid-template-columns:1fr}  .bottom-tabs{
+    position:fixed;left:0;right:0;bottom:0;z-index:30;display:flex;background:#05080F;
     border-top:1px solid var(--border);backdrop-filter:blur(16px)
   }
   .bottom-tabs a{flex:1;text-align:center;padding:12px 4px;color:var(--muted);text-decoration:none;font-size:12px;min-height:44px}
@@ -136,7 +152,7 @@ tr:hover td{background:rgba(37,99,235,.04)}
       <a class="nav-item" href="#"><svg viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="2.2" stroke="currentColor" stroke-width="1.2"/><path d="M7 1.6v2M7 10.4v2M1.6 7h2M10.4 7h2" stroke="currentColor" stroke-width="1.2"/></svg>Settings</a>
     </nav>
     <div class="sidebar-bottom">
-      <div class="user"><div class="avatar">JP</div><div class="user-meta"><b>James - Admin</b><span>Workspace owner</span></div></div>
+      <div class="user"><div class="avatar">JP</div><div class="user-meta"><span class="user-line"><b class="user-name">James</b><span class="user-role"> — Admin</span></span><span class="user-sub">Workspace owner</span></div></div>
       <a href="#" class="signout" id="signout">Sign Out →</a>
     </div>
   </aside>
@@ -157,13 +173,13 @@ tr:hover td{background:rgba(37,99,235,.04)}
       <div class="stat reveal" data-delay="200"><div class="label">Active Workers</div><div class="value" data-target="8" data-type="int">0</div><div class="sub"><span class="up">↑ 2</span> this week</div></div>
       <div class="stat reveal" data-delay="280"><div class="label">Hours This Week</div><div class="value" data-target="312" data-type="int">0</div><div class="sub"><span class="up">↑ 14%</span> vs last</div></div>
       <div class="stat reveal" data-delay="360"><div class="label">Next Payroll</div><div class="value" data-target="4820" data-type="currency">$0</div><div class="sub">Due <span class="blue">Friday</span></div></div>
-      <div class="stat reveal" data-delay="440"><div class="label">YTD Paid Out</div><div class="value" data-target="38.4" data-type="k">$0k</div><div class="sub"><span class="up">On track</span></div></div>
+      <div class="stat reveal" data-delay="440"><div class="label">YTD Paid Out</div><div class="value" data-target="38.4" data-type="k">$0k</div><div class="sub">On track</div></div>
     </section>
 
     <section class="grid">
       <article class="card reveal" data-delay="400">
         <div class="head"><h3>Workers — Clocked In</h3><span class="badge">4 Active</span></div>
-        <div class="live"><i class="dot"></i><span>Live tracking enabled</span><span class="clock" id="clock">--:--:--</span></div>
+        <div class="live"><i class="dot"></i><span class="live-label">Live tracking enabled</span><span class="clock" id="clock">--:--:--</span></div>
         <table>
           <thead><tr><th>Name</th><th>Hours</th><th>Status</th></tr></thead>
           <tbody>
@@ -177,7 +193,7 @@ tr:hover td{background:rgba(37,99,235,.04)}
       </article>
 
       <article class="card reveal" data-delay="480">
-        <div class="head"><h3>Payroll — This Period</h3><span class="badge" style="background:rgba(37,99,235,.15);color:var(--blue3)">Draft</span></div>
+        <div class="head"><h3>Payroll — This Period</h3><span class="badge">Draft</span></div>
         <div class="pay-row"><div><b>Alex Carter</b><div class="mut">Driver · 1099</div></div><div style="text-align:right"><b>$1,240.00</b><div class="ready">Ready</div></div></div>
         <div class="pay-row"><div><b>Ryan Brooks</b><div class="mut">Driver · 1099</div></div><div style="text-align:right"><b>$1,105.00</b><div class="ready">Ready</div></div></div>
         <div class="chart-wrap">
