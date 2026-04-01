@@ -170,7 +170,13 @@ nav{
   padding:0 12px;
 }
 .site-tab{
-  appearance:none;background:transparent;border:none;cursor:pointer;
+  appearance:none;
+  background:transparent;
+  border:none;
+  outline:none;
+  box-shadow:none;
+  border-radius:0;
+  cursor:pointer;
   font-family:'DM Sans',sans-serif;
   font-size:13px;font-weight:400;letter-spacing:0.3px;
   color:#4E6D92;
@@ -180,8 +186,18 @@ nav{
   text-decoration:none;white-space:nowrap;
   flex-shrink:0;
 }
+.site-tab:focus,.site-tab:focus-visible{outline:none}
+button.site-tab:focus,button.site-tab:focus-visible{outline:none}
 .site-tab:hover{color:#8AA8CC}
-.site-tab.active{color:#F1F5FF;font-weight:500}
+.site-tab.active{
+  color:#F1F5FF;
+  font-weight:500;
+  background:transparent;
+  border:none;
+  outline:none;
+  box-shadow:none;
+  border-radius:0;
+}
 .site-tab.fynlo{color:rgba(0,200,150,0.7)}
 .site-tab.fynlo:hover{color:rgba(0,200,150,1)}
 .site-tab.fleetpulse{color:rgba(96,165,250,0.85)}
@@ -197,38 +213,29 @@ nav{
   box-shadow:0 0 8px rgba(37,99,235,0.5);
 }
 
-/* Tab panels: opacity + pointer-events only — no display toggling */
 .tab-panels-root{
   position:relative;
+  min-height:400px;
   z-index:8;
   isolation:isolate;
 }
 .tab-panel{
   position:absolute;
-  left:0;right:0;top:0;width:100%;
+  top:0;
+  left:0;
+  right:0;
+  width:100%;
   opacity:0;
-  transform:translateY(12px);
+  transform:translateY(14px);
   pointer-events:none;
-  visibility:hidden;
-  z-index:0;
-  transition:opacity 300ms cubic-bezier(0.16,1,0.3,1),transform 300ms cubic-bezier(0.16,1,0.3,1);
-}
-.tab-panel.tab-panel--live{
-  position:relative;
-  z-index:2;
-}
-.tab-panel.tab-panel--shown{visibility:visible}
-.tab-panel.tab-panel--interactive{pointer-events:auto}
-.tab-panel.is-visible{opacity:1;transform:translateY(0)}
-.tab-panel.is-exiting{
-  opacity:0;
-  transform:translateY(-10px);
-  transition:opacity 160ms ease-in,transform 160ms ease-in;
-}
-.tab-panel.is-prep{
   transition:none;
-  opacity:0;
-  transform:translateY(12px);
+}
+.tab-panel.active{
+  position:relative;
+  opacity:1;
+  transform:translateY(0);
+  pointer-events:auto;
+  transition:none;
 }
 
 /* Side lines — desktop only */
@@ -533,35 +540,67 @@ p.sub{
   font-family:'DM Sans',sans-serif;font-size:16px;font-weight:300;color:var(--sub);
   line-height:1.7;max-width:640px;
 }
-.content-panel--features-compact{padding-top:148px;padding-bottom:100px}
-.fr-compact-head{
-  display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:4px;align-items:center;
+.content-panel--fr-premium{
+  box-sizing:border-box;max-width:960px;margin:0 auto;
+  padding:118px 24px 40px;
 }
-.fr-mono-lab{
-  font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;letter-spacing:0.35px;
-  color:rgba(241,245,255,0.62);display:flex;align-items:center;gap:8px;
+.fr-prem-head{
+  display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-bottom:6px;
 }
-.fr-mono-lab:last-child{justify-self:end}
-.fr-mono-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
-.fr-mono-dot--g{background:#34D399;box-shadow:0 0 6px rgba(52,211,153,0.45)}
-.fr-mono-dot--b{background:#3B82F6;box-shadow:0 0 6px rgba(59,130,246,0.45)}
-.fr-compact-cols{display:grid;grid-template-columns:1fr 1fr;gap:40px;max-height:calc(100vh - 200px)}
-.fr-compact-col{min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-right:4px}
-.fr-line{
-  display:flex;gap:8px;align-items:flex-start;padding:8px 0;
-  border-bottom:1px solid rgba(37,99,235,0.06);font-size:12px;line-height:1.45;
+.fr-prem-hdr{display:flex;flex-direction:column;align-items:flex-start}
+.fr-prem-hdr:last-child{align-items:flex-end;text-align:right}
+.fr-prem-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:4px 12px;border-radius:100px;
+  font-family:'JetBrains Mono',ui-monospace,monospace;
+  font-size:9px;font-weight:500;letter-spacing:2px;text-transform:uppercase;
 }
-.fr-line:last-child{border-bottom:none}
-.fr-line-ic{flex-shrink:0;line-height:1.4;margin-top:1px}
-.fr-line-txt{min-width:0;margin:0;color:rgba(241,245,255,0.88)}
-.fr-line-txt strong{font-weight:600;color:var(--text)}
-.fr-line-ic.fr-mono-dot{display:block;flex-shrink:0;margin-top:5px}
-.fr-line-txt .mut{color:rgba(78,109,146,0.95);font-weight:400}
-.fr-foot-hint{
-  text-align:right;font-size:11px;color:var(--sub);margin-top:14px;letter-spacing:0.2px;
+.fr-prem-badge--g{
+  background:rgba(52,211,153,0.08);border:1px solid rgba(52,211,153,0.2);color:#34D399;
 }
-.fr-foot-hint a{color:var(--blue3);text-decoration:none}
-.fr-foot-hint a:hover{text-decoration:underline}
+.fr-prem-badge--b{
+  background:rgba(37,99,235,0.08);border:1px solid rgba(37,99,235,0.2);color:#3B82F6;
+}
+.fr-prem-badge .bd{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.fr-prem-badge--g .bd{background:#34D399}
+.fr-prem-badge--b .bd{background:#3B82F6}
+.fr-prem-htitle{
+  font-family:'Syne',sans-serif;font-weight:700;font-size:18px;color:#F1F5FF;
+  margin-top:8px;line-height:1.2;
+}
+.fr-prem-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px}
+.fr-prem-row{
+  display:flex;align-items:flex-start;gap:12px;padding:11px 0;
+  border-bottom:1px solid rgba(37,99,235,0.07);
+}
+.fr-prem-row:last-child{border-bottom:none}
+.fr-prem-ico{
+  flex-shrink:0;width:20px;height:20px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;line-height:1;
+}
+.fr-prem-ico--g{
+  background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.2);color:#34D399;
+}
+.fr-prem-ico--b{
+  background:rgba(37,99,235,0.1);border:1px solid rgba(37,99,235,0.2);color:#3B82F6;font-size:11px;
+}
+.fr-prem-body{min-width:0}
+.fr-prem-h{font-family:'DM Sans',sans-serif;font-weight:500;font-size:13px;color:#EDE8E0;line-height:1.3}
+.fr-prem-d{
+  font-family:'DM Sans',sans-serif;font-weight:300;font-size:12px;
+  color:rgba(74,80,96,0.8);margin-top:2px;line-height:1.45;
+}
+.fr-prem-foot{
+  text-align:right;margin-top:20px;
+  font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;color:#2A3848;letter-spacing:0.02em;
+}
+.fr-prem-foot a{color:inherit;text-decoration:none}
+.fr-prem-foot a:hover{text-decoration:underline}
+@media(max-width:900px){
+  .fr-prem-head,.fr-prem-grid{grid-template-columns:1fr}
+  .fr-prem-hdr:last-child{align-items:flex-start;text-align:left}
+}
 .panel-card{
   background:rgba(6,11,22,0.95);
   border:1px solid rgba(37,99,235,0.12);
@@ -573,12 +612,6 @@ p.sub{
   margin-bottom:8px;
 }
 .panel-sub{color:var(--sub);font-size:15px;font-weight:300;line-height:1.7;margin-bottom:16px}
-@media(max-width:900px){
-  .fr-compact-cols{grid-template-columns:1fr;max-height:none}
-  .fr-compact-head{grid-template-columns:1fr}
-  .fr-mono-lab:last-child{justify-self:start}
-}
-
 .eco-live{
   display:inline-flex;align-items:center;gap:8px;
   font-size:10px;font-weight:600;letter-spacing:0.4px;text-transform:uppercase;
@@ -630,24 +663,23 @@ p.sub{
   background:#fff;transition:transform .2s;
 }
 .toggle.on::after{transform:translateX(22px)}
-.price-grid-wrap{padding-bottom:10px}
+.price-grid-wrap{padding-bottom:8px}
 .price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
 .p-card{
   background:rgba(8,16,31,0.9);border:1px solid rgba(37,99,235,.15);border-radius:12px;padding:15px;display:flex;flex-direction:column;
-  transition:transform 250ms cubic-bezier(0.34,1.56,0.64,1),box-shadow 250ms ease,border-color 250ms ease;
+  box-shadow:0 2px 20px rgba(0,0,0,0.3);
+  transition:transform 400ms cubic-bezier(0.34,1.2,0.64,1),
+              box-shadow 400ms cubic-bezier(0.34,1.2,0.64,1),
+              border-color 400ms ease;
 }
-.p-card:hover{
-  transform:translateY(-6px);
-  box-shadow:0 16px 48px rgba(0,0,0,0.38);
+.p-card:hover{transform:translateY(-5px)}
+.p-card:not(.pop):hover{box-shadow:0 12px 40px rgba(0,0,0,0.4)}
+.p-card.pop{
+  box-shadow:0 0 0 1px rgba(37,99,235,0.25),0 4px 24px rgba(37,99,235,0.1);
   border-color:rgba(37,99,235,0.35);
 }
-.p-card.pop{
-  border-color:rgba(37,99,235,0.5);
-  box-shadow:0 0 0 1px rgba(37,99,235,0.3),0 8px 32px rgba(37,99,235,0.1);
-}
 .p-card.pop:hover{
-  box-shadow:0 0 0 1px rgba(37,99,235,0.5),0 16px 48px rgba(37,99,235,0.2),0 -6px 24px rgba(37,99,235,0.08);
-  border-color:rgba(37,99,235,0.55);
+  box-shadow:0 12px 40px rgba(37,99,235,0.2),0 0 0 1px rgba(37,99,235,0.4);
 }
 .pop{font-size:10px;color:var(--blue3);margin-bottom:6px}
 .p-name{font-size:15px;font-weight:500}
@@ -747,8 +779,6 @@ nav.load-in{opacity:1 !important;transform:translateY(0) !important;transition:o
 
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{animation:none !important;transition:none !important;scroll-behavior:auto !important}
-  .tab-panel{transition:none !important}
-  .tab-panel.is-exiting{transition:none !important}
   .fr-stagger{opacity:1 !important;transform:none !important}
 }
 
@@ -926,7 +956,7 @@ footer{
 <div class="vl r"></div>
 
 <div class="tab-panels-root" id="tab-panels-root">
-<section id="overview-panel" class="tab-panel tab-panel--live tab-panel--shown tab-panel--interactive is-visible">
+<section id="overview-panel" class="tab-panel active">
 <main>
   <div class="eyebrow"><span class="eb"></span>Coming Soon<span class="eb r"></span></div>
   <h1>
@@ -1030,32 +1060,38 @@ footer{
 </section>
 
 <section id="features-panel" class="tab-panel">
-  <div class="content-panel content-panel--features-compact">
-    <div class="fr-compact-head">
-      <div class="fr-mono-lab"><span class="fr-mono-dot fr-mono-dot--g" aria-hidden="true"></span>Stage 1–2 · Building Now</div>
-      <div class="fr-mono-lab"><span class="fr-mono-dot fr-mono-dot--b" aria-hidden="true"></span>Stage 3–4 · Coming Next</div>
-    </div>
-    <div class="fr-compact-cols">
-      <div class="fr-compact-col">
-        <div class="fr-line"><span class="fr-line-ic" aria-hidden="true">✅</span><p class="fr-line-txt"><strong>GPS Clock-In:</strong> <span class="mut">One tap, location stamped, works from any mobile device</span></p></div>
-        <div class="fr-line"><span class="fr-line-ic" aria-hidden="true">✅</span><p class="fr-line-txt"><strong>Worker Management:</strong> <span class="mut">Add W2 and 1099 workers, invite via email, manage profiles</span></p></div>
-        <div class="fr-line"><span class="fr-line-ic" aria-hidden="true">✅</span><p class="fr-line-txt"><strong>Time Entry Approval:</strong> <span class="mut">Review, approve or edit hours before payroll</span></p></div>
-        <div class="fr-line"><span class="fr-line-ic" aria-hidden="true">✅</span><p class="fr-line-txt"><strong>Real-time Dashboard:</strong> <span class="mut">Live view of who's clocked in, hours this week, payroll estimates</span></p></div>
-        <div class="fr-line"><span class="fr-line-ic" aria-hidden="true">✅</span><p class="fr-line-txt"><strong>Email Notifications:</strong> <span class="mut">Clock-in alerts, approval reminders, payroll confirmations</span></p></div>
-        <div class="fr-line"><span class="fr-line-ic" aria-hidden="true">✅</span><p class="fr-line-txt"><strong>Billing &amp; Subscriptions:</strong> <span class="mut">Stripe integration, plan management, invoices</span></p></div>
+  <div class="content-panel content-panel--fr-premium">
+    <div class="fr-prem-head">
+      <div class="fr-prem-hdr">
+        <span class="fr-prem-badge fr-prem-badge--g"><span class="bd" aria-hidden="true"></span>Stage 1–2</span>
+        <div class="fr-prem-htitle">Building Now</div>
       </div>
-      <div class="fr-compact-col">
-        <div class="fr-line"><span class="fr-line-ic" aria-hidden="true">🔵</span><p class="fr-line-txt"><strong>Check.com Payroll:</strong> <span class="mut">Automated direct deposit for W2 and 1099 workers</span></p></div>
-        <div class="fr-line"><span class="fr-line-ic" aria-hidden="true">🔵</span><p class="fr-line-txt"><strong>Pay Stub Generation:</strong> <span class="mut">Auto PDF pay stubs emailed to every worker</span></p></div>
-        <div class="fr-line"><span class="fr-line-ic" aria-hidden="true">🔵</span><p class="fr-line-txt"><strong>1099 Auto-Filing:</strong> <span class="mut">Year-end contractor documents generated automatically</span></p></div>
-        <div class="fr-line"><span class="fr-line-ic" aria-hidden="true">🔵</span><p class="fr-line-txt"><strong>AI Payroll Assistant:</strong> <span class="mut">Natural language payroll runs and anomaly detection</span></p></div>
-        <div class="fr-line"><span class="fr-line-ic" aria-hidden="true">🔵</span><p class="fr-line-txt"><strong>Fynlo Integration:</strong> <span class="mut">Labor costs sync directly to your books</span></p></div>
-        <div class="fr-line"><span class="fr-line-ic" aria-hidden="true">🔵</span><p class="fr-line-txt"><strong>Mobile App (PWA):</strong> <span class="mut">Installable app for workers, works offline</span></p></div>
-        <div class="fr-line"><span class="fr-line-ic" aria-hidden="true">🔵</span><p class="fr-line-txt"><strong>QuickBooks Sync:</strong> <span class="mut">Import/export financial data</span></p></div>
-        <div class="fr-line"><span class="fr-line-ic" aria-hidden="true">🔵</span><p class="fr-line-txt"><strong>Mileage Tracking:</strong> <span class="mut">Per-mile pay for drivers</span></p></div>
+      <div class="fr-prem-hdr">
+        <span class="fr-prem-badge fr-prem-badge--b"><span class="bd" aria-hidden="true"></span>Stage 3–4</span>
+        <div class="fr-prem-htitle">Coming Next</div>
       </div>
     </div>
-    <p class="fr-foot-hint">Have a feature request? → <a href="mailto:hello@xevora.io">hello@xevora.io</a></p>
+    <div class="fr-prem-grid">
+      <div class="fr-prem-col">
+        <div class="fr-prem-row"><span class="fr-prem-ico fr-prem-ico--g" aria-hidden="true">✓</span><div class="fr-prem-body"><div class="fr-prem-h">GPS Clock-In</div><div class="fr-prem-d">One tap, location stamped, works from any mobile device</div></div></div>
+        <div class="fr-prem-row"><span class="fr-prem-ico fr-prem-ico--g" aria-hidden="true">✓</span><div class="fr-prem-body"><div class="fr-prem-h">Worker Management</div><div class="fr-prem-d">Add W2 and 1099 workers, invite via email, manage profiles</div></div></div>
+        <div class="fr-prem-row"><span class="fr-prem-ico fr-prem-ico--g" aria-hidden="true">✓</span><div class="fr-prem-body"><div class="fr-prem-h">Time Entry Approval</div><div class="fr-prem-d">Review, approve or edit hours before payroll</div></div></div>
+        <div class="fr-prem-row"><span class="fr-prem-ico fr-prem-ico--g" aria-hidden="true">✓</span><div class="fr-prem-body"><div class="fr-prem-h">Real-time Dashboard</div><div class="fr-prem-d">Live view of who's clocked in, hours this week, payroll estimates</div></div></div>
+        <div class="fr-prem-row"><span class="fr-prem-ico fr-prem-ico--g" aria-hidden="true">✓</span><div class="fr-prem-body"><div class="fr-prem-h">Email Notifications</div><div class="fr-prem-d">Clock-in alerts, approval reminders, payroll confirmations</div></div></div>
+        <div class="fr-prem-row"><span class="fr-prem-ico fr-prem-ico--g" aria-hidden="true">✓</span><div class="fr-prem-body"><div class="fr-prem-h">Billing &amp; Subscriptions</div><div class="fr-prem-d">Stripe integration, plan management, invoices</div></div></div>
+      </div>
+      <div class="fr-prem-col">
+        <div class="fr-prem-row"><span class="fr-prem-ico fr-prem-ico--b" aria-hidden="true">›</span><div class="fr-prem-body"><div class="fr-prem-h">Check.com Payroll</div><div class="fr-prem-d">Automated direct deposit for W2 and 1099 workers</div></div></div>
+        <div class="fr-prem-row"><span class="fr-prem-ico fr-prem-ico--b" aria-hidden="true">›</span><div class="fr-prem-body"><div class="fr-prem-h">Pay Stub Generation</div><div class="fr-prem-d">Auto PDF pay stubs emailed to every worker</div></div></div>
+        <div class="fr-prem-row"><span class="fr-prem-ico fr-prem-ico--b" aria-hidden="true">›</span><div class="fr-prem-body"><div class="fr-prem-h">1099 Auto-Filing</div><div class="fr-prem-d">Year-end contractor documents generated automatically</div></div></div>
+        <div class="fr-prem-row"><span class="fr-prem-ico fr-prem-ico--b" aria-hidden="true">›</span><div class="fr-prem-body"><div class="fr-prem-h">AI Payroll Assistant</div><div class="fr-prem-d">Natural language payroll runs and anomaly detection</div></div></div>
+        <div class="fr-prem-row"><span class="fr-prem-ico fr-prem-ico--b" aria-hidden="true">›</span><div class="fr-prem-body"><div class="fr-prem-h">Fynlo Integration</div><div class="fr-prem-d">Labor costs sync directly to your books</div></div></div>
+        <div class="fr-prem-row"><span class="fr-prem-ico fr-prem-ico--b" aria-hidden="true">›</span><div class="fr-prem-body"><div class="fr-prem-h">Mobile App (PWA)</div><div class="fr-prem-d">Installable app for workers, works offline</div></div></div>
+        <div class="fr-prem-row"><span class="fr-prem-ico fr-prem-ico--b" aria-hidden="true">›</span><div class="fr-prem-body"><div class="fr-prem-h">QuickBooks Sync</div><div class="fr-prem-d">Import/export financial data</div></div></div>
+        <div class="fr-prem-row"><span class="fr-prem-ico fr-prem-ico--b" aria-hidden="true">›</span><div class="fr-prem-body"><div class="fr-prem-h">Mileage Tracking</div><div class="fr-prem-d">Per-mile pay for drivers</div></div></div>
+      </div>
+    </div>
+    <p class="fr-prem-foot">Feature request? <a href="mailto:hello@xevora.io">hello@xevora.io</a></p>
   </div>
 </section>
 
@@ -1252,96 +1288,93 @@ async function go(){
   setTimeout(()=>{fs.style.display='none'; sm.classList.add('show');},265);
 }
 
-/* Tabs + underline + panel transitions (opacity / pointer-events only) */
-(function(){
-  const LIVE='tab-panel--live';
-  const SHOWN='tab-panel--shown';
-  const INTER='tab-panel--interactive';
-  const VIS='is-visible';
-  const EXIT='is-exiting';
-  const PREP='is-prep';
-
-  const tabs=document.querySelectorAll('.site-tab[data-tab-target]');
+function updateUnderline(newTabId){
   const underline=document.getElementById('tab-underline');
   const tabsInner=document.getElementById('site-tabs-inner');
+  const tab=document.querySelector('.site-tab[data-tab-target="'+newTabId+'"]');
+  if(!underline||!tabsInner||!tab)return;
+  const tRect=tab.getBoundingClientRect(), pRect=tabsInner.getBoundingClientRect();
+  underline.style.left=(tRect.left-pRect.left)+'px';
+  underline.style.width=tRect.width+'px';
+}
+
+function switchTab(newTabId){
+  const currentPanel=document.querySelector('.tab-panel.active');
+  const newPanel=document.getElementById(newTabId);
+  if(!currentPanel||!newPanel||currentPanel===newPanel)return;
+
+  if(reduceMotion){
+    currentPanel.classList.remove('active');
+    currentPanel.style.cssText='';
+    newPanel.classList.add('active');
+    newPanel.style.cssText='';
+    updateUnderline(newTabId);
+    if(newTabId==='fleetpulse-panel'){
+      document.querySelectorAll('#fleetpulse-panel .fr-stagger').forEach(el=>el.classList.add('in'));
+    }
+    return;
+  }
+
+  currentPanel.style.transition='opacity 160ms ease-in, transform 160ms ease-in';
+  currentPanel.style.opacity='0';
+  currentPanel.style.transform='translateY(-10px)';
+  currentPanel.style.pointerEvents='none';
+
+  setTimeout(()=>{
+    currentPanel.classList.remove('active');
+    currentPanel.style.transition='none';
+    currentPanel.style.opacity='0';
+    currentPanel.style.transform='translateY(14px)';
+    currentPanel.style.position='absolute';
+
+    newPanel.classList.add('active');
+    newPanel.style.position='relative';
+    newPanel.style.transition='none';
+    newPanel.style.opacity='0';
+    newPanel.style.transform='translateY(14px)';
+    newPanel.style.pointerEvents='none';
+
+    void newPanel.offsetHeight;
+
+    setTimeout(()=>{
+      newPanel.style.transition='opacity 320ms cubic-bezier(0.16,1,0.3,1), transform 320ms cubic-bezier(0.16,1,0.3,1)';
+      newPanel.style.opacity='1';
+      newPanel.style.transform='translateY(0)';
+      newPanel.style.pointerEvents='auto';
+      if(newTabId==='fleetpulse-panel'){
+        document.querySelectorAll('#fleetpulse-panel .fr-stagger').forEach(el=>el.classList.remove('in'));
+        document.querySelectorAll('#fleetpulse-panel .fr-stagger').forEach((el,i)=>setTimeout(()=>el.classList.add('in'),30+i*45));
+      }
+    },20);
+  },165);
+
+  updateUnderline(newTabId);
+}
+
+(function(){
+  const tabs=document.querySelectorAll('.site-tab[data-tab-target]');
   const tabsBar=document.getElementById('site-tabs');
   let active=document.querySelector('.site-tab.active');
 
-  function moveUnderline(tab){
-    if(!underline||!tab||!tabsInner)return;
-    const tRect=tab.getBoundingClientRect(), pRect=tabsInner.getBoundingClientRect();
-    underline.style.left=(tRect.left-pRect.left)+'px';
-    underline.style.width=tRect.width+'px';
-  }
-
-  function clearPanelState(p){
-    if(!p)return;
-    p.classList.remove(LIVE,SHOWN,INTER,VIS,EXIT,PREP);
-  }
-
-  function animateStagger(panelSel){
-    const els=document.querySelectorAll(panelSel+' .fr-stagger');
-    if(reduceMotion){els.forEach(el=>el.classList.add('in'));return;}
-    els.forEach((el,i)=>setTimeout(()=>el.classList.add('in'),40+i*40));
-  }
-
-  function prepStagger(panelId){
-    document.querySelectorAll('#'+panelId+' .fr-stagger').forEach(el=>el.classList.remove('in'));
-  }
-
-  function showPanel(p){
-    if(!p)return;
-    clearPanelState(p);
-    p.classList.add(LIVE,SHOWN,INTER,PREP);
-    if(reduceMotion){
-      p.classList.remove(PREP);
-      p.classList.add(VIS);
-      return;
-    }
-    requestAnimationFrame(()=>{
-      requestAnimationFrame(()=>{
-        p.classList.remove(PREP);
-        p.classList.add(VIS);
-      });
-    });
-  }
-
   tabs.forEach(tab=>tab.addEventListener('click',function(){
-    if(this===active) return;
+    if(this===active)return;
     const target=this.getAttribute('data-tab-target');
-    const currentPanel=document.getElementById(active.getAttribute('data-tab-target'));
-    const nextPanel=document.getElementById(target);
     tabs.forEach(t=>t.classList.remove('active'));
     this.classList.add('active');
-    moveUnderline(this);
-    window.scrollTo({top:0,behavior:reduceMotion?'auto':'smooth'});
     active=this;
-
-    if(target==='fleetpulse-panel') prepStagger('fleetpulse-panel');
-
-    if(reduceMotion){
-      clearPanelState(currentPanel);
-      showPanel(nextPanel);
-      if(target==='fleetpulse-panel') animateStagger('#fleetpulse-panel');
-      return;
-    }
-
-    currentPanel.classList.remove(PREP);
-    currentPanel.classList.add(EXIT);
-    setTimeout(()=>{
-      clearPanelState(currentPanel);
-      showPanel(nextPanel);
-      if(target==='fleetpulse-panel') animateStagger('#fleetpulse-panel');
-    },160);
+    switchTab(target);
+    window.scrollTo({top:0,behavior:reduceMotion?'auto':'smooth'});
   }));
 
-  moveUnderline(active);
-  document.fonts.ready.then(()=>moveUnderline(document.querySelector('.site-tab.active')));
+  const initTab=active&&active.getAttribute('data-tab-target')||'overview-panel';
+  updateUnderline(initTab);
+  document.fonts.ready.then(()=>updateUnderline(document.querySelector('.site-tab.active')?.getAttribute('data-tab-target')||'overview-panel'));
   function refUnder(){
-    requestAnimationFrame(()=>requestAnimationFrame(()=>moveUnderline(document.querySelector('.site-tab.active'))));
+    const t=document.querySelector('.site-tab.active');
+    if(t)updateUnderline(t.getAttribute('data-tab-target'));
   }
   window.addEventListener('resize',refUnder);
-  if(tabsBar) tabsBar.addEventListener('scroll',refUnder,{passive:true});
+  if(tabsBar)tabsBar.addEventListener('scroll',refUnder,{passive:true});
 
   const waitlistLinks=document.querySelectorAll('.p-cta');
   waitlistLinks.forEach(link=>link.addEventListener('click',e=>{
