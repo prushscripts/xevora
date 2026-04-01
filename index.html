@@ -7,510 +7,573 @@
 <meta name="description" content="Modern payroll and workforce infrastructure for field teams. Coming soon.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
-  :root {
-    --bg: #05080F;
-    --bg2: #080D18;
-    --blue: #2563EB;
-    --blue-bright: #3B82F6;
-    --blue-pale: #60A5FA;
-    --text: #EEF2FF;
-    --text-muted: #4A6A90;
-    --text-dim: #1E3050;
-    --border: rgba(37,99,235,0.18);
-  }
+:root {
+  --bg: #04070E;
+  --blue: #2563EB;
+  --blue-bright: #3B82F6;
+  --blue-pale: #60A5FA;
+  --text: #F0F4FF;
+  --text-sub: #5A7A9E;
+  --text-muted: #1E3050;
+  --border: rgba(37,99,235,0.2);
+}
 
-  html, body {
-    width: 100%; height: 100%;
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'DM Sans', sans-serif;
-    overflow: hidden;
-  }
+html, body {
+  width: 100%; height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  overflow-x: hidden;
+}
 
-  /* ── Canvas background ── */
-  #bg-canvas {
-    position: fixed;
-    inset: 0;
-    z-index: 0;
-    opacity: 0.9;
-  }
+#bg { position: fixed; inset: 0; z-index: 0; }
 
-  /* ── Main layout ── */
-  .stage {
-    position: relative;
-    z-index: 10;
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 40px 24px;
-  }
+.page {
+  position: relative;
+  z-index: 10;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 24px 100px;
+}
 
-  /* ── Logo mark ── */
-  .logo-wrap {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    margin-bottom: 56px;
-    opacity: 0;
-    transform: translateY(-16px);
-    animation: fadeUp 0.9s cubic-bezier(0.22,1,0.36,1) 0.2s forwards;
-  }
+/* Top bar */
+.topbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 22px 44px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  backdrop-filter: blur(24px);
+  background: rgba(4,7,14,0.65);
+  opacity: 0;
+  animation: fadeDown 0.8s ease 0.1s forwards;
+}
 
-  .logo-svg {
-    width: 48px;
-    height: 48px;
-    filter: drop-shadow(0 0 12px rgba(37,99,235,0.6));
-  }
+.topbar-logo {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
 
-  .logo-name {
-    font-family: 'Syne', sans-serif;
-    font-weight: 800;
-    font-size: 22px;
-    letter-spacing: 3px;
-    color: var(--text);
-  }
+.topbar-logo svg {
+  width: 34px; height: 34px;
+  filter: drop-shadow(0 0 10px rgba(37,99,235,0.55));
+}
 
-  /* ── Headline ── */
-  .headline-wrap {
-    text-align: center;
-    margin-bottom: 24px;
-    opacity: 0;
-    transform: translateY(20px);
-    animation: fadeUp 1s cubic-bezier(0.22,1,0.36,1) 0.45s forwards;
-  }
+.topbar-name {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 15px;
+  letter-spacing: 3.5px;
+  color: var(--text);
+}
 
-  .eyebrow {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 5px;
-    color: var(--blue-pale);
-    text-transform: uppercase;
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-  }
+.topbar-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--text-sub);
+  letter-spacing: 0.3px;
+}
 
-  .eyebrow::before,
-  .eyebrow::after {
-    content: '';
-    display: block;
-    width: 32px;
-    height: 1px;
-    background: var(--blue);
-    opacity: 0.5;
-  }
+.status-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--blue);
+  box-shadow: 0 0 8px var(--blue);
+  animation: pulse-dot 2.2s ease-in-out infinite;
+}
 
-  h1 {
-    font-family: 'Syne', sans-serif;
-    font-weight: 800;
-    font-size: clamp(48px, 8vw, 96px);
-    line-height: 1.0;
-    letter-spacing: -2px;
-    color: var(--text);
-    text-shadow: 0 0 80px rgba(37,99,235,0.3);
-  }
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
+}
 
-  h1 span {
-    color: var(--blue-bright);
-    position: relative;
-  }
+/* Side lines */
+.side-line {
+  position: fixed;
+  top: 0; bottom: 0; width: 1px;
+  background: linear-gradient(to bottom,
+    transparent 0%,
+    rgba(37,99,235,0.15) 30%,
+    rgba(37,99,235,0.15) 70%,
+    transparent 100%
+  );
+  z-index: 5;
+}
+.side-line.l { left: 44px; }
+.side-line.r { right: 44px; }
 
-  .sub {
-    font-family: 'DM Sans', sans-serif;
-    font-weight: 300;
-    font-size: clamp(15px, 2vw, 18px);
-    color: var(--text-muted);
-    margin-top: 20px;
-    max-width: 480px;
-    line-height: 1.65;
-    letter-spacing: 0.2px;
-  }
+/* Hero */
+.hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 860px;
+  width: 100%;
+}
 
-  /* ── Email form ── */
-  .form-wrap {
-    margin-top: 44px;
-    opacity: 0;
-    transform: translateY(20px);
-    animation: fadeUp 1s cubic-bezier(0.22,1,0.36,1) 0.7s forwards;
-    width: 100%;
-    max-width: 440px;
-  }
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 5px;
+  color: var(--blue-pale);
+  text-transform: uppercase;
+  margin-bottom: 36px;
+  opacity: 0;
+  animation: fadeUp 0.9s ease 0.3s forwards;
+}
 
-  .form-row {
-    display: flex;
-    gap: 10px;
-    background: rgba(8,16,32,0.8);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 6px 6px 6px 20px;
-    backdrop-filter: blur(12px);
-    transition: border-color 0.3s;
-  }
+.eline {
+  width: 30px; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--blue));
+}
+.eline.r { background: linear-gradient(90deg, var(--blue), transparent); }
 
-  .form-row:focus-within {
-    border-color: rgba(37,99,235,0.5);
-    box-shadow: 0 0 0 3px rgba(37,99,235,0.08);
-  }
+.headline {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  line-height: 1.0;
+  letter-spacing: -2.5px;
+  margin-bottom: 30px;
+  opacity: 0;
+  animation: fadeUp 1s cubic-bezier(0.16,1,0.3,1) 0.45s forwards;
+}
 
-  .form-row input {
-    flex: 1;
-    background: transparent;
-    border: none;
-    outline: none;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 14px;
-    font-weight: 400;
-    color: var(--text);
-    min-width: 0;
-  }
+.headline .l1 {
+  display: block;
+  font-size: clamp(50px, 8.5vw, 102px);
+  color: var(--text);
+}
 
-  .form-row input::placeholder {
-    color: var(--text-muted);
-    opacity: 0.6;
-  }
+.headline .l2 {
+  display: block;
+  font-size: clamp(50px, 8.5vw, 102px);
+  color: var(--blue-bright);
+}
 
-  .form-row button {
-    background: var(--blue);
-    color: #fff;
-    border: none;
-    border-radius: 10px;
-    padding: 12px 24px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13px;
-    font-weight: 500;
-    cursor: pointer;
-    white-space: nowrap;
-    transition: background 0.2s, transform 0.15s;
-    letter-spacing: 0.3px;
-  }
+.headline .l3 {
+  display: block;
+  font-size: clamp(26px, 4vw, 50px);
+  color: rgba(240,244,255,0.38);
+  font-weight: 600;
+  letter-spacing: -1px;
+  margin-top: 10px;
+}
 
-  .form-row button:hover {
-    background: #1D4ED8;
-    transform: scale(1.02);
-  }
+.subline {
+  font-size: clamp(15px, 1.7vw, 17px);
+  font-weight: 300;
+  color: var(--text-sub);
+  line-height: 1.75;
+  max-width: 500px;
+  margin-bottom: 52px;
+  opacity: 0;
+  animation: fadeUp 1s ease 0.65s forwards;
+}
 
-  .form-row button:active { transform: scale(0.98); }
+/* Form */
+.form-wrap {
+  width: 100%;
+  max-width: 450px;
+  opacity: 0;
+  animation: fadeUp 1s ease 0.82s forwards;
+  margin-bottom: 18px;
+}
 
-  .form-note {
-    text-align: center;
-    font-size: 11px;
-    color: var(--text-dim);
-    margin-top: 12px;
-    letter-spacing: 0.3px;
-  }
+.form-box {
+  display: flex;
+  align-items: center;
+  background: rgba(5,10,22,0.92);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 6px 6px 6px 22px;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  backdrop-filter: blur(20px);
+}
 
-  /* ── Pills ── */
-  .pills {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    justify-content: center;
-    margin-top: 52px;
-    opacity: 0;
-    transform: translateY(16px);
-    animation: fadeUp 1s cubic-bezier(0.22,1,0.36,1) 0.9s forwards;
-  }
+.form-box:focus-within {
+  border-color: rgba(37,99,235,0.5);
+  box-shadow: 0 0 0 4px rgba(37,99,235,0.07), 0 8px 40px rgba(37,99,235,0.12);
+}
 
-  .pill {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    background: rgba(8,16,32,0.7);
-    border: 1px solid rgba(37,99,235,0.2);
-    border-radius: 100px;
-    padding: 8px 16px;
-    font-size: 12px;
-    font-weight: 500;
-    color: rgba(140,175,215,0.9);
-    letter-spacing: 0.3px;
-    backdrop-filter: blur(8px);
-  }
+.form-box input {
+  flex: 1;
+  background: transparent;
+  border: none; outline: none;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  color: var(--text);
+  min-width: 0;
+}
 
-  .pill-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--blue);
-    flex-shrink: 0;
-  }
+.form-box input::placeholder { color: rgba(90,122,158,0.55); }
 
-  /* ── Bottom bar ── */
-  .bottom {
-    position: fixed;
-    bottom: 32px;
-    left: 0; right: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    font-size: 12px;
-    color: var(--text-dim);
-    letter-spacing: 0.5px;
-    opacity: 0;
-    animation: fadeUp 1s ease 1.2s forwards;
-  }
+.form-box button {
+  background: var(--blue);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  padding: 13px 24px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  letter-spacing: 0.3px;
+  box-shadow: 0 4px 18px rgba(37,99,235,0.4);
+  transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+}
 
-  .bottom a {
-    color: var(--text-muted);
-    text-decoration: none;
-    transition: color 0.2s;
-  }
+.form-box button:hover {
+  background: #1D4ED8;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 28px rgba(37,99,235,0.5);
+}
 
-  .bottom a:hover { color: var(--blue-pale); }
+.form-box button:active { transform: translateY(0); }
 
-  /* ── Pulse ring on logo ── */
-  .pulse-ring {
-    position: absolute;
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    border: 1px solid rgba(37,99,235,0.4);
-    animation: pulse-out 2.4s ease-out infinite;
-  }
+.form-note {
+  text-align: center;
+  font-size: 11px;
+  color: rgba(30,48,80,0.85);
+  margin-top: 12px;
+  letter-spacing: 0.3px;
+}
 
-  .pulse-ring:nth-child(2) { animation-delay: 0.8s; }
-  .pulse-ring:nth-child(3) { animation-delay: 1.6s; }
+.success-msg {
+  display: none;
+  text-align: center;
+  color: #34D399;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 16px;
+}
 
-  .logo-pulse-wrap {
-    position: relative;
-    width: 48px;
-    height: 48px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+/* Divider */
+.sep {
+  width: 1px; height: 44px;
+  background: linear-gradient(to bottom, transparent, var(--border), transparent);
+  margin: 36px 0;
+  opacity: 0;
+  animation: fadeUp 1s ease 1s forwards;
+}
 
-  @keyframes pulse-out {
-    0%   { transform: scale(1);   opacity: 0.6; }
-    100% { transform: scale(3.2); opacity: 0; }
-  }
+/* Pills */
+.pills {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  opacity: 0;
+  animation: fadeUp 1s ease 1.05s forwards;
+}
 
-  @keyframes fadeUp {
-    to { opacity: 1; transform: translateY(0); }
-  }
+.pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(5,10,22,0.85);
+  border: 1px solid rgba(37,99,235,0.16);
+  border-radius: 100px;
+  padding: 9px 18px;
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(120,158,200,0.9);
+  letter-spacing: 0.2px;
+  backdrop-filter: blur(8px);
+  transition: border-color 0.25s, background 0.25s, transform 0.2s;
+}
 
-  /* ── Success state ── */
-  .success-msg {
-    display: none;
-    text-align: center;
-    color: #34D399;
-    font-size: 14px;
-    font-weight: 500;
-    margin-top: 14px;
-    letter-spacing: 0.3px;
-  }
+.pill:hover {
+  border-color: rgba(37,99,235,0.4);
+  background: rgba(37,99,235,0.07);
+  transform: translateY(-1px);
+}
 
-  /* ── Responsive ── */
-  @media (max-width: 520px) {
-    .form-row { flex-direction: column; padding: 10px; }
-    .form-row button { width: 100%; padding: 14px; }
-    .pills { gap: 8px; }
-    .pill { font-size: 11px; padding: 7px 13px; }
-  }
+.pdot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--blue);
+  box-shadow: 0 0 5px var(--blue);
+  flex-shrink: 0;
+}
+
+/* Bottom */
+.footer {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 44px;
+  border-top: 1px solid rgba(255,255,255,0.03);
+  backdrop-filter: blur(20px);
+  background: rgba(4,7,14,0.55);
+  opacity: 0;
+  animation: fadeUp 0.8s ease 1.3s forwards;
+}
+
+.footer-left {
+  font-size: 11px;
+  color: var(--text-muted);
+  letter-spacing: 0.3px;
+}
+
+.footer-right {
+  display: flex;
+  gap: 22px;
+  font-size: 11px;
+}
+
+.footer-right a {
+  color: var(--text-muted);
+  text-decoration: none;
+  letter-spacing: 0.3px;
+  transition: color 0.2s;
+}
+.footer-right a:hover { color: var(--blue-pale); }
+
+/* Animations */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeDown {
+  from { opacity: 0; transform: translateY(-12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 600px) {
+  .topbar { padding: 18px 20px; }
+  .topbar-status { display: none; }
+  .side-line { display: none; }
+  .footer { padding: 14px 20px; }
+  .form-box { flex-direction: column; padding: 10px; gap: 8px; }
+  .form-box button { width: 100%; padding: 14px; border-radius: 10px; }
+  .headline { letter-spacing: -1.5px; }
+}
 </style>
 </head>
 <body>
 
-<canvas id="bg-canvas"></canvas>
+<canvas id="bg"></canvas>
 
-<div class="stage">
-
-  <!-- Logo -->
-  <div class="logo-wrap">
-    <div class="logo-pulse-wrap">
-      <div class="pulse-ring"></div>
-      <div class="pulse-ring"></div>
-      <div class="pulse-ring"></div>
-      <svg class="logo-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <!-- Hex -->
-        <polygon points="50,8 88,30 88,70 50,92 12,70 12,30" fill="#0C1524" stroke="rgba(37,99,235,0.5)" stroke-width="1.5"/>
-        <polygon points="50,22 76,37 76,63 50,78 24,63 24,37" fill="none" stroke="rgba(37,99,235,0.15)" stroke-width="1"/>
-        <!-- X -->
-        <path d="M33,26 L42,26 L50,38 L58,26 L67,26 L55,50 L67,74 L58,74 L50,62 L42,74 L33,74 L45,50 Z" fill="#2563EB"/>
-        <!-- Diamond -->
-        <polygon points="50,44 56,50 50,56 44,50" fill="#60A5FA"/>
-        <!-- Hex vertex dots -->
-        <circle cx="50" cy="8"  r="2" fill="rgba(37,99,235,0.7)"/>
-        <circle cx="88" cy="30" r="2" fill="rgba(37,99,235,0.5)"/>
-        <circle cx="88" cy="70" r="2" fill="rgba(37,99,235,0.5)"/>
-        <circle cx="50" cy="92" r="2" fill="rgba(37,99,235,0.7)"/>
-        <circle cx="12" cy="70" r="2" fill="rgba(37,99,235,0.5)"/>
-        <circle cx="12" cy="30" r="2" fill="rgba(37,99,235,0.5)"/>
-      </svg>
-    </div>
-    <span class="logo-name">XEVORA</span>
+<div class="topbar">
+  <div class="topbar-logo">
+    <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="50,6 89,28 89,72 50,94 11,72 11,28" fill="#0C1524" stroke="rgba(37,99,235,0.45)" stroke-width="1.5"/>
+      <polygon points="50,20 77,36 77,64 50,80 23,64 23,36" fill="none" stroke="rgba(37,99,235,0.12)" stroke-width="1"/>
+      <path d="M33,25 L43,25 L50,37 L57,25 L67,25 L55,50 L67,75 L57,75 L50,63 L43,75 L33,75 L45,50 Z" fill="#2563EB"/>
+      <polygon points="50,43 57,50 50,57 43,50" fill="#60A5FA"/>
+      <circle cx="50" cy="6"  r="2" fill="rgba(37,99,235,0.8)"/>
+      <circle cx="89" cy="28" r="2" fill="rgba(37,99,235,0.5)"/>
+      <circle cx="89" cy="72" r="2" fill="rgba(37,99,235,0.5)"/>
+      <circle cx="50" cy="94" r="2" fill="rgba(37,99,235,0.8)"/>
+      <circle cx="11" cy="72" r="2" fill="rgba(37,99,235,0.5)"/>
+      <circle cx="11" cy="28" r="2" fill="rgba(37,99,235,0.5)"/>
+    </svg>
+    <span class="topbar-name">XEVORA</span>
   </div>
-
-  <!-- Headline -->
-  <div class="headline-wrap">
-    <div class="eyebrow">Coming Soon</div>
-    <h1>Workforce<br><span>Infrastructure</span><br>Reimagined.</h1>
-    <p class="sub">Modern payroll and time tracking built for the people who actually keep the world moving — drivers, field crews, and trades.</p>
+  <div class="topbar-status">
+    <span class="status-dot"></span>
+    Early Access Open
   </div>
-
-  <!-- Email capture -->
-  <div class="form-wrap">
-    <div class="form-row">
-      <input type="email" id="email-input" placeholder="Enter your work email" autocomplete="email"/>
-      <button onclick="handleSubmit()">Get Early Access</button>
-    </div>
-    <p class="form-note">No spam. First to know when we launch.</p>
-    <p class="success-msg" id="success-msg">✓ You're on the list. We'll be in touch.</p>
-  </div>
-
-  <!-- Pills -->
-  <div class="pills">
-    <div class="pill"><span class="pill-dot"></span>GPS Time Tracking</div>
-    <div class="pill"><span class="pill-dot"></span>Automated Payroll</div>
-    <div class="pill"><span class="pill-dot"></span>Built for Field Teams</div>
-    <div class="pill"><span class="pill-dot"></span>1099 Ready</div>
-  </div>
-
 </div>
 
-<!-- Bottom bar -->
-<div class="bottom">
-  <span>© 2026 Xevora</span>
-  <span style="opacity:0.3">·</span>
-  <a href="mailto:hello@xevora.io">hello@xevora.io</a>
-  <span style="opacity:0.3">·</span>
-  <a href="#">Privacy</a>
+<div class="side-line l"></div>
+<div class="side-line r"></div>
+
+<div class="page">
+  <div class="hero">
+
+    <div class="eyebrow">
+      <span class="eline"></span>
+      Coming Soon
+      <span class="eline r"></span>
+    </div>
+
+    <h1 class="headline">
+      <span class="l1">Pay your team.</span>
+      <span class="l2">Track every shift.</span>
+      <span class="l3">Run your operation.</span>
+    </h1>
+
+    <p class="subline">
+      Built for drivers, field crews, and trades — the workers who keep the world moving but never had software built for them. Until now.
+    </p>
+
+    <div class="form-wrap">
+      <div class="form-box">
+        <input type="email" id="email-input" placeholder="Enter your work email" autocomplete="email"/>
+        <button onclick="handleSubmit()">Get Early Access</button>
+      </div>
+      <p class="form-note">No spam. First to know when we launch.</p>
+      <p class="success-msg" id="success-msg">✓ You're on the list. We'll be in touch.</p>
+    </div>
+
+    <div class="sep"></div>
+
+    <div class="pills">
+      <div class="pill"><span class="pdot"></span>GPS Time Tracking</div>
+      <div class="pill"><span class="pdot"></span>Automated Payroll</div>
+      <div class="pill"><span class="pdot"></span>Built for Field Teams</div>
+      <div class="pill"><span class="pdot"></span>1099 Ready</div>
+      <div class="pill"><span class="pdot"></span>AI-Powered</div>
+    </div>
+
+  </div>
+</div>
+
+<div class="footer">
+  <div class="footer-left">© 2026 Xevora IO LLC</div>
+  <div class="footer-right">
+    <a href="mailto:hello@xevora.io">hello@xevora.io</a>
+    <a href="#">Privacy</a>
+    <a href="#">Terms</a>
+  </div>
 </div>
 
 <script>
-// ── Animated background: particle grid + flowing lines ──
 (function() {
-  const canvas = document.getElementById('bg-canvas');
+  const canvas = document.getElementById('bg');
   const ctx = canvas.getContext('2d');
-  let W, H, particles, lines;
-  let raf;
+  let W, H, dots, beams, t = 0;
 
   function resize() {
-    W = canvas.width  = window.innerWidth;
+    W = canvas.width = window.innerWidth;
     H = canvas.height = window.innerHeight;
-    init();
+    buildDots(); buildBeams();
   }
 
-  function init() {
-    // Dot grid particles
-    particles = [];
-    const cols = Math.ceil(W / 52);
-    const rows = Math.ceil(H / 52);
-    for (let c = 0; c <= cols; c++) {
-      for (let r = 0; r <= rows; r++) {
-        particles.push({
-          x: c * 52,
-          y: r * 52,
-          baseAlpha: Math.random() * 0.12 + 0.03,
-          alpha: 0,
+  function buildDots() {
+    dots = [];
+    const gap = 46;
+    for (let x = 0; x < W + gap; x += gap) {
+      for (let y = 0; y < H + gap; y += gap) {
+        const dx = (x - W * 0.5) / W;
+        const dy = (y - H * 0.5) / H;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        dots.push({
+          x, y,
+          base: Math.max(0.018, 0.13 - dist * 0.28),
           phase: Math.random() * Math.PI * 2,
-          speed: Math.random() * 0.008 + 0.004,
+          spd: Math.random() * 0.007 + 0.003,
         });
       }
     }
-
-    // Flowing energy lines
-    lines = [];
-    for (let i = 0; i < 6; i++) {
-      lines.push(newLine(i));
-    }
   }
 
-  function newLine(i) {
+  function buildBeams() {
+    beams = [];
+    for (let i = 0; i < 9; i++) beams.push(newBeam());
+  }
+
+  function newBeam() {
     return {
       x: Math.random() * W,
-      y: -40,
-      speed: Math.random() * 0.4 + 0.15,
-      width: Math.random() * 1.2 + 0.3,
-      alpha: Math.random() * 0.12 + 0.04,
-      length: Math.random() * 180 + 80,
-      phase: (i / 6) * H,
+      y: Math.random() * H,
+      vy: Math.random() * 0.3 + 0.1,
+      len: Math.random() * 220 + 80,
+      a: Math.random() * 0.09 + 0.025,
+      w: Math.random() * 0.9 + 0.25,
     };
   }
 
-  let t = 0;
-
-  function draw() {
+  function frame() {
     ctx.clearRect(0, 0, W, H);
-
-    // Background fill
-    ctx.fillStyle = '#05080F';
+    ctx.fillStyle = '#04070E';
     ctx.fillRect(0, 0, W, H);
 
-    // Radial glow center-left
-    const glow = ctx.createRadialGradient(W*0.28, H*0.5, 0, W*0.28, H*0.5, W*0.38);
-    glow.addColorStop(0, 'rgba(37,99,235,0.09)');
-    glow.addColorStop(1, 'rgba(37,99,235,0)');
-    ctx.fillStyle = glow;
-    ctx.fillRect(0, 0, W, H);
+    // Radial glow
+    const g = ctx.createRadialGradient(W*.44, H*.48, 0, W*.44, H*.48, W*.5);
+    g.addColorStop(0, 'rgba(37,99,235,0.1)');
+    g.addColorStop(0.5, 'rgba(37,99,235,0.03)');
+    g.addColorStop(1, 'rgba(37,99,235,0)');
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
 
-    // Pulsing dots
-    particles.forEach(p => {
-      p.alpha = p.baseAlpha * (0.4 + 0.6 * Math.sin(t * p.speed + p.phase));
-      ctx.globalAlpha = p.alpha;
-      ctx.fillStyle = '#4A7AB5';
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, 1.1, 0, Math.PI * 2);
-      ctx.fill();
+    // Bottom glow
+    const g2 = ctx.createRadialGradient(W*.5, H, 0, W*.5, H, W*.4);
+    g2.addColorStop(0, 'rgba(37,99,235,0.05)');
+    g2.addColorStop(1, 'rgba(37,99,235,0)');
+    ctx.fillStyle = g2; ctx.fillRect(0, 0, W, H);
+
+    // Dots
+    dots.forEach(d => {
+      ctx.globalAlpha = d.base * (0.3 + 0.7 * Math.sin(t * d.spd + d.phase));
+      ctx.fillStyle = '#3A6AAA';
+      ctx.beginPath(); ctx.arc(d.x, d.y, 1.05, 0, Math.PI*2); ctx.fill();
     });
 
-    // Flowing vertical lines
-    lines.forEach(l => {
-      l.y += l.speed;
-      if (l.y - l.length > H) {
-        l.x = Math.random() * W;
-        l.y = -l.length;
-        l.speed = Math.random() * 0.4 + 0.15;
-        l.alpha = Math.random() * 0.12 + 0.04;
-        l.length = Math.random() * 180 + 80;
-      }
-
-      const grad = ctx.createLinearGradient(l.x, l.y - l.length, l.x, l.y);
-      grad.addColorStop(0, `rgba(37,99,235,0)`);
-      grad.addColorStop(0.5, `rgba(37,99,235,${l.alpha})`);
-      grad.addColorStop(1, `rgba(37,99,235,0)`);
-
-      ctx.globalAlpha = 1;
-      ctx.strokeStyle = grad;
-      ctx.lineWidth = l.width;
-      ctx.beginPath();
-      ctx.moveTo(l.x, l.y - l.length);
-      ctx.lineTo(l.x, l.y);
-      ctx.stroke();
+    // Beams
+    ctx.globalAlpha = 1;
+    beams.forEach(b => {
+      b.y += b.vy;
+      if (b.y - b.len > H) { b.x = Math.random()*W; b.y = -b.len; }
+      const gr = ctx.createLinearGradient(b.x, b.y-b.len, b.x, b.y);
+      gr.addColorStop(0, 'rgba(37,99,235,0)');
+      gr.addColorStop(0.5, `rgba(37,99,235,${b.a})`);
+      gr.addColorStop(1, 'rgba(37,99,235,0)');
+      ctx.strokeStyle = gr; ctx.lineWidth = b.w;
+      ctx.beginPath(); ctx.moveTo(b.x, b.y-b.len); ctx.lineTo(b.x, b.y); ctx.stroke();
     });
 
     ctx.globalAlpha = 1;
-    t += 1;
-    raf = requestAnimationFrame(draw);
+    t++;
+    requestAnimationFrame(frame);
   }
 
   window.addEventListener('resize', resize);
-  resize();
-  draw();
+  resize(); frame();
 })();
 
-// ── Email form ──
-function handleSubmit() {
+async function handleSubmit() {
   const input = document.getElementById('email-input');
   const msg = document.getElementById('success-msg');
   const val = input.value.trim();
   if (!val || !val.includes('@')) {
-    input.style.borderBottom = '1px solid rgba(239,68,68,0.5)';
+    input.style.color = '#F87171';
     input.focus();
+    setTimeout(() => input.style.color = '', 900);
     return;
   }
-  input.closest('.form-row').style.display = 'none';
-  msg.style.display = 'block';
+  const SUPABASE_URL = 'YOUR_PROJECT_URL';
+  const SUPABASE_ANON_KEY = 'YOUR_ANON_KEY';
+  try {
+    await fetch(`${SUPABASE_URL}/rest/v1/waitlist`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify({ email: val })
+    });
+    document.querySelector('.form-box').style.display = 'none';
+    document.querySelector('.form-note').style.display = 'none';
+    msg.style.display = 'block';
+  } catch(e) {
+    msg.style.color = '#F87171';
+    msg.textContent = 'Something went wrong. Try again.';
+    msg.style.display = 'block';
+  }
 }
 </script>
 </body>
