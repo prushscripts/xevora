@@ -702,7 +702,7 @@ setInterval(tick,1000);tick();
 async function go(){
   const ei=document.getElementById('ei'),sm=document.getElementById('sm'),v=ei.value.trim();
   if(!v||!v.includes('@')){ei.style.color='#F87171';ei.focus();setTimeout(()=>ei.style.color='',900);return}
-  const U='YOUR_PROJECT_URL',K='YOUR_ANON_KEY';
+  const U='https://gvjcjofsglhnxvtymicf.supabase.co',K='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd2amNqb2ZzZ2xobnh2dHltaWNmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwMDc3NTEsImV4cCI6MjA5MDU4Mzc1MX0.0EY72PBX63x6KXW0GTObD3SZJsVAHF5n_GXJk9k9Rgk';
   try{
     await fetch(`${U}/rest/v1/waitlist`,{method:'POST',headers:{'Content-Type':'application/json','apikey':K,'Authorization':`Bearer ${K}`,'Prefer':'return=minimal'},body:JSON.stringify({email:v})});
     document.querySelector('.fs').style.display='none';
