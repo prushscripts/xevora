@@ -1,7 +1,14 @@
 {
   "rewrites": [
-    { "source": "/", "destination": "/index.html" },
-    { "source": "/login", "destination": "/pages/login.html" },
-    { "source": "/dashboard", "destination": "/pages/dashboard.html" }
+    { "source": "/pages/login", "destination": "/pages/login.html" },
+    { "source": "/pages/dashboard", "destination": "/pages/dashboard.html" }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+      ]
+    }
   ]
 }
