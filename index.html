@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Xevora — Workforce Infrastructure</title>
+<title>Xevora — GPS Payroll & Time Tracking for Field Teams</title>
 <meta name="description" content="Modern payroll and workforce infrastructure for field teams. GPS time tracking, automated payroll, built for drivers and trades.">
 
 <!-- ═══════════════════════════════════════
@@ -11,7 +11,7 @@
      Upload xbanner.png to your Vercel project
      at /public/xbanner.png and this will work
 ════════════════════════════════════════ -->
-<meta property="og:title" content="Xevora — Workforce Infrastructure"/>
+<meta property="og:title" content="Xevora — GPS Payroll & Time Tracking for Field Teams"/>
 <meta property="og:description" content="Modern payroll + GPS time tracking built for drivers, field crews, and trades. Coming soon."/>
 <meta property="og:image" content="https://www.xevora.io/og.png"/>
 <meta property="og:image:width" content="1200"/>
@@ -23,7 +23,7 @@
 
 <!-- Twitter card (also used by iMessage on newer iOS) -->
 <meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:title" content="Xevora — Workforce Infrastructure"/>
+<meta name="twitter:title" content="Xevora — GPS Payroll & Time Tracking for Field Teams"/>
 <meta name="twitter:description" content="Modern payroll + GPS time tracking built for drivers, field crews, and trades. Coming soon."/>
 <meta name="twitter:image" content="https://www.xevora.io/og.png"/>
 <meta name="twitter:site" content="@Xevora_IO"/>
@@ -51,13 +51,11 @@
 /* ── RESET MOBILE SCROLL ── */
 html{
   width:100%;
-  overflow-x:hidden;
   -webkit-text-size-adjust:100%;
 }
 body{
   width:100%;
   min-height:100vh;
-  overflow-x:hidden;
   background:var(--bg);
   color:var(--text);
   font-family:'DM Sans',sans-serif;
@@ -457,11 +455,26 @@ footer{
   main{padding:90px 16px 50px}
   h1{letter-spacing:-1px}
 
-  /* Hide dashboard mockup on mobile — too small to read */
-  .preview-section{display:none}
+  /* Show dashboard mockup on mobile with safe scaling */
+  .preview-section{
+    display:block;
+    max-width:100%;
+    padding:0 12px 80px;
+    overflow:visible;
+  }
+  .mockup-outer,.dash{max-width:100%}
+  .dash-body{flex-direction:column}
+  .dash-sidebar{
+    width:100%;
+    border-right:none;
+    border-bottom:1px solid rgba(37,99,235,.08);
+  }
+  .dash-main{padding:14px}
+  .stat-row{grid-template-columns:repeat(2,1fr)}
+  .dash-grid{grid-template-columns:1fr}
 
-  /* Footer compact */
-  footer{padding:12px 16px}
+  /* Footer should not block content on mobile */
+  footer{position:static;padding:12px 16px}
   .fl{font-size:10px}
   .fr a{font-size:10px}
   .fr{gap:14px}
@@ -567,7 +580,7 @@ footer{
     <div class="dash">
       <div class="win-bar">
         <div class="wd r"></div><div class="wd y"></div><div class="wd g"></div>
-        <div class="wt">Xevora — Prush Logistics Group</div>
+        <div class="wt">Xevora — Demo Company LLC</div>
       </div>
       <div class="dash-body">
         <div class="dash-sidebar">
@@ -601,8 +614,8 @@ footer{
               <table class="wtable">
                 <thead><tr><th>Name</th><th>Hours</th><th>Status</th></tr></thead>
                 <tbody>
-                  <tr><td class="wn">Alex Carter</td><td>6h 24m</td><td><span class="sb in"><span class="sdot2"></span>Clocked In</span></td></tr>
-                  <tr><td class="wn">Ryan Brooks</td><td>5h 51m</td><td><span class="sb in"><span class="sdot2"></span>Clocked In</span></td></tr>
+                  <tr><td class="wn">Alex Rivera</td><td>6h 24m</td><td><span class="sb in"><span class="sdot2"></span>Clocked In</span></td></tr>
+                  <tr><td class="wn">Chris Morgan</td><td>5h 51m</td><td><span class="sb in"><span class="sdot2"></span>Clocked In</span></td></tr>
                   <tr><td class="wn">D. Williams</td><td>4h 10m</td><td><span class="sb br"><span class="sdot2"></span>On Break</span></td></tr>
                   <tr><td class="wn">R. Martinez</td><td>8h 02m</td><td><span class="sb dn"><span class="sdot2"></span>Clocked Out</span></td></tr>
                 </tbody>
@@ -612,11 +625,11 @@ footer{
               <div class="ch"><div class="ct">Payroll — This Period</div><div class="cb">Draft</div></div>
               <div class="pay-rows">
                 <div class="pr">
-                  <div><div class="pn">Alex Carter</div><div class="pt">Driver · 1099</div></div>
+                  <div><div class="pn">Alex Rivera</div><div class="pt">Driver · 1099</div></div>
                   <div style="text-align:right"><div class="pa">$1,240.00</div><div class="ps">Ready</div></div>
                 </div>
                 <div class="pr">
-                  <div><div class="pn">Ryan Brooks</div><div class="pt">Driver · 1099</div></div>
+                  <div><div class="pn">Chris Morgan</div><div class="pt">Driver · 1099</div></div>
                   <div style="text-align:right"><div class="pa">$1,105.00</div><div class="ps">Ready</div></div>
                 </div>
               </div>
