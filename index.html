@@ -197,13 +197,39 @@ nav{
   box-shadow:0 0 8px rgba(37,99,235,0.5);
 }
 
-.tab-panel{
-  display:none;
-  opacity:0;
-  transform:translateY(10px);
+/* Tab panels: opacity + pointer-events only — no display toggling */
+.tab-panels-root{
+  position:relative;
+  z-index:8;
+  isolation:isolate;
 }
-.tab-panel.active{display:block}
-.tab-panel.active:not(.is-entering):not(.is-leaving){opacity:1;transform:translateY(0)}
+.tab-panel{
+  position:absolute;
+  left:0;right:0;top:0;width:100%;
+  opacity:0;
+  transform:translateY(12px);
+  pointer-events:none;
+  visibility:hidden;
+  z-index:0;
+  transition:opacity 300ms cubic-bezier(0.16,1,0.3,1),transform 300ms cubic-bezier(0.16,1,0.3,1);
+}
+.tab-panel.tab-panel--live{
+  position:relative;
+  z-index:2;
+}
+.tab-panel.tab-panel--shown{visibility:visible}
+.tab-panel.tab-panel--interactive{pointer-events:auto}
+.tab-panel.is-visible{opacity:1;transform:translateY(0)}
+.tab-panel.is-exiting{
+  opacity:0;
+  transform:translateY(-10px);
+  transition:opacity 160ms ease-in,transform 160ms ease-in;
+}
+.tab-panel.is-prep{
+  transition:none;
+  opacity:0;
+  transform:translateY(12px);
+}
 
 /* Side lines — desktop only */
 .vl{
@@ -426,7 +452,8 @@ p.sub{
   padding:8px 16px;font-size:11.5px;font-weight:400;
   color:rgba(78,109,146,.7);cursor:pointer;
   border-left:2px solid transparent;
-  transition:all .2s;letter-spacing:.2px;
+  transition:color 200ms ease,background 200ms ease,border-color 200ms ease;
+  letter-spacing:.2px;
   white-space:nowrap;
 }
 .si.active{color:var(--text);border-left-color:var(--blue);background:rgba(37,99,235,.08)}
@@ -498,7 +525,6 @@ p.sub{
   padding:48px 24px 140px;
   padding-top:158px;
 }
-.tab-section-head{margin-bottom:48px}
 .tab-section-title{
   font-family:'Syne',sans-serif;font-size:clamp(32px,4.5vw,44px);font-weight:800;letter-spacing:-1px;
   line-height:1.08;margin-bottom:12px;
@@ -507,67 +533,51 @@ p.sub{
   font-family:'DM Sans',sans-serif;font-size:16px;font-weight:300;color:var(--sub);
   line-height:1.7;max-width:640px;
 }
+.content-panel--features-compact{padding-top:148px;padding-bottom:100px}
+.fr-compact-head{
+  display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:4px;align-items:center;
+}
+.fr-mono-lab{
+  font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;letter-spacing:0.35px;
+  color:rgba(241,245,255,0.62);display:flex;align-items:center;gap:8px;
+}
+.fr-mono-lab:last-child{justify-self:end}
+.fr-mono-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.fr-mono-dot--g{background:#34D399;box-shadow:0 0 6px rgba(52,211,153,0.45)}
+.fr-mono-dot--b{background:#3B82F6;box-shadow:0 0 6px rgba(59,130,246,0.45)}
+.fr-compact-cols{display:grid;grid-template-columns:1fr 1fr;gap:40px;max-height:calc(100vh - 200px)}
+.fr-compact-col{min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-right:4px}
+.fr-line{
+  display:flex;gap:8px;align-items:flex-start;padding:8px 0;
+  border-bottom:1px solid rgba(37,99,235,0.06);font-size:12px;line-height:1.45;
+}
+.fr-line:last-child{border-bottom:none}
+.fr-line-ic{flex-shrink:0;line-height:1.4;margin-top:1px}
+.fr-line-txt{min-width:0;margin:0;color:rgba(241,245,255,0.88)}
+.fr-line-txt strong{font-weight:600;color:var(--text)}
+.fr-line-ic.fr-mono-dot{display:block;flex-shrink:0;margin-top:5px}
+.fr-line-txt .mut{color:rgba(78,109,146,0.95);font-weight:400}
+.fr-foot-hint{
+  text-align:right;font-size:11px;color:var(--sub);margin-top:14px;letter-spacing:0.2px;
+}
+.fr-foot-hint a{color:var(--blue3);text-decoration:none}
+.fr-foot-hint a:hover{text-decoration:underline}
 .panel-card{
   background:rgba(6,11,22,0.95);
   border:1px solid rgba(37,99,235,0.12);
   border-radius:14px;
   padding:28px;
-  transition:transform 240ms cubic-bezier(0.16,1,0.3,1),box-shadow 240ms cubic-bezier(0.16,1,0.3,1);
 }
-.panel-card:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(0,0,0,0.35)}
 .panel-headline{
   font-family:'Syne',sans-serif;font-size:30px;font-weight:800;letter-spacing:-1px;
   margin-bottom:8px;
 }
 .panel-sub{color:var(--sub);font-size:15px;font-weight:300;line-height:1.7;margin-bottom:16px}
-.fr-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;margin-bottom:48px}
-@media(max-width:900px){.fr-grid{grid-template-columns:1fr;gap:32px}}
-.fr-col-head{margin-bottom:16px}
-.fr-badge{
-  display:inline-flex;align-items:center;gap:8px;
-  font-size:10px;font-weight:600;letter-spacing:0.45px;text-transform:uppercase;
-  color:rgba(241,245,255,0.75);margin-bottom:8px;
+@media(max-width:900px){
+  .fr-compact-cols{grid-template-columns:1fr;max-height:none}
+  .fr-compact-head{grid-template-columns:1fr}
+  .fr-mono-lab:last-child{justify-self:start}
 }
-.fr-badge-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
-.fr-badge-dot--g{background:#34D399;box-shadow:0 0 8px rgba(52,211,153,0.45)}
-.fr-badge-dot--b{background:#3B82F6;box-shadow:0 0 8px rgba(59,130,246,0.45)}
-.fr-col-title{font-size:15px;font-weight:600;color:var(--text);margin-bottom:14px}
-.fr-items{display:grid;gap:10px}
-.fr-item{
-  display:flex;gap:12px;
-  background:rgba(6,11,22,0.8);
-  border:1px solid rgba(37,99,235,0.08);
-  border-radius:10px;
-  padding:14px 16px;
-  transition:transform 220ms cubic-bezier(0.16,1,0.3,1),border-color 220ms ease,box-shadow 220ms ease;
-}
-.fr-item:hover{transform:translateY(-2px);border-color:rgba(37,99,235,0.16);box-shadow:0 8px 28px rgba(0,0,0,0.28)}
-.fr-item--next{opacity:0.92}
-.fr-item-icon{flex-shrink:0;font-size:14px;line-height:1.2;margin-top:1px}
-.fr-item-icon--dot{width:8px;height:8px;border-radius:50%;background:#3B82F6;box-shadow:0 0 8px rgba(59,130,246,0.45);margin-top:5px}
-.fr-item-body{min-width:0}
-.fr-item-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px;line-height:1.35}
-.fr-item-desc{font-size:12px;font-weight:300;color:rgba(78,109,146,0.95);line-height:1.55}
-.fr-banner{
-  padding:22px 24px;
-  background:rgba(6,11,22,0.85);
-  border:1px solid rgba(37,99,235,0.1);
-  border-radius:14px;
-  text-align:center;
-  transition:transform 240ms cubic-bezier(0.16,1,0.3,1),box-shadow 240ms ease;
-}
-.fr-banner:hover{transform:translateY(-2px);box-shadow:0 10px 32px rgba(0,0,0,0.3)}
-.fr-banner p{font-size:15px;font-weight:400;color:rgba(241,245,255,0.88);line-height:1.65;margin-bottom:14px}
-.fr-banner-btn{
-  display:inline-block;font-size:13px;font-weight:500;
-  padding:10px 22px;border-radius:10px;
-  background:rgba(37,99,235,0.18);
-  border:1px solid rgba(37,99,235,0.35);
-  color:var(--blue3);text-decoration:none;
-  letter-spacing:0.2px;
-  transition:background 200ms ease,border-color 200ms ease,transform 200ms ease;
-}
-.fr-banner-btn:hover{background:rgba(37,99,235,0.28);transform:translateY(-1px)}
 
 .eco-live{
   display:inline-flex;align-items:center;gap:8px;
@@ -581,10 +591,10 @@ p.sub{
   background:#2563EB;color:#fff;font-size:14px;font-weight:600;text-decoration:none;
   letter-spacing:0.2px;
   box-shadow:0 8px 28px rgba(37,99,235,0.45);
-  transition:background 200ms ease,transform 200ms ease,box-shadow 200ms ease;
+  transition:background 200ms ease,box-shadow 200ms ease;
 }
-.eco-cta:hover{background:#1D4ED8;transform:translateY(-2px);box-shadow:0 12px 36px rgba(37,99,235,0.5)}
-.eco-list{margin-top:20px}
+.eco-cta:hover{background:#1D4ED8;box-shadow:0 10px 32px rgba(37,99,235,0.55)}
+.fp-lines{margin-top:20px}
 
 .fr-stagger{opacity:0;transform:translateY(16px);transition:opacity 360ms cubic-bezier(0.16,1,0.3,1),transform 360ms cubic-bezier(0.16,1,0.3,1)}
 .fr-stagger.in{opacity:1;transform:translateY(0)}
@@ -620,13 +630,25 @@ p.sub{
   background:#fff;transition:transform .2s;
 }
 .toggle.on::after{transform:translateX(22px)}
+.price-grid-wrap{padding-bottom:10px}
 .price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
 .p-card{
   background:rgba(8,16,31,0.9);border:1px solid rgba(37,99,235,.15);border-radius:12px;padding:15px;display:flex;flex-direction:column;
-  transition:transform 240ms cubic-bezier(0.16,1,0.3,1),box-shadow 240ms cubic-bezier(0.16,1,0.3,1),border-color 240ms ease;
+  transition:transform 250ms cubic-bezier(0.34,1.56,0.64,1),box-shadow 250ms ease,border-color 250ms ease;
 }
-.p-card:hover{transform:translateY(-3px);box-shadow:0 14px 36px rgba(0,0,0,0.35)}
-.p-card.pop{border-color:rgba(37,99,235,.65);box-shadow:0 0 28px rgba(37,99,235,.18)}
+.p-card:hover{
+  transform:translateY(-6px);
+  box-shadow:0 16px 48px rgba(0,0,0,0.38);
+  border-color:rgba(37,99,235,0.35);
+}
+.p-card.pop{
+  border-color:rgba(37,99,235,0.5);
+  box-shadow:0 0 0 1px rgba(37,99,235,0.3),0 8px 32px rgba(37,99,235,0.1);
+}
+.p-card.pop:hover{
+  box-shadow:0 0 0 1px rgba(37,99,235,0.5),0 16px 48px rgba(37,99,235,0.2),0 -6px 24px rgba(37,99,235,0.08);
+  border-color:rgba(37,99,235,0.55);
+}
 .pop{font-size:10px;color:var(--blue3);margin-bottom:6px}
 .p-name{font-size:15px;font-weight:500}
 .p-price{font-family:'Syne',sans-serif;font-size:34px;line-height:1.1;margin:8px 0 4px}
@@ -650,10 +672,6 @@ p.sub{
   box-shadow:0 0 8px rgba(37,99,235,0.5);
   transition:left 300ms cubic-bezier(0.16,1,0.3,1),width 300ms cubic-bezier(0.16,1,0.3,1);
 }
-.tab-panel.is-leaving{animation:tabPanelOut 160ms ease-in forwards}
-.tab-panel.is-entering{animation:tabPanelIn 280ms cubic-bezier(0.16,1,0.3,1) forwards}
-@keyframes tabPanelOut{to{opacity:0;transform:translateY(-8px)}}
-@keyframes tabPanelIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 
 .tab-popover{
   position:fixed;left:0;top:0;width:220px;z-index:60;
@@ -695,14 +713,12 @@ nav.load-in{opacity:1 !important;transform:translateY(0) !important;transition:o
 .fs{transition:border-color 265ms cubic-bezier(.16,1,.3,1),box-shadow 265ms cubic-bezier(.16,1,.3,1),opacity 265ms ease,transform 265ms ease}
 .fs input::placeholder{transition:opacity 240ms ease}
 .fs input:not(:placeholder-shown)::placeholder{opacity:.15}
-.fs button{position:relative;overflow:hidden;transition:background 200ms ease,transform 180ms ease,box-shadow 200ms ease}
+.fs button{position:relative;overflow:hidden}
 .fs button::after{
   content:'';position:absolute;top:0;bottom:0;left:-130%;width:70%;
   background:linear-gradient(90deg,transparent,rgba(255,255,255,.3),transparent);transform:skewX(-22deg)
 }
-.fs button:hover{transform:scale(1.02);box-shadow:0 10px 34px rgba(37,99,235,.62)}
 .fs button.shimmer-once::after{animation:shimmer 560ms ease forwards}
-.fs button:active{transform:scale(.97);transition-duration:80ms}
 @keyframes shimmer{to{left:170%}}
 .fs.collapsed{opacity:0;transform:translateY(-10px) scale(.98);pointer-events:none}
 .succ{display:none;align-items:center;justify-content:center;gap:8px;opacity:0;transform:translateY(12px)}
@@ -713,8 +729,8 @@ nav.load-in{opacity:1 !important;transform:translateY(0) !important;transition:o
 @keyframes successIn{to{opacity:1;transform:translateY(0)}}
 @keyframes drawCheck{to{stroke-dashoffset:0}}
 
-.preview-section{opacity:0;transform:translateY(40px) scale(.97);animation:none}
-.preview-section.in{opacity:1;transform:translateY(0) scale(1);transition:opacity 660ms cubic-bezier(.16,1,.3,1),transform 660ms cubic-bezier(.16,1,.3,1)}
+.preview-section{opacity:0;transform:translateY(28px);animation:none}
+.preview-section.in{opacity:1;transform:translateY(0);transition:opacity 660ms cubic-bezier(.16,1,.3,1),transform 660ms cubic-bezier(.16,1,.3,1)}
 .preview-label{opacity:0;transform:translateY(20px)}
 .preview-label.in{opacity:1;transform:translateY(0);transition:opacity 385ms cubic-bezier(.16,1,.3,1),transform 385ms cubic-bezier(.16,1,.3,1)}
 .preview-section .stat{opacity:0;transform:translateY(16px)}
@@ -731,7 +747,8 @@ nav.load-in{opacity:1 !important;transform:translateY(0) !important;transition:o
 
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{animation:none !important;transition:none !important;scroll-behavior:auto !important}
-  .tab-panel.is-leaving,.tab-panel.is-entering{animation:none !important}
+  .tab-panel{transition:none !important}
+  .tab-panel.is-exiting{transition:none !important}
   .fr-stagger{opacity:1 !important;transform:none !important}
 }
 
@@ -789,7 +806,6 @@ footer{
   main{padding:140px 16px 50px}
   h1{letter-spacing:-1px}
   .content-panel{padding:132px 16px 100px}
-  .fr-grid{gap:28px}
   .road-grid,.price-grid{grid-template-columns:1fr}
 
   /* Show dashboard mockup on mobile with safe scaling */
@@ -909,7 +925,8 @@ footer{
 <div class="vl l"></div>
 <div class="vl r"></div>
 
-<section id="overview-panel" class="tab-panel active">
+<div class="tab-panels-root" id="tab-panels-root">
+<section id="overview-panel" class="tab-panel tab-panel--live tab-panel--shown tab-panel--interactive is-visible">
 <main>
   <div class="eyebrow"><span class="eb"></span>Coming Soon<span class="eb r"></span></div>
   <h1>
@@ -1013,47 +1030,32 @@ footer{
 </section>
 
 <section id="features-panel" class="tab-panel">
-  <div class="content-panel">
-    <header class="tab-section-head fr-stagger">
-      <h2 class="tab-section-title">What we're building.</h2>
-      <p class="tab-section-sub">Every feature. Every phase. Nothing hidden.</p>
-    </header>
-    <div class="fr-grid">
-      <div>
-        <div class="fr-col-head fr-stagger">
-          <div class="fr-badge"><span class="fr-badge-dot fr-badge-dot--g" aria-hidden="true"></span>Stage 1-2 · In Progress</div>
-          <div class="fr-col-title">Building Now</div>
-        </div>
-        <div class="fr-items">
-          <div class="fr-item fr-stagger"><span class="fr-item-icon" aria-hidden="true">✅</span><div class="fr-item-body"><div class="fr-item-title">GPS Clock-In</div><div class="fr-item-desc">One tap, location stamped, works from any mobile device</div></div></div>
-          <div class="fr-item fr-stagger"><span class="fr-item-icon" aria-hidden="true">✅</span><div class="fr-item-body"><div class="fr-item-title">Worker Management</div><div class="fr-item-desc">Add W2 and 1099 workers, invite via email, manage profiles</div></div></div>
-          <div class="fr-item fr-stagger"><span class="fr-item-icon" aria-hidden="true">✅</span><div class="fr-item-body"><div class="fr-item-title">Time Entry Approval</div><div class="fr-item-desc">Review, approve or edit hours before payroll</div></div></div>
-          <div class="fr-item fr-stagger"><span class="fr-item-icon" aria-hidden="true">✅</span><div class="fr-item-body"><div class="fr-item-title">Real-time Dashboard</div><div class="fr-item-desc">Live view of who's clocked in, hours this week, payroll estimates</div></div></div>
-          <div class="fr-item fr-stagger"><span class="fr-item-icon" aria-hidden="true">✅</span><div class="fr-item-body"><div class="fr-item-title">Email Notifications</div><div class="fr-item-desc">Clock-in alerts, approval reminders, payroll confirmations</div></div></div>
-          <div class="fr-item fr-stagger"><span class="fr-item-icon" aria-hidden="true">✅</span><div class="fr-item-body"><div class="fr-item-title">Billing &amp; Subscriptions</div><div class="fr-item-desc">Stripe integration, plan management, invoices</div></div></div>
-        </div>
+  <div class="content-panel content-panel--features-compact">
+    <div class="fr-compact-head">
+      <div class="fr-mono-lab"><span class="fr-mono-dot fr-mono-dot--g" aria-hidden="true"></span>Stage 1–2 · Building Now</div>
+      <div class="fr-mono-lab"><span class="fr-mono-dot fr-mono-dot--b" aria-hidden="true"></span>Stage 3–4 · Coming Next</div>
+    </div>
+    <div class="fr-compact-cols">
+      <div class="fr-compact-col">
+        <div class="fr-line"><span class="fr-line-ic" aria-hidden="true">✅</span><p class="fr-line-txt"><strong>GPS Clock-In:</strong> <span class="mut">One tap, location stamped, works from any mobile device</span></p></div>
+        <div class="fr-line"><span class="fr-line-ic" aria-hidden="true">✅</span><p class="fr-line-txt"><strong>Worker Management:</strong> <span class="mut">Add W2 and 1099 workers, invite via email, manage profiles</span></p></div>
+        <div class="fr-line"><span class="fr-line-ic" aria-hidden="true">✅</span><p class="fr-line-txt"><strong>Time Entry Approval:</strong> <span class="mut">Review, approve or edit hours before payroll</span></p></div>
+        <div class="fr-line"><span class="fr-line-ic" aria-hidden="true">✅</span><p class="fr-line-txt"><strong>Real-time Dashboard:</strong> <span class="mut">Live view of who's clocked in, hours this week, payroll estimates</span></p></div>
+        <div class="fr-line"><span class="fr-line-ic" aria-hidden="true">✅</span><p class="fr-line-txt"><strong>Email Notifications:</strong> <span class="mut">Clock-in alerts, approval reminders, payroll confirmations</span></p></div>
+        <div class="fr-line"><span class="fr-line-ic" aria-hidden="true">✅</span><p class="fr-line-txt"><strong>Billing &amp; Subscriptions:</strong> <span class="mut">Stripe integration, plan management, invoices</span></p></div>
       </div>
-      <div>
-        <div class="fr-col-head fr-stagger">
-          <div class="fr-badge"><span class="fr-badge-dot fr-badge-dot--b" aria-hidden="true"></span>Stage 3-4 · Planned</div>
-          <div class="fr-col-title">Coming Next</div>
-        </div>
-        <div class="fr-items">
-          <div class="fr-item fr-item--next fr-stagger"><span class="fr-item-icon" aria-hidden="true">🔵</span><div class="fr-item-body"><div class="fr-item-title">Check.com Payroll</div><div class="fr-item-desc">Automated direct deposit for W2 and 1099 workers</div></div></div>
-          <div class="fr-item fr-item--next fr-stagger"><span class="fr-item-icon" aria-hidden="true">🔵</span><div class="fr-item-body"><div class="fr-item-title">Pay Stub Generation</div><div class="fr-item-desc">Auto PDF pay stubs emailed to every worker</div></div></div>
-          <div class="fr-item fr-item--next fr-stagger"><span class="fr-item-icon" aria-hidden="true">🔵</span><div class="fr-item-body"><div class="fr-item-title">1099 Auto-Filing</div><div class="fr-item-desc">Year-end contractor documents generated automatically</div></div></div>
-          <div class="fr-item fr-item--next fr-stagger"><span class="fr-item-icon" aria-hidden="true">🔵</span><div class="fr-item-body"><div class="fr-item-title">AI Payroll Assistant</div><div class="fr-item-desc">Natural language payroll runs and anomaly detection</div></div></div>
-          <div class="fr-item fr-item--next fr-stagger"><span class="fr-item-icon" aria-hidden="true">🔵</span><div class="fr-item-body"><div class="fr-item-title">Fynlo Integration</div><div class="fr-item-desc">Labor costs sync directly to your books</div></div></div>
-          <div class="fr-item fr-item--next fr-stagger"><span class="fr-item-icon" aria-hidden="true">🔵</span><div class="fr-item-body"><div class="fr-item-title">Mobile App (PWA)</div><div class="fr-item-desc">Installable app for workers, works offline</div></div></div>
-          <div class="fr-item fr-item--next fr-stagger"><span class="fr-item-icon" aria-hidden="true">🔵</span><div class="fr-item-body"><div class="fr-item-title">QuickBooks Sync</div><div class="fr-item-desc">Import/export financial data</div></div></div>
-          <div class="fr-item fr-item--next fr-stagger"><span class="fr-item-icon" aria-hidden="true">🔵</span><div class="fr-item-body"><div class="fr-item-title">Mileage Tracking</div><div class="fr-item-desc">Per-mile pay for drivers</div></div></div>
-        </div>
+      <div class="fr-compact-col">
+        <div class="fr-line"><span class="fr-line-ic" aria-hidden="true">🔵</span><p class="fr-line-txt"><strong>Check.com Payroll:</strong> <span class="mut">Automated direct deposit for W2 and 1099 workers</span></p></div>
+        <div class="fr-line"><span class="fr-line-ic" aria-hidden="true">🔵</span><p class="fr-line-txt"><strong>Pay Stub Generation:</strong> <span class="mut">Auto PDF pay stubs emailed to every worker</span></p></div>
+        <div class="fr-line"><span class="fr-line-ic" aria-hidden="true">🔵</span><p class="fr-line-txt"><strong>1099 Auto-Filing:</strong> <span class="mut">Year-end contractor documents generated automatically</span></p></div>
+        <div class="fr-line"><span class="fr-line-ic" aria-hidden="true">🔵</span><p class="fr-line-txt"><strong>AI Payroll Assistant:</strong> <span class="mut">Natural language payroll runs and anomaly detection</span></p></div>
+        <div class="fr-line"><span class="fr-line-ic" aria-hidden="true">🔵</span><p class="fr-line-txt"><strong>Fynlo Integration:</strong> <span class="mut">Labor costs sync directly to your books</span></p></div>
+        <div class="fr-line"><span class="fr-line-ic" aria-hidden="true">🔵</span><p class="fr-line-txt"><strong>Mobile App (PWA):</strong> <span class="mut">Installable app for workers, works offline</span></p></div>
+        <div class="fr-line"><span class="fr-line-ic" aria-hidden="true">🔵</span><p class="fr-line-txt"><strong>QuickBooks Sync:</strong> <span class="mut">Import/export financial data</span></p></div>
+        <div class="fr-line"><span class="fr-line-ic" aria-hidden="true">🔵</span><p class="fr-line-txt"><strong>Mileage Tracking:</strong> <span class="mut">Per-mile pay for drivers</span></p></div>
       </div>
     </div>
-    <div class="fr-banner fr-stagger">
-      <p>Have a feature request? We build what operators actually need.</p>
-      <a class="fr-banner-btn" href="mailto:hello@xevora.io">Email hello@xevora.io</a>
-    </div>
+    <p class="fr-foot-hint">Have a feature request? → <a href="mailto:hello@xevora.io">hello@xevora.io</a></p>
   </div>
 </section>
 
@@ -1091,6 +1093,7 @@ footer{
         <button class="toggle" id="annual-toggle" aria-label="Toggle annual pricing"></button>
         <span style="font-size:13px;color:var(--sub)">Annual (20% off)</span>
       </div>
+      <div class="price-grid-wrap">
       <div class="price-grid">
         <div class="p-card">
           <div class="p-name">Starter</div>
@@ -1132,6 +1135,7 @@ footer{
           <a class="p-cta" href="#waitlist">Join Waitlist</a>
         </div>
       </div>
+      </div>
       <div class="p-fine">No credit card required during beta</div>
     </div>
   </div>
@@ -1143,17 +1147,18 @@ footer{
       <div class="eco-live fr-stagger"><span class="eco-live-dot" aria-hidden="true"></span>Live Now</div>
       <h2 class="tab-section-title fr-stagger">Fleet management for real operators.</h2>
       <p class="tab-section-sub fr-stagger">Track every vehicle, every driver, every mile — from one intelligent dashboard.</p>
-      <div class="fr-items eco-list">
-        <div class="fr-item fr-stagger"><span class="fr-item-icon fr-item-icon--dot" aria-hidden="true"></span><div class="fr-item-body"><div class="fr-item-title">Vehicle Tracking</div><div class="fr-item-desc">Real-time mileage, location, and health monitoring</div></div></div>
-        <div class="fr-item fr-stagger"><span class="fr-item-icon fr-item-icon--dot" aria-hidden="true"></span><div class="fr-item-body"><div class="fr-item-title">Digital Inspections</div><div class="fr-item-desc">Pre and post-trip with photo documentation</div></div></div>
-        <div class="fr-item fr-stagger"><span class="fr-item-icon fr-item-icon--dot" aria-hidden="true"></span><div class="fr-item-body"><div class="fr-item-title">Driver Management</div><div class="fr-item-desc">Assign vehicles, track performance, maintain records</div></div></div>
-        <div class="fr-item fr-stagger"><span class="fr-item-icon fr-item-icon--dot" aria-hidden="true"></span><div class="fr-item-body"><div class="fr-item-title">Smart Alerts</div><div class="fr-item-desc">Oil changes, compliance, document expiration — before they become problems</div></div></div>
-        <div class="fr-item fr-stagger"><span class="fr-item-icon fr-item-icon--dot" aria-hidden="true"></span><div class="fr-item-body"><div class="fr-item-title">Maintenance Scheduling</div><div class="fr-item-desc">Never miss a service again</div></div></div>
+      <div class="fp-lines">
+        <div class="fr-line fr-stagger"><span class="fr-line-ic fr-mono-dot fr-mono-dot--b" aria-hidden="true"></span><p class="fr-line-txt"><strong>Vehicle Tracking:</strong> <span class="mut">Real-time mileage, location, and health monitoring</span></p></div>
+        <div class="fr-line fr-stagger"><span class="fr-line-ic fr-mono-dot fr-mono-dot--b" aria-hidden="true"></span><p class="fr-line-txt"><strong>Digital Inspections:</strong> <span class="mut">Pre and post-trip with photo documentation</span></p></div>
+        <div class="fr-line fr-stagger"><span class="fr-line-ic fr-mono-dot fr-mono-dot--b" aria-hidden="true"></span><p class="fr-line-txt"><strong>Driver Management:</strong> <span class="mut">Assign vehicles, track performance, maintain records</span></p></div>
+        <div class="fr-line fr-stagger"><span class="fr-line-ic fr-mono-dot fr-mono-dot--b" aria-hidden="true"></span><p class="fr-line-txt"><strong>Smart Alerts:</strong> <span class="mut">Oil changes, compliance, document expiration — before they become problems</span></p></div>
+        <div class="fr-line fr-stagger"><span class="fr-line-ic fr-mono-dot fr-mono-dot--b" aria-hidden="true"></span><p class="fr-line-txt"><strong>Maintenance Scheduling:</strong> <span class="mut">Never miss a service again</span></p></div>
       </div>
       <a class="eco-cta fr-stagger" href="https://fleetpulsehq.com" target="_blank" rel="noopener noreferrer">Visit FleetPulse →</a>
     </div>
   </div>
 </section>
+</div>
 
 <footer>
   <div class="xavorn-foot-badge">
@@ -1247,10 +1252,16 @@ async function go(){
   setTimeout(()=>{fs.style.display='none'; sm.classList.add('show');},265);
 }
 
-/* Tabs + underline + panel transitions */
+/* Tabs + underline + panel transitions (opacity / pointer-events only) */
 (function(){
+  const LIVE='tab-panel--live';
+  const SHOWN='tab-panel--shown';
+  const INTER='tab-panel--interactive';
+  const VIS='is-visible';
+  const EXIT='is-exiting';
+  const PREP='is-prep';
+
   const tabs=document.querySelectorAll('.site-tab[data-tab-target]');
-  const panels=document.querySelectorAll('.tab-panel');
   const underline=document.getElementById('tab-underline');
   const tabsInner=document.getElementById('site-tabs-inner');
   const tabsBar=document.getElementById('site-tabs');
@@ -1263,14 +1274,36 @@ async function go(){
     underline.style.width=tRect.width+'px';
   }
 
+  function clearPanelState(p){
+    if(!p)return;
+    p.classList.remove(LIVE,SHOWN,INTER,VIS,EXIT,PREP);
+  }
+
   function animateStagger(panelSel){
     const els=document.querySelectorAll(panelSel+' .fr-stagger');
     if(reduceMotion){els.forEach(el=>el.classList.add('in'));return;}
-    els.forEach((el,i)=>setTimeout(()=>el.classList.add('in'),42+i*42));
+    els.forEach((el,i)=>setTimeout(()=>el.classList.add('in'),40+i*40));
   }
 
   function prepStagger(panelId){
     document.querySelectorAll('#'+panelId+' .fr-stagger').forEach(el=>el.classList.remove('in'));
+  }
+
+  function showPanel(p){
+    if(!p)return;
+    clearPanelState(p);
+    p.classList.add(LIVE,SHOWN,INTER,PREP);
+    if(reduceMotion){
+      p.classList.remove(PREP);
+      p.classList.add(VIS);
+      return;
+    }
+    requestAnimationFrame(()=>{
+      requestAnimationFrame(()=>{
+        p.classList.remove(PREP);
+        p.classList.add(VIS);
+      });
+    });
   }
 
   tabs.forEach(tab=>tab.addEventListener('click',function(){
@@ -1281,27 +1314,27 @@ async function go(){
     tabs.forEach(t=>t.classList.remove('active'));
     this.classList.add('active');
     moveUnderline(this);
-    if(target==='features-panel') prepStagger('features-panel');
+    window.scrollTo({top:0,behavior:reduceMotion?'auto':'smooth'});
+    active=this;
+
     if(target==='fleetpulse-panel') prepStagger('fleetpulse-panel');
+
     if(reduceMotion){
-      panels.forEach(p=>p.classList.remove('active','is-entering','is-leaving'));
-      nextPanel.classList.add('active');
-      if(target==='features-panel') animateStagger('#features-panel');
+      clearPanelState(currentPanel);
+      showPanel(nextPanel);
       if(target==='fleetpulse-panel') animateStagger('#fleetpulse-panel');
-      active=this;
-      window.scrollTo({top:0,behavior:'smooth'});
       return;
     }
-    currentPanel.classList.remove('is-entering'); currentPanel.classList.add('is-leaving');
+
+    currentPanel.classList.remove(PREP);
+    currentPanel.classList.add(EXIT);
     setTimeout(()=>{
-      panels.forEach(p=>p.classList.remove('active','is-entering','is-leaving'));
-      nextPanel.classList.add('active','is-entering');
-      if(target==='features-panel') animateStagger('#features-panel');
+      clearPanelState(currentPanel);
+      showPanel(nextPanel);
       if(target==='fleetpulse-panel') animateStagger('#fleetpulse-panel');
-    },190);
-    active=this;
-    window.scrollTo({top:0,behavior:'smooth'});
+    },160);
   }));
+
   moveUnderline(active);
   document.fonts.ready.then(()=>moveUnderline(document.querySelector('.site-tab.active')));
   function refUnder(){
@@ -1314,7 +1347,7 @@ async function go(){
   waitlistLinks.forEach(link=>link.addEventListener('click',e=>{
     e.preventDefault();
     document.querySelector('.site-tab[data-tab-target="overview-panel"]').click();
-    setTimeout(()=>document.getElementById('waitlist')?.scrollIntoView({behavior:'smooth',block:'center'}),260);
+    setTimeout(()=>document.getElementById('waitlist')?.scrollIntoView({behavior:'smooth',block:'center'}),320);
   }));
 })();
 
