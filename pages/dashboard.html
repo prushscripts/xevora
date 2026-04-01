@@ -4,6 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Xevora — Dashboard</title>
+<link rel="icon" type="image/png" sizes="32x32" href="/public/favicon/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/public/favicon/favicon-16x16.png">
+<link rel="shortcut icon" href="/public/favicon/favicon.ico">
+<link rel="apple-touch-icon" sizes="180x180" href="/public/favicon/apple-touch-icon.png">
+<link rel="manifest" href="/public/favicon/site.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
@@ -209,7 +214,7 @@ tr:hover td{background:rgba(37,99,235,.04)}
 </nav>
 
 <script>
-if(!localStorage.getItem('xevora_token')) window.location.href='login.html';
+if(!localStorage.getItem('xevora_token')) window.location.href='/pages/login.html';
 
 (function(){
   const cv=document.getElementById('c'),ctx=cv.getContext('2d');
@@ -233,7 +238,7 @@ function tick(){document.getElementById('clock').textContent=(new Date()).toLoca
 setInterval(tick,1000);tick();
 
 document.getElementById('signout').addEventListener('click',function(e){
-  e.preventDefault();localStorage.removeItem('xevora_token');localStorage.removeItem('xevora_user');window.location.href='login.html';
+  e.preventDefault();localStorage.removeItem('xevora_token');localStorage.removeItem('xevora_user');window.location.href='/pages/login.html';
 });
 
 function easeOutCubic(x){return 1-Math.pow(1-x,3);}
