@@ -167,6 +167,8 @@ nav{
 
 .tab-panel{display:none;opacity:0;transform:translateY(12px)}
 .tab-panel.active{display:block}
+/* Parent opacity hidden the whole hero; .active must be visible unless animating */
+.tab-panel.active:not(.is-entering):not(.is-leaving){opacity:1;transform:translateY(0)}
 
 /* Side lines — desktop only */
 .vl{
