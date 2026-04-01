@@ -151,32 +151,58 @@ nav{
 /* TAB BAR */
 .site-tabs{
   position:fixed;top:74px;left:0;right:0;z-index:46;
-  display:flex;justify-content:center;align-items:center;gap:2px;
+  display:flex;justify-content:center;align-items:stretch;
   background:rgba(3,6,13,0.9);
-  border-bottom:1px solid rgba(37,99,235,0.08);
   backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
-  padding:0 10px;
+  padding:0;
+  overflow-x:auto;
+  overflow-y:hidden;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
+}
+.site-tabs::-webkit-scrollbar{display:none}
+.tab-bar{
+  display:flex;align-items:center;justify-content:center;gap:0;
+  border-bottom:1px solid rgba(37,99,235,0.1);
+  position:relative;
+  flex:1;
+  min-width:min-content;
+  padding:0 12px;
 }
 .site-tab{
-  appearance:none;border:none;background:none;cursor:pointer;
-  font-family:'DM Sans',sans-serif;font-size:13px;letter-spacing:.3px;
-  color:#4E6D92;padding:13px 14px;border-bottom:2px solid transparent;
-  transition:color .2s,border-color .2s;
+  appearance:none;background:transparent;border:none;cursor:pointer;
+  font-family:'DM Sans',sans-serif;
+  font-size:13px;font-weight:400;letter-spacing:0.3px;
+  color:#4E6D92;
+  padding:14px 24px;
+  transition:color 200ms ease;
+  position:relative;
   text-decoration:none;white-space:nowrap;
+  flex-shrink:0;
 }
 .site-tab:hover{color:#8AA8CC}
-.site-tab.active{color:#F1F5FF;border-bottom-color:#2563EB}
+.site-tab.active{color:#F1F5FF;font-weight:500}
 .site-tab.fynlo{color:rgba(0,200,150,0.7)}
 .site-tab.fynlo:hover{color:rgba(0,200,150,1)}
+.site-tab.fleetpulse{color:rgba(96,165,250,0.85)}
+.site-tab.fleetpulse:hover{color:#93C5FD}
 .site-tab.fynlo::before{
   content:'';display:inline-block;width:6px;height:6px;border-radius:50%;
   background:rgba(0,200,150,0.9);margin-right:7px;vertical-align:middle;
   box-shadow:0 0 8px rgba(0,200,150,0.4);
 }
+.site-tab.fleetpulse::before{
+  content:'';display:inline-block;width:6px;height:6px;border-radius:50%;
+  background:rgba(59,130,246,0.95);margin-right:7px;vertical-align:middle;
+  box-shadow:0 0 8px rgba(37,99,235,0.5);
+}
 
-.tab-panel{display:none;opacity:0;transform:translateY(12px)}
+.tab-panel{
+  display:none;
+  opacity:0;
+  transform:translateY(10px);
+}
 .tab-panel.active{display:block}
-/* Parent opacity hidden the whole hero; .active must be visible unless animating */
 .tab-panel.active:not(.is-entering):not(.is-leaving){opacity:1;transform:translateY(0)}
 
 /* Side lines — desktop only */
@@ -467,34 +493,121 @@ p.sub{
 .content-panel{
   position:relative;z-index:10;
   width:100%;
-  max-width:min(1100px, calc(100vw - 32px));
+  max-width:1100px;
   margin:0 auto;
-  padding:158px 16px 120px;
+  padding:48px 24px 140px;
+  padding-top:158px;
+}
+.tab-section-head{margin-bottom:48px}
+.tab-section-title{
+  font-family:'Syne',sans-serif;font-size:clamp(32px,4.5vw,44px);font-weight:800;letter-spacing:-1px;
+  line-height:1.08;margin-bottom:12px;
+}
+.tab-section-sub{
+  font-family:'DM Sans',sans-serif;font-size:16px;font-weight:300;color:var(--sub);
+  line-height:1.7;max-width:640px;
 }
 .panel-card{
   background:rgba(6,11,22,0.95);
   border:1px solid rgba(37,99,235,0.12);
   border-radius:14px;
-  padding:22px;
+  padding:28px;
+  transition:transform 240ms cubic-bezier(0.16,1,0.3,1),box-shadow 240ms cubic-bezier(0.16,1,0.3,1);
 }
+.panel-card:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(0,0,0,0.35)}
 .panel-headline{
-  font-family:'Syne',sans-serif;font-size:30px;font-weight:800;letter-spacing:-.8px;
+  font-family:'Syne',sans-serif;font-size:30px;font-weight:800;letter-spacing:-1px;
   margin-bottom:8px;
 }
-.panel-sub{color:var(--sub);font-size:14px;margin-bottom:16px}
-.road-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.road-col{background:rgba(8,16,31,0.9);border:1px solid rgba(37,99,235,.1);border-radius:12px;padding:14px}
-.stage-badge{display:inline-block;font-size:10px;letter-spacing:.5px;color:var(--blue3);text-transform:uppercase;margin-bottom:6px}
-.road-title{font-size:14px;font-weight:500;margin-bottom:10px}
-.road-list{list-style:none;display:grid;gap:8px}
-.road-item{font-size:12.5px;color:rgba(241,245,255,.84);display:flex;align-items:center;gap:8px}
-.s-dot{width:7px;height:7px;border-radius:50%;display:inline-block;flex-shrink:0}
-.s-dot.green{background:#34D399;box-shadow:0 0 8px rgba(52,211,153,.45)}
-.s-dot.blue{background:#3B82F6;box-shadow:0 0 8px rgba(59,130,246,.45)}
-.cmp-title{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;letter-spacing:-.7px}
-.cmp-table{width:100%;border-collapse:collapse;margin-top:14px}
-.cmp-table th,.cmp-table td{padding:10px 8px;border-top:1px solid rgba(37,99,235,.08);font-size:12px}
-.cmp-table th{font-size:10px;color:var(--sub);text-transform:uppercase;letter-spacing:.7px}
+.panel-sub{color:var(--sub);font-size:15px;font-weight:300;line-height:1.7;margin-bottom:16px}
+.fr-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;margin-bottom:48px}
+@media(max-width:900px){.fr-grid{grid-template-columns:1fr;gap:32px}}
+.fr-col-head{margin-bottom:16px}
+.fr-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:10px;font-weight:600;letter-spacing:0.45px;text-transform:uppercase;
+  color:rgba(241,245,255,0.75);margin-bottom:8px;
+}
+.fr-badge-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.fr-badge-dot--g{background:#34D399;box-shadow:0 0 8px rgba(52,211,153,0.45)}
+.fr-badge-dot--b{background:#3B82F6;box-shadow:0 0 8px rgba(59,130,246,0.45)}
+.fr-col-title{font-size:15px;font-weight:600;color:var(--text);margin-bottom:14px}
+.fr-items{display:grid;gap:10px}
+.fr-item{
+  display:flex;gap:12px;
+  background:rgba(6,11,22,0.8);
+  border:1px solid rgba(37,99,235,0.08);
+  border-radius:10px;
+  padding:14px 16px;
+  transition:transform 220ms cubic-bezier(0.16,1,0.3,1),border-color 220ms ease,box-shadow 220ms ease;
+}
+.fr-item:hover{transform:translateY(-2px);border-color:rgba(37,99,235,0.16);box-shadow:0 8px 28px rgba(0,0,0,0.28)}
+.fr-item--next{opacity:0.92}
+.fr-item-icon{flex-shrink:0;font-size:14px;line-height:1.2;margin-top:1px}
+.fr-item-icon--dot{width:8px;height:8px;border-radius:50%;background:#3B82F6;box-shadow:0 0 8px rgba(59,130,246,0.45);margin-top:5px}
+.fr-item-body{min-width:0}
+.fr-item-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px;line-height:1.35}
+.fr-item-desc{font-size:12px;font-weight:300;color:rgba(78,109,146,0.95);line-height:1.55}
+.fr-banner{
+  padding:22px 24px;
+  background:rgba(6,11,22,0.85);
+  border:1px solid rgba(37,99,235,0.1);
+  border-radius:14px;
+  text-align:center;
+  transition:transform 240ms cubic-bezier(0.16,1,0.3,1),box-shadow 240ms ease;
+}
+.fr-banner:hover{transform:translateY(-2px);box-shadow:0 10px 32px rgba(0,0,0,0.3)}
+.fr-banner p{font-size:15px;font-weight:400;color:rgba(241,245,255,0.88);line-height:1.65;margin-bottom:14px}
+.fr-banner-btn{
+  display:inline-block;font-size:13px;font-weight:500;
+  padding:10px 22px;border-radius:10px;
+  background:rgba(37,99,235,0.18);
+  border:1px solid rgba(37,99,235,0.35);
+  color:var(--blue3);text-decoration:none;
+  letter-spacing:0.2px;
+  transition:background 200ms ease,border-color 200ms ease,transform 200ms ease;
+}
+.fr-banner-btn:hover{background:rgba(37,99,235,0.28);transform:translateY(-1px)}
+
+.eco-live{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:10px;font-weight:600;letter-spacing:0.4px;text-transform:uppercase;
+  color:#34D399;margin-bottom:20px;
+}
+.eco-live-dot{width:7px;height:7px;border-radius:50%;background:#34D399;box-shadow:0 0 10px rgba(52,211,153,0.55);animation:blink 1.8s ease-in-out infinite}
+.eco-cta{
+  display:inline-flex;align-items:center;justify-content:center;
+  margin-top:24px;padding:12px 24px;border-radius:11px;
+  background:#2563EB;color:#fff;font-size:14px;font-weight:600;text-decoration:none;
+  letter-spacing:0.2px;
+  box-shadow:0 8px 28px rgba(37,99,235,0.45);
+  transition:background 200ms ease,transform 200ms ease,box-shadow 200ms ease;
+}
+.eco-cta:hover{background:#1D4ED8;transform:translateY(-2px);box-shadow:0 12px 36px rgba(37,99,235,0.5)}
+.eco-list{margin-top:20px}
+
+.fr-stagger{opacity:0;transform:translateY(16px);transition:opacity 360ms cubic-bezier(0.16,1,0.3,1),transform 360ms cubic-bezier(0.16,1,0.3,1)}
+.fr-stagger.in{opacity:1;transform:translateY(0)}
+
+.cmp-title{font-family:'Syne',sans-serif;font-size:clamp(26px,3.5vw,34px);font-weight:800;letter-spacing:-1px;margin-bottom:24px}
+.cmp-wrap{border-radius:14px;overflow:hidden;border:1px solid rgba(37,99,235,0.12)}
+.cmp-table{width:100%;border-collapse:collapse}
+.cmp-table thead{background:rgba(6,11,22,0.95)}
+.cmp-table th{
+  font-family:'Syne',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.4px;
+  color:rgba(241,245,255,0.9);text-transform:uppercase;
+  padding:14px 12px;text-align:left;border-bottom:1px solid rgba(37,99,235,0.12);
+}
+.cmp-table td{
+  padding:12px 12px;font-size:13px;font-weight:400;line-height:1.55;
+  border-top:1px solid rgba(37,99,235,0.06);
+}
+.cmp-table tbody tr:nth-child(odd){background:rgba(4,8,18,0.45)}
+.cmp-table tbody tr:nth-child(even){background:rgba(6,11,22,0.35)}
+.cmp-xev{
+  box-shadow:inset 3px 0 0 rgba(37,99,235,0.55),inset 0 0 24px rgba(37,99,235,0.06);
+  font-weight:500;color:rgba(241,245,255,0.95);
+}
 .good{color:#34D399;font-weight:500}
 .bad{color:#92A9C5}
 .price-toggle{display:flex;align-items:center;gap:10px;margin-bottom:14px}
@@ -508,7 +621,11 @@ p.sub{
 }
 .toggle.on::after{transform:translateX(22px)}
 .price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-.p-card{background:rgba(8,16,31,0.9);border:1px solid rgba(37,99,235,.15);border-radius:12px;padding:15px;display:flex;flex-direction:column}
+.p-card{
+  background:rgba(8,16,31,0.9);border:1px solid rgba(37,99,235,.15);border-radius:12px;padding:15px;display:flex;flex-direction:column;
+  transition:transform 240ms cubic-bezier(0.16,1,0.3,1),box-shadow 240ms cubic-bezier(0.16,1,0.3,1),border-color 240ms ease;
+}
+.p-card:hover{transform:translateY(-3px);box-shadow:0 14px 36px rgba(0,0,0,0.35)}
 .p-card.pop{border-color:rgba(37,99,235,.65);box-shadow:0 0 28px rgba(37,99,235,.18)}
 .pop{font-size:10px;color:var(--blue3);margin-bottom:6px}
 .p-name{font-size:15px;font-weight:500}
@@ -522,20 +639,48 @@ p.sub{
 /* PREMIUM MICRO-INTERACTIONS */
 .nav-signin{transition:color 200ms ease,letter-spacing 200ms ease}
 .nav-signin:hover{letter-spacing:.7px;color:#8cc2ff}
-.site-tabs{background:rgba(3,6,13,.8);transition:background-color 300ms ease,border-color 300ms ease}
-.site-tabs.scrolled{background:rgba(3,6,13,.97);border-bottom-color:rgba(37,99,235,.2)}
-.site-tabs-inner{position:relative;display:flex;align-items:center;justify-content:center;gap:2px}
-.site-tab{transition:color 200ms ease}
-.site-tab.active{border-bottom-color:transparent}
+.site-tabs{background:rgba(3,6,13,.8);transition:background-color 300ms ease}
+.site-tabs.scrolled{background:rgba(3,6,13,.97)}
+.site-tabs-inner.tab-bar{min-width:max(100%,min-content)}
+.site-tab{transition:color 200ms ease,font-weight 200ms ease}
 .tab-underline{
-  position:absolute;left:0;bottom:0;height:2px;width:0;background:#2563EB;z-index:1;
+  position:absolute;left:0;bottom:-1px;height:2px;width:0;background:#2563EB;z-index:2;
+  border-radius:2px 2px 0 0;
+  pointer-events:none;
+  box-shadow:0 0 8px rgba(37,99,235,0.5);
   transition:left 300ms cubic-bezier(0.16,1,0.3,1),width 300ms cubic-bezier(0.16,1,0.3,1);
 }
-.tab-panel.active{animation:none}
-.tab-panel.is-leaving{animation:panelOut 145ms ease-in forwards}
-.tab-panel.is-entering{animation:panelIn 245ms cubic-bezier(0.16,1,0.3,1) forwards}
-@keyframes panelOut{to{opacity:0;transform:translateY(-8px)}}
-@keyframes panelIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.tab-panel.is-leaving{animation:tabPanelOut 160ms ease-in forwards}
+.tab-panel.is-entering{animation:tabPanelIn 280ms cubic-bezier(0.16,1,0.3,1) forwards}
+@keyframes tabPanelOut{to{opacity:0;transform:translateY(-8px)}}
+@keyframes tabPanelIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+.tab-popover{
+  position:fixed;left:0;top:0;width:220px;z-index:60;
+  background:rgba(4,8,18,0.97);
+  border:1px solid rgba(37,99,235,0.2);
+  border-radius:14px;
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  box-shadow:0 16px 48px rgba(0,0,0,0.6);
+  padding:14px 16px 14px;
+  pointer-events:none;
+  opacity:0;
+  transform:translateY(-6px);
+  transition:opacity 200ms cubic-bezier(0.16,1,0.3,1),transform 200ms cubic-bezier(0.16,1,0.3,1);
+  visibility:hidden;
+}
+.tab-popover.is-visible{pointer-events:auto;opacity:1;transform:translateY(0);visibility:visible}
+.tab-popover--fp{border-top:3px solid #2563EB}
+.tab-popover--fyn{border-top:3px solid #00C896}
+.tp-label{font-size:10px;font-weight:600;letter-spacing:0.4px;text-transform:uppercase;margin-bottom:4px}
+.tp-title{font-size:15px;font-weight:700;font-style:italic;margin-bottom:8px;line-height:1.25}
+.tp-desc{font-size:11px;font-weight:400;color:rgba(241,245,255,0.72);line-height:1.55;margin-bottom:10px}
+.tp-link{display:inline-block;font-size:11px;font-weight:600;text-decoration:none;margin-bottom:10px;letter-spacing:0.2px}
+.tp-link:hover{opacity:0.88}
+.tp-status{display:flex;align-items:center;gap:6px;font-size:10px;color:rgba(241,245,255,0.55);letter-spacing:0.3px}
+.tp-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.tp-dot--live{background:#34D399;box-shadow:0 0 8px rgba(52,211,153,0.6);animation:blink 1.8s ease-in-out infinite}
+.tp-dot--gold{background:#B8965A;box-shadow:0 0 6px rgba(184,150,90,0.45)}
 
 nav.load-in{opacity:1 !important;transform:translateY(0) !important;transition:opacity 485ms cubic-bezier(0.16,1,0.3,1),transform 485ms cubic-bezier(0.16,1,0.3,1)}
 #site-tabs:not(.load-in){opacity:0;transform:translateY(8px)}
@@ -575,9 +720,6 @@ nav.load-in{opacity:1 !important;transform:translateY(0) !important;transition:o
 .preview-section .stat{opacity:0;transform:translateY(16px)}
 .preview-section .stat.in{opacity:1;transform:translateY(0);transition:opacity 325ms cubic-bezier(.16,1,.3,1),transform 325ms cubic-bezier(.16,1,.3,1)}
 
-.road-col{opacity:0;transform:translateY(20px)}
-.road-col.in{opacity:1;transform:translateY(0);transition:opacity 345ms cubic-bezier(.16,1,.3,1),transform 345ms cubic-bezier(.16,1,.3,1)}
-
 .toggle{transition:background-color 250ms cubic-bezier(0.34,1.56,0.64,1),border-color 250ms cubic-bezier(0.34,1.56,0.64,1)}
 .toggle::after{transition:transform 250ms cubic-bezier(0.34,1.56,0.64,1)}
 .p-price{perspective:820px;transform-style:preserve-3d}
@@ -589,6 +731,8 @@ nav.load-in{opacity:1 !important;transform:translateY(0) !important;transition:o
 
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{animation:none !important;transition:none !important;scroll-behavior:auto !important}
+  .tab-panel.is-leaving,.tab-panel.is-entering{animation:none !important}
+  .fr-stagger{opacity:1 !important;transform:none !important}
 }
 
 /* FOOTER */
@@ -637,13 +781,15 @@ footer{
 
   /* Nav */
   nav{padding:14px 16px}
-  .site-tabs{top:68px;justify-content:flex-start;overflow-x:auto;padding:0 8px}
-  .site-tab{padding:12px 10px}
+  .site-tabs{top:68px}
+  .tab-bar{padding:0 8px;justify-content:flex-start}
+  .site-tab{padding:12px 16px;font-size:12px}
 
   /* Hero */
   main{padding:140px 16px 50px}
   h1{letter-spacing:-1px}
-  .content-panel{padding:142px 12px 80px}
+  .content-panel{padding:132px 16px 100px}
+  .fr-grid{gap:28px}
   .road-grid,.price-grid{grid-template-columns:1fr}
 
   /* Show dashboard mockup on mobile with safe scaling */
@@ -741,14 +887,23 @@ footer{
 </nav>
 
 <div class="site-tabs" id="site-tabs">
-  <div class="site-tabs-inner" id="site-tabs-inner">
-    <span class="tab-underline" id="tab-underline"></span>
-    <button class="site-tab active" data-tab-target="overview-panel">Overview</button>
-    <button class="site-tab" data-tab-target="features-panel">Features &amp; Roadmap</button>
-    <button class="site-tab" data-tab-target="why-panel">Why Xevora</button>
-    <button class="site-tab" data-tab-target="pricing-panel">Pricing</button>
-    <a class="site-tab fynlo" href="https://fynlo.io" target="_blank" rel="noopener noreferrer">Fynlo ↗</a>
+  <div class="site-tabs-inner tab-bar" id="site-tabs-inner">
+    <button type="button" class="site-tab active" data-tab-target="overview-panel">Overview</button>
+    <button type="button" class="site-tab" data-tab-target="features-panel">Features &amp; Roadmap</button>
+    <button type="button" class="site-tab" data-tab-target="why-panel">Why Xevora</button>
+    <button type="button" class="site-tab" data-tab-target="pricing-panel">Pricing</button>
+    <button type="button" class="site-tab fleetpulse" data-tab-target="fleetpulse-panel" data-ecosystem-popover="fleetpulse">FleetPulse ↗</button>
+    <a class="site-tab fynlo" href="https://fynlo.io" target="_blank" rel="noopener noreferrer" data-ecosystem-popover="fynlo">Fynlo ↗</a>
+    <span class="tab-underline" id="tab-underline" aria-hidden="true"></span>
   </div>
+</div>
+
+<div id="tab-popover" class="tab-popover" role="tooltip" aria-hidden="true">
+  <div class="tp-label" id="tp-label"></div>
+  <div class="tp-title" id="tp-title"></div>
+  <p class="tp-desc" id="tp-desc"></p>
+  <a class="tp-link" id="tp-link" href="#" target="_blank" rel="noopener noreferrer"></a>
+  <div class="tp-status"><span class="tp-dot" id="tp-dot"></span><span id="tp-status-text"></span></div>
 </div>
 
 <div class="vl l"></div>
@@ -859,35 +1014,45 @@ footer{
 
 <section id="features-panel" class="tab-panel">
   <div class="content-panel">
-    <div class="panel-card">
-      <div class="panel-headline">Features &amp; Roadmap</div>
-      <div class="panel-sub">What we are building now and what is coming next.</div>
-      <div class="road-grid">
-        <div class="road-col">
-          <span class="stage-badge">Stage 1</span>
-          <div class="road-title">What's Being Built</div>
-          <ul class="road-list">
-            <li class="road-item"><span class="s-dot green"></span>GPS Time Tracking</li>
-            <li class="road-item"><span class="s-dot green"></span>Automated Payroll</li>
-            <li class="road-item"><span class="s-dot green"></span>Worker Self-Service Portal</li>
-            <li class="road-item"><span class="s-dot green"></span>Real-time Dashboard</li>
-            <li class="road-item"><span class="s-dot green"></span>1099 Generation</li>
-            <li class="road-item"><span class="s-dot green"></span>AI Payroll Assistant</li>
-          </ul>
+    <header class="tab-section-head fr-stagger">
+      <h2 class="tab-section-title">What we're building.</h2>
+      <p class="tab-section-sub">Every feature. Every phase. Nothing hidden.</p>
+    </header>
+    <div class="fr-grid">
+      <div>
+        <div class="fr-col-head fr-stagger">
+          <div class="fr-badge"><span class="fr-badge-dot fr-badge-dot--g" aria-hidden="true"></span>Stage 1-2 · In Progress</div>
+          <div class="fr-col-title">Building Now</div>
         </div>
-        <div class="road-col">
-          <span class="stage-badge">Stage 2 / Stage 3</span>
-          <div class="road-title">Coming Later</div>
-          <ul class="road-list">
-            <li class="road-item"><span class="s-dot blue"></span>Invoicing (via Fynlo)</li>
-            <li class="road-item"><span class="s-dot blue"></span>QuickBooks Sync</li>
-            <li class="road-item"><span class="s-dot blue"></span>Mobile App</li>
-            <li class="road-item"><span class="s-dot blue"></span>Mileage Tracking</li>
-            <li class="road-item"><span class="s-dot blue"></span>Benefits Administration</li>
-            <li class="road-item"><span class="s-dot blue"></span>Multi-location Support</li>
-          </ul>
+        <div class="fr-items">
+          <div class="fr-item fr-stagger"><span class="fr-item-icon" aria-hidden="true">✅</span><div class="fr-item-body"><div class="fr-item-title">GPS Clock-In</div><div class="fr-item-desc">One tap, location stamped, works from any mobile device</div></div></div>
+          <div class="fr-item fr-stagger"><span class="fr-item-icon" aria-hidden="true">✅</span><div class="fr-item-body"><div class="fr-item-title">Worker Management</div><div class="fr-item-desc">Add W2 and 1099 workers, invite via email, manage profiles</div></div></div>
+          <div class="fr-item fr-stagger"><span class="fr-item-icon" aria-hidden="true">✅</span><div class="fr-item-body"><div class="fr-item-title">Time Entry Approval</div><div class="fr-item-desc">Review, approve or edit hours before payroll</div></div></div>
+          <div class="fr-item fr-stagger"><span class="fr-item-icon" aria-hidden="true">✅</span><div class="fr-item-body"><div class="fr-item-title">Real-time Dashboard</div><div class="fr-item-desc">Live view of who's clocked in, hours this week, payroll estimates</div></div></div>
+          <div class="fr-item fr-stagger"><span class="fr-item-icon" aria-hidden="true">✅</span><div class="fr-item-body"><div class="fr-item-title">Email Notifications</div><div class="fr-item-desc">Clock-in alerts, approval reminders, payroll confirmations</div></div></div>
+          <div class="fr-item fr-stagger"><span class="fr-item-icon" aria-hidden="true">✅</span><div class="fr-item-body"><div class="fr-item-title">Billing &amp; Subscriptions</div><div class="fr-item-desc">Stripe integration, plan management, invoices</div></div></div>
         </div>
       </div>
+      <div>
+        <div class="fr-col-head fr-stagger">
+          <div class="fr-badge"><span class="fr-badge-dot fr-badge-dot--b" aria-hidden="true"></span>Stage 3-4 · Planned</div>
+          <div class="fr-col-title">Coming Next</div>
+        </div>
+        <div class="fr-items">
+          <div class="fr-item fr-item--next fr-stagger"><span class="fr-item-icon" aria-hidden="true">🔵</span><div class="fr-item-body"><div class="fr-item-title">Check.com Payroll</div><div class="fr-item-desc">Automated direct deposit for W2 and 1099 workers</div></div></div>
+          <div class="fr-item fr-item--next fr-stagger"><span class="fr-item-icon" aria-hidden="true">🔵</span><div class="fr-item-body"><div class="fr-item-title">Pay Stub Generation</div><div class="fr-item-desc">Auto PDF pay stubs emailed to every worker</div></div></div>
+          <div class="fr-item fr-item--next fr-stagger"><span class="fr-item-icon" aria-hidden="true">🔵</span><div class="fr-item-body"><div class="fr-item-title">1099 Auto-Filing</div><div class="fr-item-desc">Year-end contractor documents generated automatically</div></div></div>
+          <div class="fr-item fr-item--next fr-stagger"><span class="fr-item-icon" aria-hidden="true">🔵</span><div class="fr-item-body"><div class="fr-item-title">AI Payroll Assistant</div><div class="fr-item-desc">Natural language payroll runs and anomaly detection</div></div></div>
+          <div class="fr-item fr-item--next fr-stagger"><span class="fr-item-icon" aria-hidden="true">🔵</span><div class="fr-item-body"><div class="fr-item-title">Fynlo Integration</div><div class="fr-item-desc">Labor costs sync directly to your books</div></div></div>
+          <div class="fr-item fr-item--next fr-stagger"><span class="fr-item-icon" aria-hidden="true">🔵</span><div class="fr-item-body"><div class="fr-item-title">Mobile App (PWA)</div><div class="fr-item-desc">Installable app for workers, works offline</div></div></div>
+          <div class="fr-item fr-item--next fr-stagger"><span class="fr-item-icon" aria-hidden="true">🔵</span><div class="fr-item-body"><div class="fr-item-title">QuickBooks Sync</div><div class="fr-item-desc">Import/export financial data</div></div></div>
+          <div class="fr-item fr-item--next fr-stagger"><span class="fr-item-icon" aria-hidden="true">🔵</span><div class="fr-item-body"><div class="fr-item-title">Mileage Tracking</div><div class="fr-item-desc">Per-mile pay for drivers</div></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="fr-banner fr-stagger">
+      <p>Have a feature request? We build what operators actually need.</p>
+      <a class="fr-banner-btn" href="mailto:hello@xevora.io">Email hello@xevora.io</a>
     </div>
   </div>
 </section>
@@ -895,22 +1060,24 @@ footer{
 <section id="why-panel" class="tab-panel">
   <div class="content-panel">
     <div class="panel-card">
-      <div class="cmp-title">Built for operators. Not HR departments.</div>
-      <table class="cmp-table">
-        <thead>
-          <tr><th>Category</th><th>Xevora</th><th>ADP</th><th>Homebase</th></tr>
-        </thead>
-        <tbody>
-          <tr><td>Mobile Experience</td><td class="good">Built for crews</td><td class="bad">Poor</td><td class="bad">Basic</td></tr>
-          <tr><td>GPS Clock-In</td><td class="good">✓ Native</td><td class="bad">✗ Add-on heavy</td><td class="bad">Limited</td></tr>
-          <tr><td>1099 Support</td><td class="good">✓ Included</td><td class="bad">Extra setup</td><td class="bad">Partial</td></tr>
-          <tr><td>Pricing</td><td class="good">Transparent</td><td class="bad">Complex tiers</td><td class="bad">Feature locked</td></tr>
-          <tr><td>Setup Time</td><td class="good">Minutes</td><td class="bad">Days</td><td class="bad">Hours</td></tr>
-          <tr><td>AI Features</td><td class="good">Built in</td><td class="bad">Minimal</td><td class="bad">✗</td></tr>
-          <tr><td>Field Worker Focus</td><td class="good">Core product</td><td class="bad">General HR</td><td class="bad">Retail-first</td></tr>
-          <tr><td>Onboarding Speed</td><td class="good">Fast launch</td><td class="bad">Slow</td><td class="bad">Medium</td></tr>
-        </tbody>
-      </table>
+      <h2 class="cmp-title">Why operators choose Xevora.</h2>
+      <div class="cmp-wrap">
+        <table class="cmp-table">
+          <thead>
+            <tr><th>Category</th><th>Xevora</th><th>ADP</th><th>Homebase</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Mobile Experience</td><td class="cmp-xev good">✅ Mobile-first</td><td class="bad">✗ Desktop-first</td><td class="bad">Restaurant/retail focus</td></tr>
+            <tr><td>GPS Clock-In Native</td><td class="cmp-xev good">✅ Yes, native GPS</td><td class="bad">✗ No</td><td class="bad">Basic only</td></tr>
+            <tr><td>1099 + W2 Same Platform</td><td class="cmp-xev good">✅ Yes — both</td><td class="bad">✗ Complex setup</td><td class="bad">W2 only</td></tr>
+            <tr><td>Starting Price</td><td class="cmp-xev good">✅ $49/mo</td><td class="bad">✗ $150+/mo</td><td class="bad">$99+/mo</td></tr>
+            <tr><td>Setup Time</td><td class="cmp-xev good">✅ 20 minutes</td><td class="bad">✗ Days</td><td class="bad">Hours</td></tr>
+            <tr><td>AI Features</td><td class="cmp-xev good">✅ Yes — core</td><td class="bad">✗ Add-on only</td><td class="bad">Limited</td></tr>
+            <tr><td>Built for Field Workers</td><td class="cmp-xev good">✅ Built for it</td><td class="bad">✗ No</td><td class="bad">Partial</td></tr>
+            <tr><td>Onboarding Speed</td><td class="cmp-xev good">✅ 20 minutes</td><td class="bad">✗ Days</td><td class="bad">Hours</td></tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 </section>
@@ -929,7 +1096,11 @@ footer{
           <div class="p-name">Starter</div>
           <div class="p-price" data-monthly="49" data-annual="39">$49<small>/mo</small></div>
           <ul class="p-list">
-            <li>Up to 10 workers</li><li>GPS tracking</li><li>Basic payroll</li><li>Pay stubs</li>
+            <li>Up to 10 workers</li>
+            <li>GPS Time Tracking</li>
+            <li>Basic Payroll</li>
+            <li>Pay Stubs</li>
+            <li>Email Support</li>
           </ul>
           <a class="p-cta" href="#waitlist">Join Waitlist</a>
         </div>
@@ -938,7 +1109,12 @@ footer{
           <div class="p-name">Growth</div>
           <div class="p-price" data-monthly="99" data-annual="79">$99<small>/mo</small></div>
           <ul class="p-list">
-            <li>Up to 30 workers</li><li>AI assistant</li><li>Reports</li><li>1099 ready</li>
+            <li>Up to 30 workers</li>
+            <li>Everything in Starter</li>
+            <li>AI Assistant</li>
+            <li>Advanced Reports</li>
+            <li>1099 Ready</li>
+            <li>Priority Support</li>
           </ul>
           <a class="p-cta" href="#waitlist">Join Waitlist</a>
         </div>
@@ -946,12 +1122,35 @@ footer{
           <div class="p-name">Pro</div>
           <div class="p-price" data-monthly="199" data-annual="159">$199<small>/mo</small></div>
           <ul class="p-list">
-            <li>Unlimited workers</li><li>Priority support</li><li>Custom integrations</li><li>Auto 1099 filing</li>
+            <li>Unlimited workers</li>
+            <li>Everything in Growth</li>
+            <li>Auto 1099 Filing</li>
+            <li>Custom Integrations</li>
+            <li>Dedicated Support</li>
+            <li>API Access</li>
           </ul>
           <a class="p-cta" href="#waitlist">Join Waitlist</a>
         </div>
       </div>
       <div class="p-fine">No credit card required during beta</div>
+    </div>
+  </div>
+</section>
+
+<section id="fleetpulse-panel" class="tab-panel">
+  <div class="content-panel">
+    <div class="panel-card">
+      <div class="eco-live fr-stagger"><span class="eco-live-dot" aria-hidden="true"></span>Live Now</div>
+      <h2 class="tab-section-title fr-stagger">Fleet management for real operators.</h2>
+      <p class="tab-section-sub fr-stagger">Track every vehicle, every driver, every mile — from one intelligent dashboard.</p>
+      <div class="fr-items eco-list">
+        <div class="fr-item fr-stagger"><span class="fr-item-icon fr-item-icon--dot" aria-hidden="true"></span><div class="fr-item-body"><div class="fr-item-title">Vehicle Tracking</div><div class="fr-item-desc">Real-time mileage, location, and health monitoring</div></div></div>
+        <div class="fr-item fr-stagger"><span class="fr-item-icon fr-item-icon--dot" aria-hidden="true"></span><div class="fr-item-body"><div class="fr-item-title">Digital Inspections</div><div class="fr-item-desc">Pre and post-trip with photo documentation</div></div></div>
+        <div class="fr-item fr-stagger"><span class="fr-item-icon fr-item-icon--dot" aria-hidden="true"></span><div class="fr-item-body"><div class="fr-item-title">Driver Management</div><div class="fr-item-desc">Assign vehicles, track performance, maintain records</div></div></div>
+        <div class="fr-item fr-stagger"><span class="fr-item-icon fr-item-icon--dot" aria-hidden="true"></span><div class="fr-item-body"><div class="fr-item-title">Smart Alerts</div><div class="fr-item-desc">Oil changes, compliance, document expiration — before they become problems</div></div></div>
+        <div class="fr-item fr-stagger"><span class="fr-item-icon fr-item-icon--dot" aria-hidden="true"></span><div class="fr-item-body"><div class="fr-item-title">Maintenance Scheduling</div><div class="fr-item-desc">Never miss a service again</div></div></div>
+      </div>
+      <a class="eco-cta fr-stagger" href="https://fleetpulsehq.com" target="_blank" rel="noopener noreferrer">Visit FleetPulse →</a>
     </div>
   </div>
 </section>
@@ -1054,6 +1253,7 @@ async function go(){
   const panels=document.querySelectorAll('.tab-panel');
   const underline=document.getElementById('tab-underline');
   const tabsInner=document.getElementById('site-tabs-inner');
+  const tabsBar=document.getElementById('site-tabs');
   let active=document.querySelector('.site-tab.active');
 
   function moveUnderline(tab){
@@ -1063,9 +1263,14 @@ async function go(){
     underline.style.width=tRect.width+'px';
   }
 
-  function animateFeatures(){
-    const cards=document.querySelectorAll('#features-panel .road-col');
-    cards.forEach((c,i)=>setTimeout(()=>c.classList.add('in'),i*48));
+  function animateStagger(panelSel){
+    const els=document.querySelectorAll(panelSel+' .fr-stagger');
+    if(reduceMotion){els.forEach(el=>el.classList.add('in'));return;}
+    els.forEach((el,i)=>setTimeout(()=>el.classList.add('in'),42+i*42));
+  }
+
+  function prepStagger(panelId){
+    document.querySelectorAll('#'+panelId+' .fr-stagger').forEach(el=>el.classList.remove('in'));
   }
 
   tabs.forEach(tab=>tab.addEventListener('click',function(){
@@ -1076,25 +1281,34 @@ async function go(){
     tabs.forEach(t=>t.classList.remove('active'));
     this.classList.add('active');
     moveUnderline(this);
+    if(target==='features-panel') prepStagger('features-panel');
+    if(target==='fleetpulse-panel') prepStagger('fleetpulse-panel');
     if(reduceMotion){
       panels.forEach(p=>p.classList.remove('active','is-entering','is-leaving'));
       nextPanel.classList.add('active');
-      active=this; return;
+      if(target==='features-panel') animateStagger('#features-panel');
+      if(target==='fleetpulse-panel') animateStagger('#fleetpulse-panel');
+      active=this;
+      window.scrollTo({top:0,behavior:'smooth'});
+      return;
     }
     currentPanel.classList.remove('is-entering'); currentPanel.classList.add('is-leaving');
     setTimeout(()=>{
       panels.forEach(p=>p.classList.remove('active','is-entering','is-leaving'));
       nextPanel.classList.add('active','is-entering');
-      if(target==='features-panel') animateFeatures();
-    },165);
+      if(target==='features-panel') animateStagger('#features-panel');
+      if(target==='fleetpulse-panel') animateStagger('#fleetpulse-panel');
+    },190);
     active=this;
     window.scrollTo({top:0,behavior:'smooth'});
   }));
   moveUnderline(active);
   document.fonts.ready.then(()=>moveUnderline(document.querySelector('.site-tab.active')));
-  window.addEventListener('resize',()=>{
+  function refUnder(){
     requestAnimationFrame(()=>requestAnimationFrame(()=>moveUnderline(document.querySelector('.site-tab.active'))));
-  });
+  }
+  window.addEventListener('resize',refUnder);
+  if(tabsBar) tabsBar.addEventListener('scroll',refUnder,{passive:true});
 
   const waitlistLinks=document.querySelectorAll('.p-cta');
   waitlistLinks.forEach(link=>link.addEventListener('click',e=>{
@@ -1102,6 +1316,114 @@ async function go(){
     document.querySelector('.site-tab[data-tab-target="overview-panel"]').click();
     setTimeout(()=>document.getElementById('waitlist')?.scrollIntoView({behavior:'smooth',block:'center'}),260);
   }));
+})();
+
+/* Ecosystem tab hover popovers (desktop hover only) */
+(function(){
+  const pop=document.getElementById('tab-popover');
+  if(!pop)return;
+  const canHover=window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  if(!canHover)return;
+
+  const labelEl=document.getElementById('tp-label');
+  const titleEl=document.getElementById('tp-title');
+  const descEl=document.getElementById('tp-desc');
+  const linkEl=document.getElementById('tp-link');
+  const dotEl=document.getElementById('tp-dot');
+  const statusEl=document.getElementById('tp-status-text');
+
+  const CFG={
+    fleetpulse:{
+      variant:'tab-popover--fp',
+      label:'Fleet Management',
+      labelColor:'#3B82F6',
+      title:'FleetPulse',
+      titleColor:'#93C5FD',
+      desc:'Vehicle tracking, inspections, and driver management for logistics teams.',
+      linkHref:'https://fleetpulsehq.com',
+      linkText:'fleetpulsehq.com →',
+      linkColor:'#3B82F6',
+      status:'Live Now',
+      dotClass:'tp-dot tp-dot--live'
+    },
+    fynlo:{
+      variant:'tab-popover--fyn',
+      label:'Invoicing & Books',
+      labelColor:'#00C896',
+      title:'Fynlo',
+      titleColor:'#6EE7B7',
+      desc:'Smart invoicing, bookkeeping and expense tracking for field businesses.',
+      linkHref:'https://fynlo.io',
+      linkText:'fynlo.io →',
+      linkColor:'#00C896',
+      status:'In Development',
+      dotClass:'tp-dot tp-dot--gold'
+    }
+  };
+
+  let hideTimer=null;
+  let popAnchor=null;
+
+  function positionPop(anchor){
+    const r=anchor.getBoundingClientRect();
+    const pw=220;
+    let left=r.left+r.width/2-pw/2;
+    left=Math.max(8,Math.min(left,window.innerWidth-pw-8));
+    const top=r.bottom+10;
+    pop.style.left=left+'px';
+    pop.style.top=top+'px';
+  }
+
+  function showPop(key,anchor){
+    const c=CFG[key];
+    if(!c)return;
+    popAnchor=anchor;
+    pop.classList.remove('tab-popover--fp','tab-popover--fyn');
+    pop.classList.add(c.variant);
+    labelEl.textContent=c.label;
+    labelEl.style.color=c.labelColor;
+    titleEl.textContent=c.title;
+    titleEl.style.color=c.titleColor;
+    titleEl.style.fontStyle='italic';
+    descEl.textContent=c.desc;
+    linkEl.href=c.linkHref;
+    linkEl.textContent=c.linkText;
+    linkEl.style.color=c.linkColor;
+    dotEl.className=c.dotClass;
+    statusEl.textContent=c.status;
+    positionPop(anchor);
+    pop.classList.add('is-visible');
+    pop.setAttribute('aria-hidden','false');
+  }
+
+  function hidePop(){
+    hideTimer=null;
+    popAnchor=null;
+    pop.classList.remove('is-visible');
+    pop.setAttribute('aria-hidden','true');
+  }
+
+  function schedHide(){
+    clearTimeout(hideTimer);
+    hideTimer=setTimeout(hidePop,120);
+  }
+
+  document.querySelectorAll('[data-ecosystem-popover]').forEach(el=>{
+    el.addEventListener('mouseenter',()=>{
+      clearTimeout(hideTimer);
+      showPop(el.getAttribute('data-ecosystem-popover'),el);
+    });
+    el.addEventListener('mouseleave',schedHide);
+  });
+
+  pop.addEventListener('mouseenter',()=>clearTimeout(hideTimer));
+  pop.addEventListener('mouseleave',schedHide);
+
+  function refPop(){
+    if(popAnchor&&pop.classList.contains('is-visible')) positionPop(popAnchor);
+  }
+  window.addEventListener('scroll',refPop,true);
+  window.addEventListener('resize',refPop);
 })();
 
 /* Scroll state for tab bar */
