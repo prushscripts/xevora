@@ -10,7 +10,7 @@ echo   Directory: %CD%
 echo ========================================
 echo.
 
-echo [1/5] Staging all changes ^(git add .^)...
+echo [1/4] Staging all changes ^(git add .^)...
 git add .
 if errorlevel 1 (
   echo.
@@ -22,7 +22,7 @@ if errorlevel 1 (
 echo       Done.
 echo.
 
-echo [2/5] Detecting changes ^(git diff HEAD --name-only^)...
+echo [2/4] Detecting changes ^(git diff HEAD --name-only^)...
 git diff --quiet HEAD
 if errorlevel 1 goto :HAVE_CHANGES
 
@@ -59,7 +59,7 @@ echo       Message:
 type "%MSGFILE%"
 echo.
 
-echo [3/5] Committing with auto-generated message...
+echo [3/4] Committing with auto-generated message...
 git commit -F "%MSGFILE%"
 if errorlevel 1 (
   echo.
@@ -71,7 +71,7 @@ if errorlevel 1 (
 echo       Commit created.
 echo.
 
-echo [4/5] Pushing to origin main...
+echo [4/4] Pushing to origin main...
 git push origin main
 if errorlevel 1 (
   echo.
@@ -81,11 +81,6 @@ if errorlevel 1 (
   exit /b 1
 )
 echo       Push complete.
-echo.
-
-echo [5/5] Opening Vercel dashboard in your browser...
-start "" "https://vercel.com/dashboard"
-echo       Browser launched.
 echo.
 
 echo ========================================
