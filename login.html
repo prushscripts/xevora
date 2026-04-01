@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Xevora — Sign In</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+
+:root{
+  --bg:#03060D;
+  --blue:#2563EB;
+  --blue2:#3B82F6;
+  --blue3:#60A5FA;
+  --text:#F1F5FF;
+  --sub:#4E6D92;
+  --dim:#1A2E48;
+  --border:rgba(37,99,235,0.22);
+  --card:rgba(6,11,22,0.95);
+  --success:#34D399;
+  --error:#F87171;
+}
+
+html,body{width:100%;min-height:100%;background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;overflow-x:hidden}
+
+canvas{position:fixed;inset:0;z-index:0;pointer-events:none}
+
+/* ── LAYOUT ── */
+.page{
+  position:relative;z-index:10;
+  min-height:100vh;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+}
+
+/* ── LEFT PANEL ── */
+.left{
+  position:relative;
+  display:flex;flex-direction:column;
+  justify-content:center;align-items:flex-start;
+  padding:60px 80px;
+  border-right:1px solid rgba(37,99,235,0.08);
+  overflow:hidden;
+}
+
+.left-glow{
+  position:absolute;
+  width:600px;height:600px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(37,99,235,0.12) 0%,transparent 70%);
+  top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  pointer-events:none;
+}
+
+.left-brand{
+  display:flex;align-items:center;gap:12px;
+  margin-bottom:64px;
+  opacity:0;animation:up .7s ease .1s forwards;
+}
+
+.left-brand svg{width:40px;height:40px;filter:drop-shadow(0 0 12px rgba(37,99,235,0.6))}
+.left-brand-name{font-family:'Syne',sans-serif;font-weight:800;font-size:16px;letter-spacing:4px;color:var(--text)}
+
+.left-headline{
+  opacity:0;animation:up .8s ease .25s forwards;
+  margin-bottom:24px;
+}
+
+.left-headline h2{
+  font-family:'Syne',sans-serif;
+  font-weight:800;
+  font-size:clamp(32px,3.5vw,52px);
+  line-height:1.05;
+  letter-spacing:-1.5px;
+  color:var(--text);
+}
+
+.left-headline h2 span{color:var(--blue2)}
+
+.left-sub{
+  font-size:15px;font-weight:300;
+  color:var(--sub);line-height:1.7;
+  max-width:380px;
+  margin-bottom:48px;
+  opacity:0;animation:up .8s ease .4s forwards;
+}
+
+/* Feature list */
+.feat-list{
+  display:flex;flex-direction:column;gap:16px;
+  opacity:0;animation:up .8s ease .55s forwards;
+}
+
+.feat{display:flex;align-items:center;gap:12px}
+
+.feat-icon{
+  width:32px;height:32px;border-radius:8px;
+  background:rgba(37,99,235,0.1);border:1px solid rgba(37,99,235,0.2);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+
+.feat-icon svg{width:14px;height:14px}
+
+.feat-text{font-size:13px;font-weight:400;color:rgba(241,245,255,0.7);letter-spacing:.2px}
+
+/* Bottom left */
+.left-bottom{
+  position:absolute;bottom:32px;left:80px;
+  font-size:11px;color:var(--dim);letter-spacing:.3px;
+  opacity:0;animation:up .7s ease 1s forwards;
+}
+
+/* ── RIGHT PANEL ── */
+.right{
+  display:flex;flex-direction:column;
+  justify-content:center;align-items:center;
+  padding:60px 80px;
+  position:relative;
+}
+
+/* Form card */
+.card{
+  width:100%;max-width:420px;
+  opacity:0;animation:up .9s cubic-bezier(.16,1,.3,1) .3s forwards;
+}
+
+.card-header{margin-bottom:36px;text-align:center}
+.card-title{font-family:'Syne',sans-serif;font-weight:700;font-size:24px;color:var(--text);letter-spacing:-.5px;margin-bottom:8px}
+.card-sub{font-size:13px;font-weight:300;color:var(--sub);line-height:1.6}
+
+/* Tabs */
+.tabs{
+  display:flex;background:rgba(6,11,22,0.8);
+  border:1px solid var(--border);border-radius:12px;
+  padding:4px;margin-bottom:32px;gap:4px;
+}
+
+.tab{
+  flex:1;padding:10px;border-radius:9px;
+  font-size:13px;font-weight:500;
+  color:var(--sub);cursor:pointer;
+  text-align:center;letter-spacing:.2px;
+  transition:all .2s;border:none;background:transparent;
+  font-family:'DM Sans',sans-serif;
+}
+
+.tab.active{
+  background:var(--blue);color:#fff;
+  box-shadow:0 2px 12px rgba(37,99,235,.4);
+}
+
+.tab:hover:not(.active){color:var(--text)}
+
+/* Form */
+.form-group{margin-bottom:16px}
+
+label{
+  display:block;font-size:11px;font-weight:500;
+  color:var(--sub);letter-spacing:.8px;text-transform:uppercase;
+  margin-bottom:8px;
+}
+
+.input-wrap{position:relative}
+
+.input-wrap input{
+  width:100%;
+  background:rgba(4,8,18,0.95);
+  border:1px solid rgba(37,99,235,.2);
+  border-radius:12px;
+  padding:14px 18px;
+  font-family:'DM Sans',sans-serif;
+  font-size:14px;font-weight:400;
+  color:var(--text);
+  outline:none;
+  transition:border-color .25s,box-shadow .25s;
+  -webkit-appearance:none;
+}
+
+.input-wrap input::placeholder{color:rgba(78,109,146,.45)}
+
+.input-wrap input:focus{
+  border-color:rgba(37,99,235,.55);
+  box-shadow:0 0 0 3px rgba(37,99,235,.08);
+}
+
+.input-wrap input.error{border-color:rgba(248,113,113,.5);box-shadow:0 0 0 3px rgba(248,113,113,.07)}
+.input-wrap input.success-input{border-color:rgba(52,211,153,.4);box-shadow:0 0 0 3px rgba(52,211,153,.07)}
+
+/* Eye toggle */
+.eye-btn{
+  position:absolute;right:16px;top:50%;transform:translateY(-50%);
+  background:none;border:none;cursor:pointer;
+  color:var(--sub);padding:4px;
+  transition:color .2s;
+}
+.eye-btn:hover{color:var(--text)}
+
+/* Forgot */
+.forgot{
+  display:flex;justify-content:flex-end;margin-top:6px;
+}
+.forgot a{font-size:12px;color:var(--sub);text-decoration:none;letter-spacing:.2px;transition:color .2s}
+.forgot a:hover{color:var(--blue3)}
+
+/* Divider */
+.or-divider{
+  display:flex;align-items:center;gap:12px;
+  margin:20px 0;font-size:11px;color:var(--dim);letter-spacing:.5px;
+}
+.or-divider::before,.or-divider::after{
+  content:'';flex:1;height:1px;
+  background:rgba(37,99,235,.12);
+}
+
+/* Invite code section */
+.invite-wrap{
+  background:rgba(37,99,235,.05);
+  border:1px solid rgba(37,99,235,.15);
+  border-radius:12px;padding:16px;
+  margin-bottom:20px;
+}
+
+.invite-header{
+  display:flex;align-items:center;justify-content:space-between;
+  cursor:pointer;
+  user-select:none;
+}
+
+.invite-label{
+  display:flex;align-items:center;gap:8px;
+  font-size:13px;font-weight:500;color:rgba(241,245,255,.7);
+}
+
+.invite-label svg{width:14px;height:14px;color:var(--blue3)}
+
+.invite-toggle{
+  font-size:11px;color:var(--blue3);letter-spacing:.3px;
+  font-weight:500;transition:opacity .2s;
+}
+
+.invite-body{
+  margin-top:14px;
+  overflow:hidden;
+  max-height:0;
+  transition:max-height .3s cubic-bezier(.16,1,.3,1),opacity .3s ease;
+  opacity:0;
+}
+
+.invite-body.open{max-height:100px;opacity:1}
+
+.invite-input-row{display:flex;gap:8px}
+
+.invite-input-row input{
+  flex:1;
+  background:rgba(4,8,18,0.95);
+  border:1px solid rgba(37,99,235,.2);
+  border-radius:10px;
+  padding:11px 16px;
+  font-family:'DM Sans',sans-serif;
+  font-size:13px;color:var(--text);
+  outline:none;letter-spacing:2px;
+  text-transform:uppercase;
+  transition:border-color .25s,box-shadow .25s;
+}
+
+.invite-input-row input::placeholder{color:rgba(78,109,146,.4);letter-spacing:.5px;text-transform:none}
+.invite-input-row input:focus{border-color:rgba(37,99,235,.5);box-shadow:0 0 0 3px rgba(37,99,235,.07)}
+
+.invite-apply{
+  background:rgba(37,99,235,.15);
+  border:1px solid rgba(37,99,235,.3);
+  border-radius:10px;
+  padding:11px 16px;
+  font-family:'DM Sans',sans-serif;
+  font-size:12px;font-weight:500;color:var(--blue3);
+  cursor:pointer;white-space:nowrap;
+  transition:background .2s,border-color .2s;
+}
+.invite-apply:hover{background:rgba(37,99,235,.25);border-color:rgba(37,99,235,.5)}
+
+.invite-status{
+  font-size:11px;margin-top:8px;font-weight:500;
+  display:none;letter-spacing:.2px;
+}
+.invite-status.ok{color:var(--success);display:block}
+.invite-status.bad{color:var(--error);display:block}
+
+/* Submit button */
+.submit-btn{
+  width:100%;
+  background:var(--blue);color:#fff;
+  border:none;border-radius:12px;
+  padding:15px;
+  font-family:'DM Sans',sans-serif;
+  font-size:14px;font-weight:500;
+  cursor:pointer;letter-spacing:.3px;
+  box-shadow:0 4px 20px rgba(37,99,235,.45);
+  transition:background .2s,transform .15s,box-shadow .2s;
+  position:relative;overflow:hidden;
+  margin-bottom:16px;
+}
+
+.submit-btn:hover{background:#1D4ED8;transform:translateY(-1px);box-shadow:0 6px 28px rgba(37,99,235,.55)}
+.submit-btn:active{transform:translateY(0)}
+.submit-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+
+/* Spinner inside button */
+.btn-spinner{
+  display:none;width:16px;height:16px;
+  border:2px solid rgba(255,255,255,.3);
+  border-top-color:#fff;
+  border-radius:50%;
+  animation:spin .7s linear infinite;
+  margin:0 auto;
+}
+.submit-btn.loading .btn-text{display:none}
+.submit-btn.loading .btn-spinner{display:block}
+
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Error/success message */
+.msg{
+  font-size:12px;font-weight:500;
+  text-align:center;padding:12px;
+  border-radius:10px;margin-bottom:16px;
+  display:none;letter-spacing:.2px;
+}
+.msg.error{background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.2);color:var(--error);display:block}
+.msg.success{background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.2);color:var(--success);display:block}
+
+/* Terms */
+.terms{font-size:11px;color:var(--dim);text-align:center;line-height:1.6;letter-spacing:.2px}
+.terms a{color:var(--sub);text-decoration:none;transition:color .2s}
+.terms a:hover{color:var(--blue3)}
+
+/* Back to home */
+.back-home{
+  position:absolute;top:32px;left:32px;
+  display:flex;align-items:center;gap:6px;
+  font-size:12px;color:var(--sub);text-decoration:none;
+  letter-spacing:.3px;transition:color .2s;
+  opacity:0;animation:up .7s ease .1s forwards;
+}
+.back-home:hover{color:var(--text)}
+.back-home svg{width:14px;height:14px}
+
+/* ── POST-LOGIN CINEMATIC ── */
+.post-login-overlay{
+  position:fixed;inset:0;z-index:9999;
+  background:#03060D;
+  opacity:0;pointer-events:none;
+  display:flex;align-items:center;justify-content:center;
+}
+.post-login-overlay.active{pointer-events:auto;animation:overlayIn 400ms ease forwards}
+.post-login-scene{
+  text-align:center;
+  transform:scale(1);
+  opacity:1;
+  will-change:transform,opacity;
+}
+.post-login-overlay.exit .post-login-scene{
+  animation:sceneExit 500ms cubic-bezier(.16,1,.3,1) forwards;
+}
+.cin-logo-wrap{
+  width:48px;height:48px;margin:0 auto 16px;
+  filter:drop-shadow(0 0 20px rgba(37,99,235,0.8));
+  opacity:0;transform:scale(.6);
+}
+.cin-logo-wrap.show{animation:logoIn 500ms cubic-bezier(.16,1,.3,1) forwards}
+.cin-rings{
+  position:absolute;
+  left:50%;top:50%;
+  width:48px;height:48px;
+  transform:translate(-50%,-50%);
+  pointer-events:none;
+}
+.cin-ring{
+  position:absolute;inset:0;border-radius:50%;
+  border:1px solid rgba(37,99,235,0.4);
+  opacity:0;
+}
+.cin-ring.run{animation:ringPulse 900ms ease-out 2}
+.cin-word{
+  font-family:'Syne',sans-serif;
+  font-weight:800;
+  font-size:18px;
+  letter-spacing:5px;
+  margin-bottom:14px;
+}
+.cin-word span{
+  display:inline-block;
+  opacity:0;
+  transform:translateY(8px);
+}
+.cin-word span.show{animation:letterIn 360ms ease forwards}
+.cin-progress{
+  width:200px;height:2px;margin:0 auto 12px;
+  border-radius:2px;overflow:hidden;
+  background:rgba(37,99,235,0.15);
+  opacity:0;
+}
+.cin-progress.show{animation:fadeIn 220ms ease forwards}
+.cin-progress-fill{
+  width:0;height:100%;
+  background:#2563EB;
+  box-shadow:0 0 12px rgba(37,99,235,0.8);
+}
+.cin-progress-fill.run{animation:loadBar 1200ms cubic-bezier(.22,1,.36,1) forwards}
+.cin-status{
+  min-height:16px;
+  font-size:12px;
+  color:var(--sub);
+  opacity:0;
+}
+.cin-status.show{animation:fadeIn 220ms ease forwards}
+@keyframes overlayIn{to{opacity:1}}
+@keyframes logoIn{to{opacity:1;transform:scale(1)}}
+@keyframes ringPulse{0%{transform:scale(1);opacity:.8}100%{transform:scale(3);opacity:0}}
+@keyframes letterIn{to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{to{opacity:1}}
+@keyframes loadBar{to{width:100%}}
+@keyframes sceneExit{to{opacity:0;transform:scale(1.08)}}
+
+/* ── ANIMATIONS ── */
+@keyframes up{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── MOBILE ── */
+@media(max-width:768px){
+  .page{grid-template-columns:1fr}
+  .left{display:none}
+  .right{padding:40px 24px;justify-content:flex-start;padding-top:100px}
+  .card{max-width:100%}
+}
+</style>
+</head>
+<body>
+
+<canvas id="c"></canvas>
+
+<div class="page">
+
+  <!-- LEFT PANEL -->
+  <div class="left">
+    <div class="left-glow"></div>
+
+    <div class="left-brand">
+      <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <polygon points="50,6 89,28 89,72 50,94 11,72 11,28" fill="#0B1422" stroke="rgba(37,99,235,0.5)" stroke-width="1.5"/>
+        <polygon points="50,21 76,36 76,64 50,79 24,64 24,36" fill="none" stroke="rgba(37,99,235,0.13)" stroke-width="1"/>
+        <path d="M33,25 L43,25 L50,37 L57,25 L67,25 L55,50 L67,75 L57,75 L50,63 L43,75 L33,75 L45,50 Z" fill="#2563EB"/>
+        <polygon points="50,43 57,50 50,57 43,50" fill="#60A5FA"/>
+        <circle cx="50" cy="6"  r="2.2" fill="rgba(37,99,235,.85)"/>
+        <circle cx="89" cy="28" r="1.8" fill="rgba(37,99,235,.5)"/>
+        <circle cx="89" cy="72" r="1.8" fill="rgba(37,99,235,.5)"/>
+        <circle cx="50" cy="94" r="2.2" fill="rgba(37,99,235,.85)"/>
+        <circle cx="11" cy="72" r="1.8" fill="rgba(37,99,235,.5)"/>
+        <circle cx="11" cy="28" r="1.8" fill="rgba(37,99,235,.5)"/>
+      </svg>
+      <span class="left-brand-name">XEVORA</span>
+    </div>
+
+    <div class="left-headline">
+      <h2>Workforce infrastructure<br><span>built for operators.</span></h2>
+    </div>
+
+    <p class="left-sub">GPS time tracking, automated payroll, and field ops in one platform — built by someone who runs a team, for people who run teams.</p>
+
+    <div class="feat-list">
+      <div class="feat">
+        <div class="feat-icon">
+          <svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="7" cy="7" r="5.5" stroke="#60A5FA" stroke-width="1.2"/>
+            <circle cx="7" cy="7" r="2" fill="#2563EB"/>
+          </svg>
+        </div>
+        <span class="feat-text">GPS clock-in from anywhere — one tap</span>
+      </div>
+      <div class="feat">
+        <div class="feat-icon">
+          <svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="1.5" y="3" width="11" height="9" rx="1.5" stroke="#60A5FA" stroke-width="1.2"/>
+            <path d="M5 3V2M9 3V2M1.5 6.5h11" stroke="#60A5FA" stroke-width="1.2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <span class="feat-text">Automated payroll runs — W2 and 1099</span>
+      </div>
+      <div class="feat">
+        <div class="feat-icon">
+          <svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M2 11L5 8l2.5 2.5L12 4" stroke="#60A5FA" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <span class="feat-text">Real-time dashboard for your whole operation</span>
+      </div>
+      <div class="feat">
+        <div class="feat-icon">
+          <svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M7 1.5L8.5 5h3.5l-2.8 2 1 3.5L7 8.5 3.8 10.5l1-3.5L2 5h3.5z" stroke="#60A5FA" stroke-width="1.1" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <span class="feat-text">AI-powered compliance and anomaly alerts</span>
+      </div>
+    </div>
+
+    <div class="left-bottom">© 2026 Xevora IO LLC · xevora.io</div>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div class="right">
+
+    <a href="index.html" class="back-home">
+      <svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M9 11L5 7l4-4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Back to home
+    </a>
+
+    <div class="card">
+
+      <div class="card-header">
+        <div class="card-title">Welcome back</div>
+        <div class="card-sub">Sign in to your Xevora workspace</div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tabs">
+        <button class="tab active" onclick="switchTab('signin')">Sign In</button>
+        <button class="tab" onclick="switchTab('signup')">Request Access</button>
+      </div>
+
+      <!-- Message -->
+      <div class="msg" id="msg"></div>
+
+      <!-- SIGN IN FORM -->
+      <div id="signin-form">
+        <div class="form-group">
+          <label>Email Address</label>
+          <div class="input-wrap">
+            <input type="email" id="si-email" placeholder="you@company.com" autocomplete="email"/>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Password</label>
+          <div class="input-wrap">
+            <input type="password" id="si-pass" placeholder="••••••••" autocomplete="current-password"/>
+            <button class="eye-btn" onclick="togglePass('si-pass',this)" type="button">
+              <svg id="eye-si" viewBox="0 0 16 16" fill="none" width="16" height="16">
+                <path d="M1 8s2.5-5 7-5 7 5 7 5-2.5 5-7 5-7-5-7-5z" stroke="currentColor" stroke-width="1.2"/>
+                <circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.2"/>
+              </svg>
+            </button>
+          </div>
+          <div class="forgot"><a href="#" onclick="forgotPass(event)">Forgot password?</a></div>
+        </div>
+
+        <!-- Invite code -->
+        <div class="invite-wrap">
+          <div class="invite-header" onclick="toggleInvite()">
+            <div class="invite-label">
+              <svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="1.5" y="4.5" width="11" height="8" rx="1.5" stroke="#60A5FA" stroke-width="1.2"/>
+                <path d="M4.5 4.5V3.5a2.5 2.5 0 015 0v1" stroke="#60A5FA" stroke-width="1.2" stroke-linecap="round"/>
+                <circle cx="7" cy="8.5" r="1" fill="#60A5FA"/>
+              </svg>
+              Have an invite code?
+            </div>
+            <span class="invite-toggle" id="inv-toggle">Enter code →</span>
+          </div>
+          <div class="invite-body" id="inv-body">
+            <div class="invite-input-row">
+              <input type="text" id="inv-code" placeholder="Enter your invite code" maxlength="12"/>
+              <button class="invite-apply" onclick="applyCode()">Apply</button>
+            </div>
+            <div class="invite-status" id="inv-status"></div>
+          </div>
+        </div>
+
+        <button class="submit-btn" id="si-btn" onclick="signIn()">
+          <span class="btn-text">Sign In to Xevora</span>
+          <div class="btn-spinner"></div>
+        </button>
+
+        <div class="terms">
+          By signing in you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+        </div>
+      </div>
+
+      <!-- REQUEST ACCESS FORM -->
+      <div id="signup-form" style="display:none">
+        <div class="form-group">
+          <label>Full Name</label>
+          <div class="input-wrap">
+            <input type="text" id="su-name" placeholder="James Smith" autocomplete="name"/>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Work Email</label>
+          <div class="input-wrap">
+            <input type="email" id="su-email" placeholder="you@company.com" autocomplete="email"/>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Company Name</label>
+          <div class="input-wrap">
+            <input type="text" id="su-company" placeholder="Prush Logistics Group LLC"/>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Industry</label>
+          <div class="input-wrap">
+            <select id="su-industry" style="width:100%;background:rgba(4,8,18,0.95);border:1px solid rgba(37,99,235,.2);border-radius:12px;padding:14px 18px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text);outline:none;-webkit-appearance:none;cursor:pointer">
+              <option value="" style="background:#030610">Select your industry</option>
+              <option value="trucking" style="background:#030610">Trucking / Logistics</option>
+              <option value="hvac" style="background:#030610">HVAC / Mechanical</option>
+              <option value="construction" style="background:#030610">Construction</option>
+              <option value="landscaping" style="background:#030610">Landscaping</option>
+              <option value="delivery" style="background:#030610">Delivery / Courier</option>
+              <option value="other" style="background:#030610">Other Field Service</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Invite code on signup too -->
+        <div class="invite-wrap" style="margin-bottom:20px">
+          <div class="invite-header" onclick="toggleInvite2()">
+            <div class="invite-label">
+              <svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="1.5" y="4.5" width="11" height="8" rx="1.5" stroke="#60A5FA" stroke-width="1.2"/>
+                <path d="M4.5 4.5V3.5a2.5 2.5 0 015 0v1" stroke="#60A5FA" stroke-width="1.2" stroke-linecap="round"/>
+                <circle cx="7" cy="8.5" r="1" fill="#60A5FA"/>
+              </svg>
+              Have an invite code?
+            </div>
+            <span class="invite-toggle" id="inv-toggle2">Enter code →</span>
+          </div>
+          <div class="invite-body" id="inv-body2">
+            <div class="invite-input-row">
+              <input type="text" id="inv-code2" placeholder="Enter your invite code" maxlength="12"/>
+              <button class="invite-apply" onclick="applyCode2()">Apply</button>
+            </div>
+            <div class="invite-status" id="inv-status2"></div>
+          </div>
+        </div>
+
+        <button class="submit-btn" id="su-btn" onclick="requestAccess()">
+          <span class="btn-text">Request Early Access</span>
+          <div class="btn-spinner"></div>
+        </button>
+
+        <div class="terms">
+          We'll review your request and get back within 24 hours.<br>
+          <a href="#">Privacy Policy</a> · <a href="#">Terms of Service</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="post-login-overlay" id="post-login-overlay" aria-hidden="true">
+  <div class="post-login-scene" id="post-login-scene">
+    <div style="position:relative;width:48px;height:48px;margin:0 auto 8px">
+      <div class="cin-rings">
+        <div class="cin-ring" id="ring1"></div>
+        <div class="cin-ring" id="ring2"></div>
+        <div class="cin-ring" id="ring3"></div>
+      </div>
+      <div class="cin-logo-wrap" id="cin-logo">
+        <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="50,6 89,28 89,72 50,94 11,72 11,28" fill="#0B1422" stroke="rgba(37,99,235,0.5)" stroke-width="1.5"/>
+          <polygon points="50,21 76,36 76,64 50,79 24,64 24,36" fill="none" stroke="rgba(37,99,235,0.13)" stroke-width="1"/>
+          <path d="M33,25 L43,25 L50,37 L57,25 L67,25 L55,50 L67,75 L57,75 L50,63 L43,75 L33,75 L45,50 Z" fill="#2563EB"/>
+          <polygon points="50,43 57,50 50,57 43,50" fill="#60A5FA"/>
+        </svg>
+      </div>
+    </div>
+    <div class="cin-word" id="cin-word"></div>
+    <div class="cin-progress" id="cin-progress">
+      <div class="cin-progress-fill" id="cin-progress-fill"></div>
+    </div>
+    <div class="cin-status" id="cin-status"></div>
+  </div>
+</div>
+
+<script>
+/* ── CONFIG ── */
+const SUPABASE_URL = 'https://gvjcjofsglhnxvtymicf.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd2amNqb2ZzZ2xobnh2dHltaWNmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwMDc3NTEsImV4cCI6MjA5MDU4Mzc1MX0.0EY72PBX63x6KXW0GTObD3SZJsVAHF5n_GXJk9k9Rgk';
+
+/* Valid invite codes — add yours here */
+const VALID_CODES = ['XEVORA2026','PRUSH001','EARLYBIRD','OPERATOR1'];
+
+/* ── CANVAS ── */
+(function(){
+  const cv=document.getElementById('c'),ctx=cv.getContext('2d');
+  let W,H,dots,t=0;
+  function resize(){W=cv.width=window.innerWidth;H=cv.height=window.innerHeight;mkd()}
+  function mkd(){dots=[];const g=50;for(let x=0;x<W+g;x+=g)for(let y=0;y<H+g;y+=g){const dx=(x-W*.7)/W,dy=(y-H*.5)/H,d=Math.sqrt(dx*dx+dy*dy);dots.push({x,y,b:Math.max(.01,.1-d*.25),ph:Math.random()*Math.PI*2,sp:.003+Math.random()*.006})}}
+  function frame(){
+    ctx.clearRect(0,0,W,H);ctx.fillStyle='#03060D';ctx.fillRect(0,0,W,H);
+    const g=ctx.createRadialGradient(W*.72,H*.5,0,W*.72,H*.5,W*.4);
+    g.addColorStop(0,'rgba(37,99,235,.09)');g.addColorStop(1,'rgba(37,99,235,0)');
+    ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+    dots.forEach(d=>{ctx.globalAlpha=d.b*(.3+.7*Math.sin(t*d.sp+d.ph));ctx.fillStyle='#3A6BAB';ctx.beginPath();ctx.arc(d.x,d.y,1,0,Math.PI*2);ctx.fill()});
+    ctx.globalAlpha=1;t++;requestAnimationFrame(frame);
+  }
+  window.addEventListener('resize',resize);resize();frame();
+})();
+
+/* ── TABS ── */
+function switchTab(tab){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('signin-form').style.display = tab==='signin'?'block':'none';
+  document.getElementById('signup-form').style.display = tab==='signup'?'block':'none';
+  clearMsg();
+  if(tab==='signup'){
+    document.querySelector('.card-title').textContent='Request Access';
+    document.querySelector('.card-sub').textContent='Join the Xevora early access program';
+  } else {
+    document.querySelector('.card-title').textContent='Welcome back';
+    document.querySelector('.card-sub').textContent='Sign in to your Xevora workspace';
+  }
+}
+
+/* ── INVITE CODE ── */
+let inviteOpen=false, invite2Open=false, codeVerified=false;
+
+function toggleInvite(){
+  inviteOpen=!inviteOpen;
+  document.getElementById('inv-body').classList.toggle('open',inviteOpen);
+  document.getElementById('inv-toggle').textContent=inviteOpen?'Hide ↑':'Enter code →';
+}
+
+function toggleInvite2(){
+  invite2Open=!invite2Open;
+  document.getElementById('inv-body2').classList.toggle('open',invite2Open);
+  document.getElementById('inv-toggle2').textContent=invite2Open?'Hide ↑':'Enter code →';
+}
+
+function applyCode(){
+  const code=document.getElementById('inv-code').value.trim().toUpperCase();
+  const status=document.getElementById('inv-status');
+  if(!code){status.textContent='Please enter a code.';status.className='invite-status bad';return}
+  if(VALID_CODES.includes(code)){
+    status.textContent='✓ Invite code accepted — priority access granted';
+    status.className='invite-status ok';
+    codeVerified=true;
+    document.getElementById('inv-code').classList.add('success-input');
+  } else {
+    status.textContent='Invalid invite code. Check your email or request access below.';
+    status.className='invite-status bad';
+    document.getElementById('inv-code').classList.add('error');
+    setTimeout(()=>document.getElementById('inv-code').classList.remove('error'),2000);
+  }
+}
+
+function applyCode2(){
+  const code=document.getElementById('inv-code2').value.trim().toUpperCase();
+  const status=document.getElementById('inv-status2');
+  if(VALID_CODES.includes(code)){
+    status.textContent='✓ Invite code accepted';
+    status.className='invite-status ok';
+    document.getElementById('inv-code2').classList.add('success-input');
+  } else {
+    status.textContent='Invalid invite code.';
+    status.className='invite-status bad';
+  }
+}
+
+/* ── PASSWORD TOGGLE ── */
+function togglePass(id,btn){
+  const inp=document.getElementById(id);
+  const isPass=inp.type==='password';
+  inp.type=isPass?'text':'password';
+  btn.innerHTML=isPass?
+    `<svg viewBox="0 0 16 16" fill="none" width="16" height="16"><path d="M2 2l12 12M6.5 6.6A2 2 0 0110 10M1 8s2.5-4 7-4M15 8s-1 2-3.5 3.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>`:
+    `<svg viewBox="0 0 16 16" fill="none" width="16" height="16"><path d="M1 8s2.5-5 7-5 7 5 7 5-2.5 5-7 5-7-5-7-5z" stroke="currentColor" stroke-width="1.2"/><circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.2"/></svg>`;
+}
+
+/* ── MESSAGES ── */
+function showMsg(text,type){
+  const m=document.getElementById('msg');
+  m.textContent=text;m.className='msg '+type;
+}
+function clearMsg(){const m=document.getElementById('msg');m.className='msg';m.textContent=''}
+
+function setLoading(btnId,loading){
+  const btn=document.getElementById(btnId);
+  btn.disabled=loading;
+  btn.classList.toggle('loading',loading);
+}
+
+function runPostLoginSequence(){
+  const overlay=document.getElementById('post-login-overlay');
+  const logo=document.getElementById('cin-logo');
+  const rings=[document.getElementById('ring1'),document.getElementById('ring2'),document.getElementById('ring3')];
+  const word=document.getElementById('cin-word');
+  const progress=document.getElementById('cin-progress');
+  const fill=document.getElementById('cin-progress-fill');
+  const status=document.getElementById('cin-status');
+  const text='XEVORA';
+  overlay.classList.add('active');
+  setTimeout(()=>logo.classList.add('show'),400);
+  setTimeout(()=>{
+    rings.forEach((r,i)=>setTimeout(()=>r.classList.add('run'),i*300));
+  },900);
+  setTimeout(()=>{
+    word.innerHTML='';
+    text.split('').forEach((ch,i)=>{
+      const sp=document.createElement('span');
+      sp.textContent=ch;
+      word.appendChild(sp);
+      setTimeout(()=>sp.classList.add('show'),i*60);
+    });
+  },1100);
+  setTimeout(()=>{
+    progress.classList.add('show');
+    fill.classList.add('run');
+  },1600);
+  setTimeout(()=>{
+    status.classList.add('show');
+    const lines=['Authenticating...','Loading your workspace...','Syncing your team data...','Ready.'];
+    let i=0;
+    const cycle=()=>{
+      status.style.opacity='0';
+      setTimeout(()=>{
+        status.textContent=lines[i];
+        status.style.opacity='1';
+        i++;
+        if(i<lines.length){setTimeout(cycle,400);}
+      },180);
+    };
+    cycle();
+  },2000);
+  setTimeout(()=>{
+    overlay.classList.add('exit');
+    setTimeout(()=>window.location.href='dashboard.html',500);
+  },2800);
+}
+
+/* ── SIGN IN ── */
+async function signIn(){
+  const email=document.getElementById('si-email').value.trim();
+  const pass=document.getElementById('si-pass').value;
+  clearMsg();
+
+  if(!email||!email.includes('@')){showMsg('Please enter a valid email address.','error');document.getElementById('si-email').classList.add('error');setTimeout(()=>document.getElementById('si-email').classList.remove('error'),2000);return}
+  if(!pass||pass.length<6){showMsg('Please enter your password.','error');return}
+
+  setLoading('si-btn',true);
+
+  try{
+    const res=await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json','apikey':SUPABASE_KEY},
+      body:JSON.stringify({email,password:pass})
+    });
+    const data=await res.json();
+    if(data.access_token){
+      localStorage.setItem('xevora_token',data.access_token);
+      localStorage.setItem('xevora_user',JSON.stringify(data.user));
+      runPostLoginSequence();
+    } else if(data.error==='invalid_grant'){
+      showMsg('Incorrect email or password. Please try again.','error');
+    } else if(data.error_description&&data.error_description.includes('Email not confirmed')){
+      showMsg('Please verify your email before signing in. Check your inbox.','error');
+    } else {
+      showMsg(data.error_description||'Something went wrong. Please try again.','error');
+    }
+  }catch(e){
+    showMsg('Connection error. Please check your internet and try again.','error');
+  }
+
+  setLoading('si-btn',false);
+}
+
+/* ── REQUEST ACCESS ── */
+async function requestAccess(){
+  const name=document.getElementById('su-name').value.trim();
+  const email=document.getElementById('su-email').value.trim();
+  const company=document.getElementById('su-company').value.trim();
+  const industry=document.getElementById('su-industry').value;
+  clearMsg();
+
+  if(!name){showMsg('Please enter your full name.','error');return}
+  if(!email||!email.includes('@')){showMsg('Please enter a valid email address.','error');return}
+  if(!company){showMsg('Please enter your company name.','error');return}
+  if(!industry){showMsg('Please select your industry.','error');return}
+
+  setLoading('su-btn',true);
+
+  try{
+    const res=await fetch(`${SUPABASE_URL}/rest/v1/waitlist`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json','apikey':SUPABASE_KEY,'Authorization':`Bearer ${SUPABASE_KEY}`,'Prefer':'return=minimal'},
+      body:JSON.stringify({email,name,company,industry})
+    });
+    if(res.ok||res.status===409){
+      showMsg("✓ Request received — we'll be in touch within 24 hours.",'success');
+      document.getElementById('su-name').value='';
+      document.getElementById('su-email').value='';
+      document.getElementById('su-company').value='';
+      document.getElementById('su-industry').value='';
+    } else {
+      showMsg('Something went wrong. Please try again.','error');
+    }
+  }catch(e){
+    showMsg('Connection error. Please try again.','error');
+  }
+
+  setLoading('su-btn',false);
+}
+
+/* ── FORGOT PASSWORD ── */
+function forgotPass(e){
+  e.preventDefault();
+  const email=document.getElementById('si-email').value.trim();
+  if(!email||!email.includes('@')){showMsg('Enter your email address above first.','error');document.getElementById('si-email').focus();return}
+  showMsg('Password reset link sent — check your inbox.','success');
+}
+
+/* ── ENTER KEY SUPPORT ── */
+document.addEventListener('keydown',e=>{
+  if(e.key==='Enter'){
+    const siForm=document.getElementById('signin-form');
+    const suForm=document.getElementById('signup-form');
+    if(siForm.style.display!=='none') signIn();
+    else requestAccess();
+  }
+});
+
+/* ── UPDATE WAITLIST TABLE ── */
+/* 
+  Run this SQL in Supabase to add name/company/industry columns:
+  
+  alter table waitlist 
+  add column if not exists name text,
+  add column if not exists company text,
+  add column if not exists industry text;
+*/
+</script>
+</body>
+</html>

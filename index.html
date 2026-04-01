@@ -13,9 +13,9 @@
 ════════════════════════════════════════ -->
 <meta property="og:title" content="Xevora — Workforce Infrastructure"/>
 <meta property="og:description" content="Modern payroll + GPS time tracking built for drivers, field crews, and trades. Coming soon."/>
-<meta property="og:image" content="https://www.xevora.io/xbanner.png"/>
-<meta property="og:image:width" content="1500"/>
-<meta property="og:image:height" content="500"/>
+<meta property="og:image" content="https://www.xevora.io/og.png"/>
+<meta property="og:image:width" content="1200"/>
+<meta property="og:image:height" content="630"/>
 <meta property="og:image:type" content="image/png"/>
 <meta property="og:url" content="https://www.xevora.io"/>
 <meta property="og:type" content="website"/>
@@ -25,7 +25,7 @@
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:title" content="Xevora — Workforce Infrastructure"/>
 <meta name="twitter:description" content="Modern payroll + GPS time tracking built for drivers, field crews, and trades. Coming soon."/>
-<meta name="twitter:image" content="https://www.xevora.io/xbanner.png"/>
+<meta name="twitter:image" content="https://www.xevora.io/og.png"/>
 <meta name="twitter:site" content="@Xevora_IO"/>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -120,6 +120,14 @@ nav{
   border-radius:100px;padding:5px 12px;
   white-space:nowrap;flex-shrink:0;
 }
+.nav-actions{display:flex;align-items:center;gap:14px;flex-shrink:0}
+.nav-signin{
+  font-size:12px;
+  color:#60A5FA;
+  text-decoration:none;
+  letter-spacing:.2px;
+}
+.nav-signin:hover{text-decoration:underline}
 .bdot{
   width:6px;height:6px;border-radius:50%;
   background:var(--blue);box-shadow:0 0 8px var(--blue);
@@ -517,7 +525,10 @@ footer{
     </div>
     <span class="brand-name">XEVORA</span>
   </div>
-  <div class="nav-badge"><span class="bdot"></span>Early Access Open</div>
+  <div class="nav-actions">
+    <div class="nav-badge"><span class="bdot"></span>Early Access Open</div>
+    <a class="nav-signin" href="login.html">Sign In →</a>
+  </div>
 </nav>
 
 <div class="vl l"></div>
@@ -590,8 +601,8 @@ footer{
               <table class="wtable">
                 <thead><tr><th>Name</th><th>Hours</th><th>Status</th></tr></thead>
                 <tbody>
-                  <tr><td class="wn">Joseph Pedro</td><td>6h 24m</td><td><span class="sb in"><span class="sdot2"></span>Clocked In</span></td></tr>
-                  <tr><td class="wn">Mark Parra</td><td>5h 51m</td><td><span class="sb in"><span class="sdot2"></span>Clocked In</span></td></tr>
+                  <tr><td class="wn">Alex Carter</td><td>6h 24m</td><td><span class="sb in"><span class="sdot2"></span>Clocked In</span></td></tr>
+                  <tr><td class="wn">Ryan Brooks</td><td>5h 51m</td><td><span class="sb in"><span class="sdot2"></span>Clocked In</span></td></tr>
                   <tr><td class="wn">D. Williams</td><td>4h 10m</td><td><span class="sb br"><span class="sdot2"></span>On Break</span></td></tr>
                   <tr><td class="wn">R. Martinez</td><td>8h 02m</td><td><span class="sb dn"><span class="sdot2"></span>Clocked Out</span></td></tr>
                 </tbody>
@@ -601,11 +612,11 @@ footer{
               <div class="ch"><div class="ct">Payroll — This Period</div><div class="cb">Draft</div></div>
               <div class="pay-rows">
                 <div class="pr">
-                  <div><div class="pn">Joseph Pedro</div><div class="pt">Driver · 1099</div></div>
+                  <div><div class="pn">Alex Carter</div><div class="pt">Driver · 1099</div></div>
                   <div style="text-align:right"><div class="pa">$1,240.00</div><div class="ps">Ready</div></div>
                 </div>
                 <div class="pr">
-                  <div><div class="pn">Mark Parra</div><div class="pt">Driver · 1099</div></div>
+                  <div><div class="pn">Ryan Brooks</div><div class="pt">Driver · 1099</div></div>
                   <div style="text-align:right"><div class="pa">$1,105.00</div><div class="ps">Ready</div></div>
                 </div>
               </div>
@@ -700,19 +711,7 @@ setInterval(tick,1000);tick();
 
 /* Form */
 async function go(){
-  const ei=document.getElementById('ei'),sm=document.getElementById('sm'),v=ei.value.trim();
-  if(!v||!v.includes('@')){ei.style.color='#F87171';ei.focus();setTimeout(()=>ei.style.color='',900);return}
-  const U='https://gvjcjofsglhnxvtymicf.supabase.co',K='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd2amNqb2ZzZ2xobnh2dHltaWNmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwMDc3NTEsImV4cCI6MjA5MDU4Mzc1MX0.0EY72PBX63x6KXW0GTObD3SZJsVAHF5n_GXJk9k9Rgk';
-  try{
-    await fetch(`${U}/rest/v1/waitlist`,{method:'POST',headers:{'Content-Type':'application/json','apikey':K,'Authorization':`Bearer ${K}`,'Prefer':'return=minimal'},body:JSON.stringify({email:v})});
-    document.querySelector('.fs').style.display='none';
-    document.querySelector('.fn').style.display='none';
-    sm.style.display='block';
-  }catch(e){
-    sm.style.color='#F87171';
-    sm.textContent='Something went wrong. Try again.';
-    sm.style.display='block';
-  }
+  window.location.href='login.html';
 }
 </script>
 </body>

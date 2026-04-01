@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{width:1200px;height:630px;overflow:hidden;background:#03060D;font-family:'Syne',sans-serif}
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+<canvas id="c" width="1200" height="630" style="position:absolute;inset:0"></canvas>
+<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:space-between;padding:0 90px;z-index:10">
+
+  <!-- Left side -->
+  <div style="display:flex;flex-direction:column;gap:0">
+
+    <!-- Logo + name -->
+    <div style="display:flex;align-items:center;gap:16px;margin-bottom:48px">
+      <svg width="52" height="52" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 0 14px rgba(37,99,235,0.8))">
+        <polygon points="50,6 89,28 89,72 50,94 11,72 11,28" fill="#0B1422" stroke="rgba(37,99,235,0.6)" stroke-width="2"/>
+        <path d="M33,25 L43,25 L50,37 L57,25 L67,25 L55,50 L67,75 L57,75 L50,63 L43,75 L33,75 L45,50 Z" fill="#2563EB"/>
+        <polygon points="50,43 57,50 50,57 43,50" fill="#60A5FA"/>
+      </svg>
+      <span style="font-family:'Syne',sans-serif;font-weight:800;font-size:20px;letter-spacing:5px;color:#F1F5FF">XEVORA</span>
+    </div>
+
+    <!-- Headline -->
+    <div style="margin-bottom:28px">
+      <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:64px;line-height:1.0;letter-spacing:-2px;color:#F1F5FF;margin-bottom:4px">Pay your team.</div>
+      <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:64px;line-height:1.0;letter-spacing:-2px;color:#3B82F6">Track every shift.</div>
+    </div>
+
+    <!-- Sub -->
+    <div style="font-family:'DM Sans',sans-serif;font-weight:300;font-size:18px;color:#4E6D92;line-height:1.6;max-width:480px;margin-bottom:40px">
+      GPS time tracking & automated payroll built for drivers, field crews, and trades.
+    </div>
+
+    <!-- Pills row -->
+    <div style="display:flex;gap:10px">
+      <div style="display:flex;align-items:center;gap:7px;background:rgba(6,11,22,0.9);border:1px solid rgba(37,99,235,0.25);border-radius:100px;padding:8px 16px">
+        <div style="width:6px;height:6px;border-radius:50%;background:#2563EB;box-shadow:0 0 6px #2563EB"></div>
+        <span style="font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;color:rgba(120,158,205,0.9)">GPS Time Tracking</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:7px;background:rgba(6,11,22,0.9);border:1px solid rgba(37,99,235,0.25);border-radius:100px;padding:8px 16px">
+        <div style="width:6px;height:6px;border-radius:50%;background:#2563EB;box-shadow:0 0 6px #2563EB"></div>
+        <span style="font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;color:rgba(120,158,205,0.9)">Automated Payroll</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:7px;background:rgba(6,11,22,0.9);border:1px solid rgba(37,99,235,0.25);border-radius:100px;padding:8px 16px">
+        <div style="width:6px;height:6px;border-radius:50%;background:#2563EB;box-shadow:0 0 6px #2563EB"></div>
+        <span style="font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;color:rgba(120,158,205,0.9)">1099 Ready</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Right side — mini dashboard mockup -->
+  <div style="width:380px;background:rgba(6,11,22,0.95);border:1px solid rgba(37,99,235,0.2);border-radius:16px;overflow:hidden;box-shadow:0 0 60px rgba(37,99,235,0.15)">
+    
+    <!-- Window bar -->
+    <div style="background:#060C18;border-bottom:1px solid rgba(37,99,235,0.1);padding:10px 16px;display:flex;align-items:center;gap:6px">
+      <div style="width:9px;height:9px;border-radius:50%;background:#FF5F57"></div>
+      <div style="width:9px;height:9px;border-radius:50%;background:#FFBD2E"></div>
+      <div style="width:9px;height:9px;border-radius:50%;background:#28CA41"></div>
+      <span style="font-family:'DM Sans',sans-serif;font-size:10px;color:rgba(78,109,146,0.7);margin:0 auto">Xevora Dashboard</span>
+    </div>
+
+    <!-- Stats -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:14px 14px 0">
+      <div style="background:#08101F;border:1px solid rgba(37,99,235,0.1);border-radius:10px;padding:12px">
+        <div style="font-family:'DM Sans',sans-serif;font-size:9px;font-weight:500;color:#4E6D92;letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px">Active Workers</div>
+        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:22px;color:#F1F5FF;letter-spacing:-1px">8</div>
+        <div style="font-family:'DM Sans',sans-serif;font-size:9px;color:#34D399;margin-top:3px">↑ 2 this week</div>
+      </div>
+      <div style="background:#08101F;border:1px solid rgba(37,99,235,0.1);border-radius:10px;padding:12px">
+        <div style="font-family:'DM Sans',sans-serif;font-size:9px;font-weight:500;color:#4E6D92;letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px">Next Payroll</div>
+        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:22px;color:#F1F5FF;letter-spacing:-1px">$4,820</div>
+        <div style="font-family:'DM Sans',sans-serif;font-size:9px;color:#60A5FA;margin-top:3px">Due Friday</div>
+      </div>
+    </div>
+
+    <!-- Worker row -->
+    <div style="padding:12px 14px">
+      <div style="background:#08101F;border:1px solid rgba(37,99,235,0.1);border-radius:10px;padding:12px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+          <span style="font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;color:#F1F5FF">Workers Clocked In</span>
+          <span style="font-family:'DM Sans',sans-serif;font-size:9px;color:#34D399;background:rgba(52,211,153,0.1);border-radius:100px;padding:2px 8px">4 Active</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:7px">
+          <div style="width:5px;height:5px;border-radius:50%;background:#34D399;box-shadow:0 0 5px #34D399"></div>
+          <span style="font-family:'DM Sans',sans-serif;font-size:11px;color:rgba(241,245,255,0.8)">Joseph Pedro</span>
+          <span style="font-family:'DM Sans',sans-serif;font-size:10px;color:#4E6D92;margin-left:auto">6h 24m</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div style="width:5px;height:5px;border-radius:50%;background:#34D399;box-shadow:0 0 5px #34D399"></div>
+          <span style="font-family:'DM Sans',sans-serif;font-size:11px;color:rgba(241,245,255,0.8)">Mark Parra</span>
+          <span style="font-family:'DM Sans',sans-serif;font-size:10px;color:#4E6D92;margin-left:auto">5h 51m</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- xevora.io bottom -->
+    <div style="padding:10px 16px;border-top:1px solid rgba(37,99,235,0.08);text-align:right">
+      <span style="font-family:'DM Sans',sans-serif;font-size:10px;color:#1A2E48;letter-spacing:.3px">xevora.io</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- Bottom bar -->
+<div style="position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,#2563EB 30%,#3B82F6 50%,#2563EB 70%,transparent)"></div>
+
+<script>
+// Background canvas
+const cv=document.getElementById('c'),ctx=cv.getContext('2d');
+ctx.fillStyle='#03060D';ctx.fillRect(0,0,1200,630);
+
+// Radial glow left
+const g=ctx.createRadialGradient(300,315,0,300,315,400);
+g.addColorStop(0,'rgba(37,99,235,0.12)');g.addColorStop(1,'rgba(37,99,235,0)');
+ctx.fillStyle=g;ctx.fillRect(0,0,1200,630);
+
+// Dot grid
+ctx.fillStyle='rgba(58,107,171,0.25)';
+for(let x=0;x<1200;x+=48)for(let y=0;y<630;y+=48){
+  ctx.beginPath();ctx.arc(x,y,1.1,0,Math.PI*2);ctx.fill();
+}
+
+// Download button
+setTimeout(()=>{
+  const btn=document.createElement('button');
+  btn.textContent='Download OG Image PNG';
+  btn.style.cssText='position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#2563EB;color:#fff;border:none;padding:14px 32px;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;z-index:999;font-family:sans-serif;box-shadow:0 4px 20px rgba(37,99,235,0.5)';
+  btn.onclick=()=>{
+    const a=document.createElement('a');
+    a.download='xevora-og-image.png';
+    a.href=cv.toDataURL('image/png');
+    a.click();
+  };
+  document.body.appendChild(btn);
+},500);
+</script>
+</body>
+</html>
