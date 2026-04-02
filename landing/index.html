@@ -756,42 +756,144 @@ p.sub{
 }
 .good{color:#34D399;font-weight:500}
 .bad{color:#92A9C5}
-.price-toggle{display:flex;align-items:center;gap:10px;margin-bottom:14px}
-.toggle{
-  width:46px;height:24px;border-radius:999px;background:rgba(37,99,235,.2);
-  position:relative;cursor:pointer;border:1px solid rgba(37,99,235,.3)
+/* Pricing — premium layout */
+@keyframes pricingFadeUp{
+  from{opacity:0;transform:translateY(12px)}
+  to{opacity:1;transform:translateY(0)}
 }
-.toggle::after{
-  content:'';position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;
-  background:#fff;transition:transform .2s;
+.pricing-premium-section{
+  position:relative;
+  background:#03060D;
+  padding:120px 24px;
+  padding-top:158px;
+  box-sizing:border-box;
+  overflow:visible;
 }
-.toggle.on::after{transform:translateX(22px)}
-.price-grid-wrap{padding-bottom:8px}
-.price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-.p-card{
-  background:rgba(8,16,31,0.9);border:1px solid rgba(37,99,235,.15);border-radius:12px;padding:15px;display:flex;flex-direction:column;
-  box-shadow:0 2px 20px rgba(0,0,0,0.3);
-  transition:transform 400ms cubic-bezier(0.34,1.2,0.64,1),
-              box-shadow 400ms cubic-bezier(0.34,1.2,0.64,1),
-              border-color 400ms ease;
+.pricing-premium-section::before{
+  content:'';
+  position:absolute;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse 90% 75% at 50% 60%,rgba(37,99,235,0.07) 0%,transparent 60%);
 }
-.p-card:hover{transform:translateY(-5px)}
-.p-card:not(.pop):hover{box-shadow:0 12px 40px rgba(0,0,0,0.4)}
-.p-card.pop{
-  box-shadow:0 0 0 1px rgba(37,99,235,0.25),0 4px 24px rgba(37,99,235,0.1);
+.pricing-premium-inner{position:relative;z-index:1;max-width:980px;margin:0 auto}
+.pricing-premium-head{text-align:center;margin-bottom:48px}
+.pricing-premium-eyebrow{
+  font-family:'JetBrains Mono',ui-monospace,monospace;
+  font-size:10px;font-weight:400;letter-spacing:0.3em;color:#2563EB;text-transform:uppercase;
+}
+.pricing-premium-title{
+  font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(32px,5vw,48px);
+  color:#F1F5FF;line-height:1.1;margin:16px 0 28px;
+}
+.pricing-toggle-wrap{display:flex;justify-content:center}
+.pricing-toggle{
+  position:relative;display:flex;align-items:stretch;
+  background:rgba(6,11,20,1);border:1px solid rgba(37,99,235,0.2);
+  border-radius:999px;padding:4px;gap:0;
+}
+.pricing-toggle-thumb{
+  position:absolute;top:4px;bottom:4px;left:4px;
+  width:calc((100% - 8px) / 2);
+  border-radius:999px;background:#2563EB;z-index:0;
+  transition:transform 250ms cubic-bezier(0.4,0,0.2,1);
+  pointer-events:none;
+}
+.pricing-toggle.is-annual .pricing-toggle-thumb{transform:translateX(100%)}
+.pricing-toggle-btn{
+  position:relative;z-index:1;flex:1 1 0;min-width:0;
+  appearance:none;border:none;background:transparent;cursor:pointer;
+  font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;
+  padding:10px 20px;border-radius:999px;color:#4E6D92;
+  transition:color 250ms ease;
+  white-space:nowrap;
+}
+.pricing-toggle-btn.is-active{color:#F1F5FF}
+.pricing-premium-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:24px;align-items:stretch;
+  padding-top:20px;
+}
+.pricing-card{
+  position:relative;display:flex;flex-direction:column;
+  border-radius:16px;padding:36px 32px;min-height:0;
+  transition:transform 300ms cubic-bezier(0.34,1.56,0.64,1),box-shadow 300ms ease,border-color 300ms ease;
+  opacity:0;transform:translateY(12px);
+}
+.pricing-premium-section.pricing-inview .pricing-card{
+  animation:pricingFadeUp 400ms ease-out forwards;
+}
+.pricing-premium-section.pricing-reduced .pricing-card{
+  opacity:1;transform:none;animation:none;
+}
+.pricing-premium-grid .pricing-card:nth-child(1){animation-delay:0ms}
+.pricing-premium-grid .pricing-card:nth-child(2){animation-delay:80ms}
+.pricing-premium-grid .pricing-card:nth-child(3){animation-delay:160ms}
+.pricing-card--starter,.pricing-card--pro{
+  background:#060B14;border:1px solid rgba(37,99,235,0.12);
+}
+.pricing-card--starter:hover,.pricing-card--pro:hover{
+  transform:translateY(-8px) scale(1.02);
   border-color:rgba(37,99,235,0.35);
+  box-shadow:0 20px 60px rgba(37,99,235,0.08);
 }
-.p-card.pop:hover{
-  box-shadow:0 12px 40px rgba(37,99,235,0.2),0 0 0 1px rgba(37,99,235,0.4);
+.pricing-card--growth{
+  background:linear-gradient(145deg,#0A1628 0%,#060B14 100%);
+  border:1px solid rgba(59,130,246,0.4);
+  box-shadow:0 0 0 1px rgba(59,130,246,0.1),0 24px 80px rgba(37,99,235,0.15);
 }
-.pop{font-size:10px;color:var(--blue3);margin-bottom:6px}
-.p-name{font-size:15px;font-weight:500}
-.p-price{font-family:'Syne',sans-serif;font-size:34px;line-height:1.1;margin:8px 0 4px}
-.p-price small{font-family:'DM Sans',sans-serif;font-size:14px;color:var(--sub)}
-.p-list{list-style:none;display:grid;gap:7px;margin:10px 0 14px}
-.p-list li{font-size:12px;color:rgba(241,245,255,.84)}
-.p-cta{margin-top:auto;display:block;text-align:center;text-decoration:none;background:#2563EB;color:#fff;border-radius:10px;padding:10px;font-size:13px}
-.p-fine{font-size:11px;color:var(--sub);margin-top:12px}
+.pricing-card--growth:hover{
+  transform:translateY(-8px) scale(1.02);
+  box-shadow:0 32px 100px rgba(37,99,235,0.25),0 0 0 1px rgba(59,130,246,0.1);
+  border-color:rgba(59,130,246,0.6);
+}
+.pricing-card-badge{
+  position:absolute;top:-14px;left:50%;transform:translateX(-50%);
+  background:linear-gradient(90deg,#2563EB,#3B82F6);color:#fff;
+  font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9px;
+  letter-spacing:0.15em;text-transform:uppercase;padding:4px 14px;border-radius:999px;
+  white-space:nowrap;
+}
+.pricing-card-plan{
+  font-family:'DM Sans',sans-serif;font-weight:500;font-size:13px;
+  color:#4E6D92;text-transform:uppercase;letter-spacing:0.1em;
+}
+.pricing-card-price{
+  font-family:'Syne',sans-serif;font-weight:800;font-size:52px;line-height:1.05;
+  color:#F1F5FF;margin-top:12px;
+}
+.pricing-card-price small{
+  font-family:'DM Sans',sans-serif;font-weight:300;font-size:16px;color:#4E6D92;
+  margin-left:4px;
+}
+.pricing-card-divider{
+  height:1px;background:rgba(37,99,235,0.10);margin:24px 0;border:none;
+}
+.pricing-card-features{list-style:none;display:flex;flex-direction:column;gap:0;margin:0;padding:0;flex:1}
+.pricing-card-features li{
+  display:flex;align-items:flex-start;gap:8px;
+  font-family:'DM Sans',sans-serif;font-weight:400;font-size:14px;color:#F1F5FF;
+  line-height:1.8;
+}
+.pricing-card-features .pc-check{
+  flex-shrink:0;width:16px;height:16px;margin-top:4px;color:#3B82F6;
+  font-size:14px;line-height:1;font-weight:700;
+}
+.pricing-card-cta{
+  margin-top:28px;display:block;width:100%;box-sizing:border-box;text-align:center;text-decoration:none;
+  border-radius:10px;padding:14px;font-family:'DM Sans',sans-serif;font-weight:500;font-size:15px;
+  transition:background 200ms ease,border-color 200ms ease,color 200ms ease;
+  cursor:pointer;border:1px solid transparent;
+}
+.pricing-card-cta--outline{
+  background:transparent;border-color:rgba(37,99,235,0.3);color:#3B82F6;
+}
+.pricing-card-cta--outline:hover{background:rgba(37,99,235,0.1)}
+.pricing-card-cta--solid{
+  background:#2563EB;border-color:#2563EB;color:#fff;
+}
+.pricing-card-cta--solid:hover{background:#1D4ED8;border-color:#1D4ED8}
+.pricing-premium-note{
+  text-align:center;margin-top:40px;
+  font-family:'DM Sans',sans-serif;font-weight:300;font-size:13px;color:#4E6D92;
+}
 
 /* PREMIUM MICRO-INTERACTIONS */
 .site-tabs{background:rgba(3,6,13,.8);transition:background-color 300ms ease}
@@ -869,18 +971,10 @@ nav.load-in{opacity:1 !important;transform:translateY(0) !important;transition:o
 .preview-section .stat{opacity:0;transform:translateY(16px)}
 .preview-section .stat.in{opacity:1;transform:translateY(0);transition:opacity 325ms cubic-bezier(.16,1,.3,1),transform 325ms cubic-bezier(.16,1,.3,1)}
 
-.toggle{transition:background-color 250ms cubic-bezier(0.34,1.56,0.64,1),border-color 250ms cubic-bezier(0.34,1.56,0.64,1)}
-.toggle::after{transition:transform 250ms cubic-bezier(0.34,1.56,0.64,1)}
-.p-price{perspective:820px;transform-style:preserve-3d}
-.p-price .val{display:inline-block;backface-visibility:hidden;transform-origin:50% 50%;transform-style:preserve-3d}
-.p-price.flip-out .val{animation:priceOut 220ms cubic-bezier(0.22,0.85,0.32,1) forwards}
-.p-price.flip-in .val{animation:priceIn 235ms cubic-bezier(0.22,0.85,0.32,1) forwards}
-@keyframes priceOut{to{opacity:0;transform:rotateX(-82deg) translateZ(-18px) translateY(-4px)}}
-@keyframes priceIn{from{opacity:0;transform:rotateX(82deg) translateZ(-18px) translateY(4px)}to{opacity:1;transform:rotateX(0) translateZ(0) translateY(0)}}
-
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{animation:none !important;transition:none !important;scroll-behavior:auto !important}
   .fr-stagger{opacity:1 !important;transform:none !important}
+  .pricing-premium-section .pricing-card{opacity:1 !important;transform:none !important}
 }
 
 /* FOOTER */
@@ -937,7 +1031,7 @@ footer{
   main{padding:140px 16px 50px}
   h1{letter-spacing:-1px}
   .content-panel{padding:132px 16px 100px}
-  .road-grid,.price-grid{grid-template-columns:1fr}
+  .road-grid,.pricing-premium-grid{grid-template-columns:1fr}
 
   /* Show dashboard mockup on mobile with safe scaling */
   .preview-section{
@@ -1314,58 +1408,64 @@ footer{
 </section>
 
 <section id="pricing-panel" class="tab-panel">
-  <div class="content-panel">
-    <div class="panel-card">
-      <div class="panel-headline">Pricing</div>
-      <div class="price-toggle">
-        <span style="font-size:13px;color:var(--sub)">Monthly</span>
-        <button class="toggle" id="annual-toggle" aria-label="Toggle annual pricing"></button>
-        <span style="font-size:13px;color:var(--sub)">Annual (20% off)</span>
-      </div>
-      <div class="price-grid-wrap">
-      <div class="price-grid">
-        <div class="p-card">
-          <div class="p-name">Starter</div>
-          <div class="p-price" data-monthly="49" data-annual="39">$49<small>/mo</small></div>
-          <ul class="p-list">
-            <li>Up to 10 workers</li>
-            <li>GPS Time Tracking</li>
-            <li>Basic Payroll</li>
-            <li>Pay Stubs</li>
-            <li>Email Support</li>
-          </ul>
-          <a class="p-cta" href="https://app.xevora.io/auth/login" onclick="xevoraTransition(event, 'https://app.xevora.io/auth/login')">Join Waitlist</a>
+  <div class="pricing-premium-section">
+    <div class="pricing-premium-inner">
+      <header class="pricing-premium-head">
+        <p class="pricing-premium-eyebrow">Simple pricing</p>
+        <h2 class="pricing-premium-title">One price. No surprises.</h2>
+        <div class="pricing-toggle-wrap">
+          <div class="pricing-toggle" id="pricing-billing-toggle" role="group" aria-label="Billing period">
+            <span class="pricing-toggle-thumb" aria-hidden="true"></span>
+            <button type="button" class="pricing-toggle-btn is-active" id="pricing-btn-monthly" data-billing="monthly" aria-pressed="true">Monthly</button>
+            <button type="button" class="pricing-toggle-btn" id="pricing-btn-annual" data-billing="annual" aria-pressed="false">Annual (20% off)</button>
+          </div>
         </div>
-        <div class="p-card pop">
-          <div class="pop">Most Popular</div>
-          <div class="p-name">Growth</div>
-          <div class="p-price" data-monthly="99" data-annual="79">$99<small>/mo</small></div>
-          <ul class="p-list">
-            <li>Up to 30 workers</li>
-            <li>Everything in Starter</li>
-            <li>AI Assistant</li>
-            <li>Advanced Reports</li>
-            <li>1099 Ready</li>
-            <li>Priority Support</li>
+      </header>
+      <div class="pricing-premium-grid">
+        <article class="pricing-card pricing-card--starter">
+          <div class="pricing-card-plan">Starter</div>
+          <div class="pricing-card-price" data-monthly="49" data-annual="39">$49<small>/mo</small></div>
+          <hr class="pricing-card-divider" />
+          <ul class="pricing-card-features">
+            <li><span class="pc-check" aria-hidden="true">✓</span><span>Up to 10 workers</span></li>
+            <li><span class="pc-check" aria-hidden="true">✓</span><span>GPS Time Tracking</span></li>
+            <li><span class="pc-check" aria-hidden="true">✓</span><span>Basic Payroll</span></li>
+            <li><span class="pc-check" aria-hidden="true">✓</span><span>Pay Stubs</span></li>
+            <li><span class="pc-check" aria-hidden="true">✓</span><span>Email Support</span></li>
           </ul>
-          <a class="p-cta" href="https://app.xevora.io/auth/login" onclick="xevoraTransition(event, 'https://app.xevora.io/auth/login')">Join Waitlist</a>
-        </div>
-        <div class="p-card">
-          <div class="p-name">Pro</div>
-          <div class="p-price" data-monthly="199" data-annual="159">$199<small>/mo</small></div>
-          <ul class="p-list">
-            <li>Unlimited workers</li>
-            <li>Everything in Growth</li>
-            <li>Auto 1099 Filing</li>
-            <li>Custom Integrations</li>
-            <li>Dedicated Support</li>
-            <li>API Access</li>
+          <a class="pricing-card-cta pricing-card-cta--outline" href="https://app.xevora.io/auth/login" onclick="xevoraTransition(event, 'https://app.xevora.io/auth/login')">Join Waitlist</a>
+        </article>
+        <article class="pricing-card pricing-card--growth">
+          <span class="pricing-card-badge">Most Popular</span>
+          <div class="pricing-card-plan">Growth</div>
+          <div class="pricing-card-price" data-monthly="99" data-annual="79">$99<small>/mo</small></div>
+          <hr class="pricing-card-divider" />
+          <ul class="pricing-card-features">
+            <li><span class="pc-check" aria-hidden="true">✓</span><span>Up to 30 workers</span></li>
+            <li><span class="pc-check" aria-hidden="true">✓</span><span>Everything in Starter</span></li>
+            <li><span class="pc-check" aria-hidden="true">✓</span><span>AI Assistant</span></li>
+            <li><span class="pc-check" aria-hidden="true">✓</span><span>Advanced Reports</span></li>
+            <li><span class="pc-check" aria-hidden="true">✓</span><span>1099 Ready</span></li>
+            <li><span class="pc-check" aria-hidden="true">✓</span><span>Priority Support</span></li>
           </ul>
-          <a class="p-cta" href="https://app.xevora.io/auth/login" onclick="xevoraTransition(event, 'https://app.xevora.io/auth/login')">Join Waitlist</a>
-        </div>
+          <a class="pricing-card-cta pricing-card-cta--solid" href="https://app.xevora.io/auth/login" onclick="xevoraTransition(event, 'https://app.xevora.io/auth/login')">Join Waitlist</a>
+        </article>
+        <article class="pricing-card pricing-card--pro">
+          <div class="pricing-card-plan">Pro</div>
+          <div class="pricing-card-price" data-monthly="199" data-annual="159">$199<small>/mo</small></div>
+          <hr class="pricing-card-divider" />
+          <ul class="pricing-card-features">
+            <li><span class="pc-check" aria-hidden="true">✓</span><span>Unlimited workers</span></li>
+            <li><span class="pc-check" aria-hidden="true">✓</span><span>Everything in Growth</span></li>
+            <li><span class="pc-check" aria-hidden="true">✓</span><span>Auto 1099 Filing</span></li>
+            <li><span class="pc-check" aria-hidden="true">✓</span><span>Custom Integrations</span></li>
+            <li><span class="pc-check" aria-hidden="true">✓</span><span>Dedicated Support</span></li>
+            <li><span class="pc-check" aria-hidden="true">✓</span><span>API Access</span></li>
+          </ul>
+          <a class="pricing-card-cta pricing-card-cta--outline" href="https://app.xevora.io/auth/login" onclick="xevoraTransition(event, 'https://app.xevora.io/auth/login')">Join Waitlist</a>
+        </article>
       </div>
-      </div>
-      <div class="p-fine">No credit card required during beta</div>
+      <p class="pricing-premium-note">No credit card required during beta</p>
     </div>
   </div>
 </section>
@@ -1515,6 +1615,7 @@ function switchTab(newTabId) {
   if (!currentPanel) {
     newPanel.classList.add('is-active');
     if (newTabId === 'features-panel') revealRoadmapIfInView();
+    if (newTabId === 'pricing-panel') revealPricingIfInView();
     return;
   }
 
@@ -1532,7 +1633,19 @@ function switchTab(newTabId) {
     void newPanel.offsetWidth;
     newPanel.classList.add('is-active');
     if (newTabId === 'features-panel') revealRoadmapIfInView();
+    if (newTabId === 'pricing-panel') revealPricingIfInView();
   }, 165);
+}
+
+function revealPricingIfInView() {
+  const ps = document.querySelector('.pricing-premium-section');
+  if (!ps || ps.classList.contains('pricing-inview') || ps.classList.contains('pricing-reduced')) return;
+  requestAnimationFrame(function () {
+    requestAnimationFrame(function () {
+      const r = ps.getBoundingClientRect();
+      if (r.bottom > 0 && r.top < window.innerHeight) ps.classList.add('pricing-inview');
+    });
+  });
 }
 
 function revealRoadmapIfInView() {
@@ -1718,6 +1831,28 @@ function revealRoadmapIfInView() {
   obs.observe(rs);
 })();
 
+/* Pricing — scroll-in stagger */
+(function () {
+  const ps = document.querySelector('.pricing-premium-section');
+  if (!ps) return;
+  if (reduceMotion) {
+    ps.classList.add('pricing-reduced', 'pricing-inview');
+    return;
+  }
+  const obs = new IntersectionObserver(
+    function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) {
+          ps.classList.add('pricing-inview');
+          obs.disconnect();
+        }
+      });
+    },
+    { threshold: 0.08, rootMargin: '0px 0px -24px 0px' },
+  );
+  obs.observe(ps);
+})();
+
 /* Scroll state for tab bar */
 window.addEventListener('scroll',()=>{
   const bar=document.getElementById('site-tabs');
@@ -1742,24 +1877,33 @@ window.addEventListener('scroll',()=>{
   obs.observe(section);
 })();
 
-/* Pricing toggle flip */
-(function(){
-  const t=document.getElementById('annual-toggle');
-  const prices=document.querySelectorAll('.p-price');
-  prices.forEach(p=>{const m=p.getAttribute('data-monthly');p.innerHTML=`<span class="val">$${m}<small>/mo</small></span>`;});
-  let annual=false;
-  if(!t) return;
-  t.addEventListener('click',function(){
-    annual=!annual; this.classList.toggle('on',annual);
-    prices.forEach((p,idx)=>{
-      const val=annual?p.getAttribute('data-annual'):p.getAttribute('data-monthly');
-      p.classList.remove('flip-in'); p.classList.add('flip-out');
-      setTimeout(()=>{
-        p.innerHTML=`<span class="val">$${val}<small>/mo</small></span>`;
-        p.classList.remove('flip-out'); p.classList.add('flip-in');
-        setTimeout(()=>p.classList.remove('flip-in'),360);
-      },112);
+/* Pricing billing toggle */
+(function () {
+  const wrap = document.getElementById('pricing-billing-toggle');
+  const btnM = document.getElementById('pricing-btn-monthly');
+  const btnA = document.getElementById('pricing-btn-annual');
+  const prices = document.querySelectorAll('.pricing-card-price');
+  if (!wrap || !btnM || !btnA || !prices.length) return;
+  function renderPrices(annual) {
+    const key = annual ? 'annual' : 'monthly';
+    prices.forEach(function (p) {
+      const v = p.getAttribute('data-' + key);
+      if (v) p.innerHTML = '$' + v + '<small>/mo</small>';
     });
+  }
+  function setAnnual(annual) {
+    wrap.classList.toggle('is-annual', annual);
+    btnM.classList.toggle('is-active', !annual);
+    btnA.classList.toggle('is-active', annual);
+    btnM.setAttribute('aria-pressed', String(!annual));
+    btnA.setAttribute('aria-pressed', String(annual));
+    renderPrices(annual);
+  }
+  btnM.addEventListener('click', function () {
+    setAnnual(false);
+  });
+  btnA.addEventListener('click', function () {
+    setAnnual(true);
   });
 })();
 </script>
