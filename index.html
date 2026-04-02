@@ -202,6 +202,9 @@ button.site-tab:focus,button.site-tab:focus-visible{outline:none}
 .site-tab.fynlo:hover{color:rgba(0,200,150,1)}
 .site-tab.fleetpulse{color:rgba(96,165,250,0.85)}
 .site-tab.fleetpulse:hover{color:#93C5FD}
+.nav-link { cursor: pointer; }
+#section-transition.active { opacity: 0.45; pointer-events: none; }
+#scan-line.active { opacity: 1; transform: scaleX(1); }
 .site-tab.fynlo::before{
   content:'';display:inline-block;width:6px;height:6px;border-radius:50%;
   background:rgba(0,200,150,0.9);margin-right:7px;vertical-align:middle;
@@ -926,6 +929,9 @@ footer{
 </style>
 </head>
 <body>
+<div id="section-transition" style="position:fixed;inset:0;z-index:9999;pointer-events:none;opacity:0;background:linear-gradient(135deg,#03060D 0%,#0a1628 50%,#03060D 100%);transition:opacity 0.18s cubic-bezier(0.4,0,0.2,1);">
+  <div id="scan-line" style="position:absolute;top:50%;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,#2563EB,#3B82F6,#2563EB,transparent);opacity:0;transform:scaleX(0);transition:transform 0.35s cubic-bezier(0.4,0,0.2,1),opacity 0.1s;"></div>
+</div>
 
 <canvas id="c"></canvas>
 
@@ -953,7 +959,7 @@ footer{
   </div>
   <div class="nav-actions">
     <div class="nav-badge"><span class="bdot"></span>Early Access Open</div>
-    <a class="nav-signin" href="/pages/login.html">Sign In →</a>
+    <a class="nav-signin nav-link" href="https://app.xevora.io/auth/login" onclick="triggerLoginTransition(event)">Sign In →</a>
   </div>
 </nav>
 
@@ -993,7 +999,7 @@ footer{
   <div class="fw" id="waitlist">
     <div class="fs">
       <input type="email" id="ei" placeholder="Enter your work email" autocomplete="email"/>
-      <button onclick="go()">Get Early Access</button>
+      <button onclick="triggerLoginTransition(event)">Get Early Access</button>
     </div>
     <p class="fn">No spam. First to know when we launch.</p>
     <p class="succ" id="sm">
@@ -1166,7 +1172,7 @@ footer{
             <li>Pay Stubs</li>
             <li>Email Support</li>
           </ul>
-          <a class="p-cta" href="#waitlist">Join Waitlist</a>
+          <a class="p-cta" href="https://app.xevora.io/auth/login" onclick="triggerLoginTransition(event)">Join Waitlist</a>
         </div>
         <div class="p-card pop">
           <div class="pop">Most Popular</div>
@@ -1180,7 +1186,7 @@ footer{
             <li>1099 Ready</li>
             <li>Priority Support</li>
           </ul>
-          <a class="p-cta" href="#waitlist">Join Waitlist</a>
+          <a class="p-cta" href="https://app.xevora.io/auth/login" onclick="triggerLoginTransition(event)">Join Waitlist</a>
         </div>
         <div class="p-card">
           <div class="p-name">Pro</div>
@@ -1193,7 +1199,7 @@ footer{
             <li>Dedicated Support</li>
             <li>API Access</li>
           </ul>
-          <a class="p-cta" href="#waitlist">Join Waitlist</a>
+          <a class="p-cta" href="https://app.xevora.io/auth/login" onclick="triggerLoginTransition(event)">Join Waitlist</a>
         </div>
       </div>
       </div>
@@ -1313,6 +1319,63 @@ async function go(){
   setTimeout(()=>{fs.style.display='none'; sm.classList.add('show');},265);
 }
 
+function triggerLoginTransition(event){
+  if (event && typeof event.preventDefault === 'function') {
+    event.preventDefault();
+  }
+
+  const styleId = 'login-transition-styles';
+  if (!document.getElementById(styleId)) {
+    const styleEl = document.createElement('style');
+    styleEl.id = styleId;
+    styleEl.textContent = `
+      .login-transition-overlay{position:fixed;inset:0;z-index:10000;background:#03060D;display:flex;align-items:center;justify-content:center;overflow:hidden;opacity:0;animation:loginFadeIn 180ms ease forwards}
+      .login-transition-inner{position:relative;display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center}
+      .login-transition-logo{font-size:64px;line-height:1;color:#60A5FA;text-shadow:0 0 18px rgba(37,99,235,.85),0 0 40px rgba(37,99,235,.4);transform:scale(.8);animation:loginLogoPulse 1400ms cubic-bezier(.16,1,.3,1) forwards}
+      .login-transition-text{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;letter-spacing:3px;color:#4E6D92;white-space:nowrap;border-right:1px solid rgba(96,165,250,.6);overflow:hidden;width:0;animation:loginType 820ms steps(27,end) 120ms forwards,loginCaret 700ms steps(1,end) infinite}
+      .login-transition-dots{display:inline-flex;align-items:center;gap:6px}
+      .login-transition-dots span{width:6px;height:6px;border-radius:50%;background:#3B82F6;box-shadow:0 0 10px rgba(37,99,235,.6);opacity:.25;animation:loginDotPulse 900ms ease-in-out infinite}
+      .login-transition-dots span:nth-child(2){animation-delay:.15s}
+      .login-transition-dots span:nth-child(3){animation-delay:.3s}
+      .login-transition-progress{width:260px;height:2px;background:rgba(37,99,235,.18);border-radius:999px;overflow:hidden}
+      .login-transition-progress span{display:block;height:100%;width:0;background:linear-gradient(90deg,#2563EB,#3B82F6);box-shadow:0 0 12px rgba(37,99,235,.8);animation:loginProgress 1200ms cubic-bezier(.16,1,.3,1) 100ms forwards}
+      .login-hud{position:absolute;width:24px;height:24px;opacity:0;animation:loginHudIn 260ms ease 80ms forwards}
+      .login-hud.tl{top:20px;left:20px;border-top:1.5px solid rgba(96,165,250,.6);border-left:1.5px solid rgba(96,165,250,.6)}
+      .login-hud.tr{top:20px;right:20px;border-top:1.5px solid rgba(96,165,250,.6);border-right:1.5px solid rgba(96,165,250,.6)}
+      .login-hud.bl{bottom:20px;left:20px;border-bottom:1.5px solid rgba(96,165,250,.6);border-left:1.5px solid rgba(96,165,250,.6)}
+      .login-hud.br{bottom:20px;right:20px;border-bottom:1.5px solid rgba(96,165,250,.6);border-right:1.5px solid rgba(96,165,250,.6)}
+      @keyframes loginFadeIn{to{opacity:1}}
+      @keyframes loginLogoPulse{0%{transform:scale(.8)}100%{transform:scale(1.2)}}
+      @keyframes loginType{to{width:27ch}}
+      @keyframes loginCaret{50%{border-right-color:transparent}}
+      @keyframes loginDotPulse{0%,100%{opacity:.2;transform:scale(.9)}50%{opacity:1;transform:scale(1)}}
+      @keyframes loginProgress{to{width:100%}}
+      @keyframes loginHudIn{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:scale(1)}}
+    `;
+    document.head.appendChild(styleEl);
+  }
+
+  const overlay = document.createElement('div');
+  overlay.className = 'login-transition-overlay';
+  overlay.innerHTML = `
+    <div class="login-hud tl"></div>
+    <div class="login-hud tr"></div>
+    <div class="login-hud bl"></div>
+    <div class="login-hud br"></div>
+    <div class="login-transition-inner">
+      <div class="login-transition-logo">⬡</div>
+      <div class="login-transition-text">INITIALIZING SECURE SESSION</div>
+      <div class="login-transition-dots"><span></span><span></span><span></span></div>
+      <div class="login-transition-progress"><span></span></div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+
+  window.setTimeout(() => {
+    window.location.href = 'https://app.xevora.io/auth/login';
+  }, 1400);
+}
+
 function updateUnderline(newTabId) {
   const tabBar = document.getElementById('site-tabs-inner');
   const underline = document.getElementById('tab-underline');
@@ -1366,13 +1429,35 @@ function switchTab(newTabId) {
 }
 
 (function(){
+  const sectionTransition=document.getElementById('section-transition');
+  const scanLine=document.getElementById('scan-line');
+  const cinematicTabs=new Set(['overview-panel','features-panel','why-panel','pricing-panel']);
+
+  function runSectionTransition(action){
+    if(!sectionTransition||!scanLine||reduceMotion){
+      action();
+      return;
+    }
+    sectionTransition.classList.add('active');
+    scanLine.classList.add('active');
+    setTimeout(action,130);
+    setTimeout(()=>{
+      scanLine.classList.remove('active');
+      sectionTransition.classList.remove('active');
+    },400);
+  }
+
   const tabBtns=document.querySelectorAll('.tab-btn');
   tabBtns.forEach(btn=>{
     btn.addEventListener('click',function(){
       const id=this.getAttribute('data-tab');
       if(!id)return;
-      switchTab(id);
-      window.scrollTo({top:0,behavior:reduceMotion?'auto':'smooth'});
+      runSectionTransition(()=>{
+        switchTab(id);
+        if(cinematicTabs.has(id)){
+          window.scrollTo({top:0,behavior:reduceMotion?'auto':'smooth'});
+        }
+      });
     });
   });
 
@@ -1383,12 +1468,6 @@ function switchTab(newTabId) {
   const tabsBar=document.getElementById('site-tabs');
   if(tabsBar)tabsBar.addEventListener('scroll',()=>updateUnderline(),{passive:true});
 
-  const waitlistLinks=document.querySelectorAll('.p-cta');
-  waitlistLinks.forEach(link=>link.addEventListener('click',e=>{
-    e.preventDefault();
-    document.querySelector('.tab-btn[data-tab="overview-panel"]').click();
-    setTimeout(()=>document.getElementById('waitlist')?.scrollIntoView({behavior:'smooth',block:'center'}),320);
-  }));
 })();
 
 /* Ecosystem tab hover popovers (desktop hover only) */
