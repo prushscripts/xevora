@@ -1,26 +1,11 @@
 {
-  "cleanUrls": true,
-  "trailingSlash": false,
-  "headers": [
-    {
-      "source": "/transition.js",
-      "headers": [
-        { "key": "Content-Type", "value": "application/javascript" }
-      ]
-    }
+  "version": 2,
+  "builds": [
+    { "src": "*.html", "use": "@vercel/static" },
+    { "src": "*.js", "use": "@vercel/static" }
   ],
   "routes": [
-    {
-      "src": "/transition.js",
-      "dest": "/transition.js"
-    },
-    {
-      "src": "/public/(.*)",
-      "dest": "/public/$1"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/index.html"
-    }
+    { "src": "/transition.js", "dest": "/transition.js" },
+    { "src": "/(.*)", "dest": "/index.html" }
   ]
 }
