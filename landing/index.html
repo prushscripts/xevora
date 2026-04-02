@@ -887,27 +887,141 @@ p.sub{
 .fr-stagger{opacity:0;transform:translateY(16px);transition:opacity 360ms cubic-bezier(0.16,1,0.3,1),transform 360ms cubic-bezier(0.16,1,0.3,1)}
 .fr-stagger.in{opacity:1;transform:translateY(0)}
 
-.cmp-title{font-family:'Syne',sans-serif;font-size:clamp(26px,3.5vw,34px);font-weight:800;letter-spacing:-1px;margin-bottom:24px}
-.cmp-wrap{border-radius:14px;overflow:hidden;border:1px solid rgba(37,99,235,0.12)}
-.cmp-table{width:100%;border-collapse:collapse}
-.cmp-table thead{background:rgba(6,11,22,0.95)}
-.cmp-table th{
-  font-family:'Syne',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.4px;
-  color:rgba(241,245,255,0.9);text-transform:uppercase;
-  padding:14px 12px;text-align:left;border-bottom:1px solid rgba(37,99,235,0.12);
+.why-section {
+  padding: 100px 20px 120px;
+  padding-top: 158px;
+  background: #03060D;
+  min-height: 100vh;
+  box-sizing: border-box;
 }
-.cmp-table td{
-  padding:12px 12px;font-size:13px;font-weight:400;line-height:1.55;
-  border-top:1px solid rgba(37,99,235,0.06);
+.why-inner { max-width: 960px; margin: 0 auto; }
+.why-head { text-align: center; margin-bottom: 56px; }
+.why-eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; letter-spacing: 0.3em; color: #2563EB;
+  text-transform: uppercase; margin-bottom: 16px;
 }
-.cmp-table tbody tr:nth-child(odd){background:rgba(4,8,18,0.45)}
-.cmp-table tbody tr:nth-child(even){background:rgba(6,11,22,0.35)}
-.cmp-xev{
-  box-shadow:inset 3px 0 0 rgba(37,99,235,0.55),inset 0 0 24px rgba(37,99,235,0.06);
-  font-weight:500;color:rgba(241,245,255,0.95);
+.why-title {
+  font-family: 'Syne', sans-serif; font-weight: 800;
+  font-size: clamp(28px, 4.5vw, 44px);
+  color: #F1F5FF; line-height: 1.1; margin-bottom: 14px;
 }
-.good{color:#34D399;font-weight:500}
-.bad{color:#92A9C5}
+.why-sub {
+  font-family: 'DM Sans', sans-serif; font-weight: 300;
+  font-size: 16px; color: #4E6D92; max-width: 480px; margin: 0 auto;
+}
+.why-cards {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 20px;
+  align-items: start;
+}
+.why-card--xev {
+  background: linear-gradient(145deg, #0A1628 0%, #060B14 100%);
+  border: 1px solid rgba(37,99,235,0.3);
+  border-radius: 16px;
+  padding: 28px;
+  box-shadow: 0 0 40px rgba(37,99,235,0.08);
+}
+.why-card-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 20px;
+}
+.why-card-badge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; letter-spacing: 0.15em;
+  padding: 4px 12px; border-radius: 999px;
+}
+.why-card-badge--xev {
+  background: rgba(37,99,235,0.15);
+  border: 1px solid rgba(37,99,235,0.3);
+  color: #3B82F6;
+}
+.why-card-status {
+  display: flex; align-items: center; gap: 6px;
+  font-family: 'DM Sans', sans-serif; font-size: 11px; color: #4ADE80;
+}
+.why-status-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: #4ADE80; box-shadow: 0 0 8px rgba(74,222,128,0.6);
+  animation: blink 1.8s ease-in-out infinite;
+}
+.why-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.why-item {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 10px 12px; border-radius: 8px;
+}
+.why-item--good {
+  background: rgba(37,99,235,0.04);
+  border: 1px solid rgba(37,99,235,0.1);
+}
+.why-item--good:hover {
+  background: rgba(37,99,235,0.08);
+  border-color: rgba(37,99,235,0.25);
+  transition: all 200ms ease;
+}
+.why-check {
+  color: #3B82F6; font-weight: 700; font-size: 14px;
+  flex-shrink: 0; margin-top: 2px;
+}
+.why-item div { display: flex; flex-direction: column; gap: 2px; }
+.why-item strong {
+  font-family: 'DM Sans', sans-serif; font-weight: 500;
+  font-size: 14px; color: #F1F5FF;
+}
+.why-item span {
+  font-family: 'DM Sans', sans-serif; font-weight: 300;
+  font-size: 12px; color: #4E6D92; line-height: 1.4;
+}
+.why-vs {
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Syne', sans-serif; font-weight: 800;
+  font-size: 13px; color: #243550; letter-spacing: 0.1em;
+  padding-top: 120px;
+  writing-mode: vertical-lr;
+}
+.why-competitors { display: flex; flex-direction: column; gap: 16px; }
+.why-comp-card {
+  background: rgba(6,11,20,0.6);
+  border: 1px solid rgba(37,99,235,0.08);
+  border-radius: 12px; padding: 20px;
+}
+.why-comp-name {
+  font-family: 'Syne', sans-serif; font-weight: 700;
+  font-size: 13px; color: #4E6D92; margin-bottom: 12px;
+  letter-spacing: 0.05em;
+}
+.why-comp-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.why-comp-list li {
+  display: flex; align-items: center; gap: 8px;
+  font-family: 'DM Sans', sans-serif; font-weight: 300;
+  font-size: 13px; color: #4E6D92; line-height: 1.4;
+}
+.why-x { color: #374E66; font-size: 13px; flex-shrink: 0; }
+
+@media (max-width: 768px) {
+  .why-cards {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .why-vs {
+    writing-mode: horizontal-tb;
+    padding-top: 0;
+    font-size: 11px;
+    color: #1E3048;
+    text-align: center;
+  }
+  .why-competitors { flex-direction: row; gap: 12px; }
+  .why-comp-card { flex: 1; min-width: 0; }
+  .why-comp-name { font-size: 12px; }
+  .why-comp-list li { font-size: 11px; }
+  .why-section { padding: 130px 16px 100px; }
+}
+
+@media (max-width: 480px) {
+  .why-competitors { flex-direction: column; }
+}
+
 /* Pricing — premium layout */
 @keyframes pricingFadeUp{
   from{opacity:0;transform:translateY(12px)}
@@ -1618,28 +1732,62 @@ footer{
 </section>
 
 <section id="why-panel" class="tab-panel">
-  <div class="content-panel">
-    <div class="panel-card">
-      <h2 class="cmp-title">Why operators choose Xevora.</h2>
-      <div class="cmp-wrap">
-        <table class="cmp-table">
-          <thead>
-            <tr><th>Category</th><th>Xevora</th><th>ADP</th><th>Homebase</th></tr>
-          </thead>
-          <tbody>
-            <tr><td>Mobile Experience</td><td class="cmp-xev good">✅ Mobile-first</td><td class="bad">✗ Desktop-first</td><td class="bad">Restaurant/retail focus</td></tr>
-            <tr><td>GPS Clock-In Native</td><td class="cmp-xev good">✅ Yes, native GPS</td><td class="bad">✗ No</td><td class="bad">Basic only</td></tr>
-            <tr><td>1099 + W2 Same Platform</td><td class="cmp-xev good">✅ Yes — both</td><td class="bad">✗ Complex setup</td><td class="bad">W2 only</td></tr>
-            <tr><td>Starting Price</td><td class="cmp-xev good">✅ $49/mo</td><td class="bad">✗ $150+/mo</td><td class="bad">$99+/mo</td></tr>
-            <tr><td>Setup Time</td><td class="cmp-xev good">✅ 20 minutes</td><td class="bad">✗ Days</td><td class="bad">Hours</td></tr>
-            <tr><td>AI Features</td><td class="cmp-xev good">✅ Yes — core</td><td class="bad">✗ Add-on only</td><td class="bad">Limited</td></tr>
-            <tr><td>Built for Field Workers</td><td class="cmp-xev good">✅ Built for it</td><td class="bad">✗ No</td><td class="bad">Partial</td></tr>
-            <tr><td>Onboarding Speed</td><td class="cmp-xev good">✅ 20 minutes</td><td class="bad">✗ Days</td><td class="bad">Hours</td></tr>
-          </tbody>
-        </table>
+<div class="why-section">
+  <div class="why-inner">
+    <header class="why-head">
+      <p class="why-eyebrow">WHY XEVORA</p>
+      <h2 class="why-title">Built different.<br>For the people who build things.</h2>
+      <p class="why-sub">Other platforms were built for offices. Xevora was built for the field.</p>
+    </header>
+
+    <div class="why-cards">
+      <div class="why-card why-card--xev">
+        <div class="why-card-header">
+          <div class="why-card-badge why-card-badge--xev">XEVORA</div>
+          <div class="why-card-status"><span class="why-status-dot"></span>Your platform</div>
+        </div>
+        <ul class="why-list">
+          <li class="why-item why-item--good"><span class="why-check">✓</span><div><strong>Mobile-first</strong><span>GPS clock-in from any phone, no app install needed</span></div></li>
+          <li class="why-item why-item--good"><span class="why-check">✓</span><div><strong>GPS Clock-In native</strong><span>Location stamped on every punch</span></div></li>
+          <li class="why-item why-item--good"><span class="why-check">✓</span><div><strong>W2 + 1099 together</strong><span>Both worker types on one platform</span></div></li>
+          <li class="why-item why-item--good"><span class="why-check">✓</span><div><strong>Starts at $49/mo</strong><span>No hidden fees, no per-user pricing surprises</span></div></li>
+          <li class="why-item why-item--good"><span class="why-check">✓</span><div><strong>20-minute setup</strong><span>First worker clocked in same day</span></div></li>
+          <li class="why-item why-item--good"><span class="why-check">✓</span><div><strong>AI built-in</strong><span>Payroll anomaly detection, natural language runs</span></div></li>
+          <li class="why-item why-item--good"><span class="why-check">✓</span><div><strong>Built for field workers</strong><span>Drivers, crews, trades — not office teams</span></div></li>
+        </ul>
+      </div>
+
+      <div class="why-vs">VS</div>
+
+      <div class="why-competitors">
+        <div class="why-comp-card">
+          <div class="why-comp-name">ADP</div>
+          <ul class="why-comp-list">
+            <li><span class="why-x">✗</span>Desktop-first</li>
+            <li><span class="why-x">✗</span>No GPS clock-in</li>
+            <li><span class="why-x">✗</span>Complex 1099 setup</li>
+            <li><span class="why-x">✗</span>$150+/mo</li>
+            <li><span class="why-x">✗</span>Days to set up</li>
+            <li><span class="why-x">✗</span>AI add-on only</li>
+            <li><span class="why-x">✗</span>Enterprise focus</li>
+          </ul>
+        </div>
+        <div class="why-comp-card">
+          <div class="why-comp-name">Homebase</div>
+          <ul class="why-comp-list">
+            <li><span class="why-x">✗</span>Restaurant/retail</li>
+            <li><span class="why-x">✗</span>Basic only</li>
+            <li><span class="why-x">✗</span>W2 only</li>
+            <li><span class="why-x">✗</span>$99+/mo</li>
+            <li><span class="why-x">✗</span>Hours to set up</li>
+            <li><span class="why-x">✗</span>Limited AI</li>
+            <li><span class="why-x">✗</span>Not field-ready</li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>
+</div>
 </section>
 
 <section id="pricing-panel" class="tab-panel">
