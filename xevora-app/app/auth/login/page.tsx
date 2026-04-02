@@ -60,6 +60,142 @@ interface StarParticle {
 
 /** Starfield canvas only runs at this breakpoint and up (saves mobile battery). */
 const SHOW_STARS_QUERY = "(min-width: 768px)";
+const MOBILE_STARS_QUERY = "(max-width: 767px)";
+
+interface MobileLightStar {
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  radius: number;
+  opacity: number;
+}
+
+/** Lightweight white particle field — mobile only (< 768px). */
+function MobileLightStarsBackground() {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const particlesRef = useRef<MobileLightStar[]>([]);
+  const [active, setActive] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia(MOBILE_STARS_QUERY);
+    const apply = () => setActive(mq.matches);
+    apply();
+    mq.addEventListener("change", apply);
+    return () => mq.removeEventListener("change", apply);
+  }, []);
+
+  useEffect(() => {
+    if (!active) return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const context = canvas.getContext("2d");
+    if (!context) return;
+
+    const parent = canvas.parentElement;
+    if (!parent) return;
+
+    let frameId = 0;
+
+    const makeParticle = (width: number, height: number): MobileLightStar => ({
+      x: Math.random() * width,
+      y: Math.random() * height,
+      vx: (Math.random() < 0.5 ? -1 : 1) * (0.08 + Math.random() * 0.07),
+      vy: (Math.random() < 0.5 ? -1 : 1) * (0.08 + Math.random() * 0.07),
+      radius: 0.8 + Math.random() * 0.4,
+      opacity: 0.15 + Math.random() * 0.25,
+    });
+
+    const resize = () => {
+      const width = Math.max(1, parent.clientWidth);
+      const height = Math.max(1, parent.clientHeight);
+      canvas.width = width;
+      canvas.height = height;
+      if (particlesRef.current.length === 0) {
+        particlesRef.current = Array.from({ length: 40 }, () => makeParticle(width, height));
+      } else {
+        particlesRef.current.forEach((particle) => {
+          particle.x = Math.min(particle.x, width);
+          particle.y = Math.min(particle.y, height);
+        });
+      }
+    };
+
+    const tick = () => {
+      const { width, height } = canvas;
+      if (width < 2 || height < 2) {
+        frameId = requestAnimationFrame(tick);
+        return;
+      }
+      context.fillStyle = "#03060D";
+      context.fillRect(0, 0, width, height);
+
+      const particles = particlesRef.current;
+      particles.forEach((particle) => {
+        particle.x += particle.vx;
+        particle.y += particle.vy;
+        if (particle.x <= 0 || particle.x >= width) particle.vx *= -1;
+        if (particle.y <= 0 || particle.y >= height) particle.vy *= -1;
+        particle.x = Math.max(0, Math.min(width, particle.x));
+        particle.y = Math.max(0, Math.min(height, particle.y));
+      });
+
+      particles.forEach((particle) => {
+        context.beginPath();
+        context.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
+        context.fillStyle = `rgba(255,255,255,${particle.opacity.toFixed(3)})`;
+        context.fill();
+      });
+
+      frameId = requestAnimationFrame(tick);
+    };
+
+    resize();
+    tick();
+    const observer = new ResizeObserver(resize);
+    observer.observe(parent);
+
+    return () => {
+      cancelAnimationFrame(frameId);
+      observer.disconnect();
+      particlesRef.current = [];
+    };
+  }, [active]);
+
+  if (!active) return null;
+
+  return (
+    <canvas
+      ref={canvasRef}
+      aria-hidden
+      className="pointer-events-none absolute inset-0 z-0 h-full w-full md:hidden"
+    />
+  );
+}
+
+function MobileFormHex({ active }: { active: boolean }) {
+  const [isNarrow, setIsNarrow] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia(MOBILE_STARS_QUERY);
+    const apply = () => setIsNarrow(mq.matches);
+    apply();
+    mq.addEventListener("change", apply);
+    return () => mq.removeEventListener("change", apply);
+  }, []);
+
+  if (!isNarrow || !active) return null;
+
+  return (
+    <div className="auth-mobile-hex mb-5 flex shrink-0 justify-center">
+      <div className="flex h-11 w-11 items-center justify-center overflow-visible">
+        <div className="origin-center scale-[0.3143]">
+          <HexLogo />
+        </div>
+      </div>
+    </div>
+  );
+}
 
 function ConnectedStarsBackground() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -464,7 +600,7 @@ export default function LoginPage() {
     </div>
   ) : (
     <>
-      <h2 className="text-center text-[28px] font-extrabold leading-snug md:text-left md:text-[26px]">Create your account</h2>
+      <h2 className="text-center text-[28px] font-extrabold leading-snug md:text-left md:text-[26px]">Create Account</h2>
       <p className="mt-1.5 text-center text-[14px] font-light leading-snug text-[var(--muted)] md:text-left">
         Start your free beta access
       </p>
@@ -544,7 +680,8 @@ export default function LoginPage() {
             transition={{ duration: 0.5, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
             className="relative z-[2] flex min-h-0 w-full min-w-0 flex-1 flex-col justify-center bg-[#03060D] px-6 py-8 md:h-screen md:w-[55%] md:bg-[rgba(3,6,13,0.6)] md:px-10 md:py-10 md:shadow-[inset_8px_0_32px_rgba(37,99,235,0.04)] lg:w-[45%]"
           >
-            <div className="mx-auto w-full min-w-0 max-w-full md:max-w-[400px]">
+            <MobileLightStarsBackground />
+            <div className="relative z-10 mx-auto w-full min-w-0 max-w-full md:max-w-[400px]">
               <div
                 className="w-full min-w-0 rounded-none border-0 bg-transparent p-0 shadow-none backdrop-blur-none md:rounded-[20px] md:border md:border-[rgba(37,99,235,0.15)] md:bg-[rgba(6,11,20,0.75)] md:p-[44px] md:shadow-[0_0_0_1px_rgba(37,99,235,0.05),0_24px_64px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.03)] md:backdrop-blur-[20px] md:[-webkit-backdrop-filter:blur(20px)]"
                 style={{ perspective: "1200px" }}
@@ -569,7 +706,10 @@ export default function LoginPage() {
                       transform: "rotateY(0deg)",
                     }}
                   >
-                    <div className="flex min-h-[min(100dvh,760px)] min-w-0 flex-col md:min-h-[580px]">{loginForm}</div>
+                    <div className="flex min-h-[min(100dvh,760px)] min-w-0 flex-col md:min-h-[580px]">
+                      <MobileFormHex active={!isFlipped} />
+                      {loginForm}
+                    </div>
                   </div>
 
                   <div
@@ -585,6 +725,7 @@ export default function LoginPage() {
                     }}
                   >
                     <div className="flex min-h-[min(100dvh,760px)] min-w-0 flex-col overflow-y-auto pb-6 md:min-h-[580px]">
+                      <MobileFormHex active={isFlipped} />
                       {signupForm}
                     </div>
                   </div>

@@ -154,3 +154,17 @@ input:-webkit-autofill:focus {
     opacity: 0;
   }
 }
+
+@keyframes hexPulse {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 6px rgba(37, 99, 235, 0.4));
+  }
+  50% {
+    filter: drop-shadow(0 0 14px rgba(59, 130, 246, 0.7));
+  }
+}
+
+.auth-mobile-hex {
+  animation: hexPulse 2.5s ease-in-out infinite;
+}
