@@ -145,10 +145,32 @@ nav{
 
 @keyframes rpulse{0%{transform:scale(1);opacity:.7}100%{transform:scale(1.6);opacity:0}}
 
-.brand-name{
-  font-family:'Syne',sans-serif;font-weight:800;
-  font-size:18px;letter-spacing:0.02em;color:#F1F5FF;
-  white-space:nowrap;
+@keyframes xevoraShimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+.brand-name {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 18px;
+  letter-spacing: 0.02em;
+  background: linear-gradient(
+    105deg,
+    #F1F5FF 0%,
+    #F1F5FF 35%,
+    #60A5FA 48%,
+    #3B82F6 52%,
+    #93C5FD 56%,
+    #F1F5FF 65%,
+    #F1F5FF 100%
+  );
+  background-size: 250% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: xevoraShimmer 4s linear infinite;
+  white-space: nowrap;
 }
 
 .nav-badge{
@@ -203,6 +225,7 @@ nav{
   overflow-x: auto;
   overflow-y: visible;
   -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x mandatory;
   scrollbar-width: none;
 }
 .site-tabs::-webkit-scrollbar { display: none; }
@@ -237,6 +260,7 @@ nav{
   text-decoration: none;
   white-space: nowrap;
   flex-shrink: 0;
+  scroll-snap-align: start;
 }
 .site-tab:hover {
   color: rgba(255,255,255,0.75);
@@ -414,7 +438,23 @@ h1{
   word-break:break-word;
   overflow-wrap:break-word;
 }
-.hw{display:block;font-size:clamp(40px,6.2vw,80px);color:var(--text)}
+.hw {
+  display: block;
+  font-size: clamp(40px, 6.2vw, 80px);
+  background: linear-gradient(
+    105deg,
+    #F1F5FF 0%,
+    #F1F5FF 40%,
+    #93C5FD 50%,
+    #F1F5FF 60%,
+    #F1F5FF 100%
+  );
+  background-size: 300% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: xevoraShimmer 6s linear infinite;
+}
 .hb{display:block;font-size:clamp(40px,6.2vw,80px);color:var(--blue2)}
 .hg{
   display:block;
@@ -886,6 +926,7 @@ p.sub{
 
 .fr-stagger{opacity:0;transform:translateY(16px);transition:opacity 360ms cubic-bezier(0.16,1,0.3,1),transform 360ms cubic-bezier(0.16,1,0.3,1)}
 .fr-stagger.in{opacity:1;transform:translateY(0)}
+#fleetpulse-panel.panel-active .fr-stagger{opacity:1;transform:translateY(0)}
 
 .why-section {
   padding: 100px 20px 120px;
@@ -1365,7 +1406,19 @@ footer{
   nav{padding:14px 16px}
   .site-tabs{top:68px}
   .tab-bar{padding:0 8px;justify-content:flex-start}
-  .site-tab{padding:12px 16px;font-size:12px}
+  .site-tab{padding:10px 14px;font-size:10px;letter-spacing:0.06em}
+  .site-tabs-fade{
+    position:fixed;
+    top:68px;
+    right:0;
+    width:40px;
+    height:44px;
+    z-index:47;
+    background:linear-gradient(to right,transparent,rgba(3,6,13,0.95));
+    pointer-events:none;
+  }
+  #fleetpulse-panel .content-panel{padding-top:130px}
+  #fleetpulse-panel.panel-active .panel-card{overflow:visible}
 
   /* Hero */
   main{padding:140px 16px 50px}
@@ -1484,6 +1537,7 @@ footer{
     <span class="tab-underline" id="tab-underline" aria-hidden="true"></span>
   </div>
 </div>
+<div class="site-tabs-fade" aria-hidden="true"></div>
 
 <div id="tab-popover" class="tab-popover" role="tooltip" aria-hidden="true">
   <div class="tp-label" id="tp-label"></div>
@@ -2111,6 +2165,7 @@ function revealRoadmapIfInView() {
   const tabBtns=document.querySelectorAll('.tab-btn');
   tabBtns.forEach(btn=>{
     btn.addEventListener('click',function(){
+      if(!this.getAttribute('data-tab'))return;
       const id=this.getAttribute('data-tab');
       if(!id)return;
       switchTab(id);
