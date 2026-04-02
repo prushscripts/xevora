@@ -578,66 +578,131 @@ p.sub{
   font-family:'DM Sans',sans-serif;font-size:16px;font-weight:300;color:var(--sub);
   line-height:1.7;max-width:640px;
 }
-.content-panel--fr-premium{
-  box-sizing:border-box;max-width:960px;margin:0 auto;
-  padding:118px 24px 40px;
+/* Features & Roadmap — platform roadmap */
+@keyframes roadmapFadeUp{
+  from{opacity:0;transform:translateY(12px)}
+  to{opacity:1;transform:translateY(0)}
 }
-.fr-prem-head{
-  display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-bottom:6px;
+@keyframes roadmapFadeUpNext{
+  from{opacity:0;transform:translateY(12px)}
+  to{opacity:0.85;transform:translateY(0)}
 }
-.fr-prem-hdr{display:flex;flex-direction:column;align-items:flex-start}
-.fr-prem-hdr:last-child{align-items:flex-end;text-align:right}
-.fr-prem-badge{
-  display:inline-flex;align-items:center;gap:6px;
-  padding:4px 12px;border-radius:100px;
+.roadmap-section{
+  position:relative;overflow:hidden;
+  background-color:#03060D;
+  background-image:
+    linear-gradient(rgba(37,99,235,0.06) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(37,99,235,0.06) 1px,transparent 1px);
+  background-size:40px 40px;
+  padding:158px 24px 120px;
+  box-sizing:border-box;
+}
+.roadmap-inner{max-width:1100px;margin:0 auto}
+.roadmap-head{text-align:center;margin-bottom:80px}
+.roadmap-eyebrow{
   font-family:'JetBrains Mono',ui-monospace,monospace;
-  font-size:9px;font-weight:500;letter-spacing:2px;text-transform:uppercase;
+  font-size:10px;font-weight:400;letter-spacing:0.3em;color:#2563EB;text-transform:uppercase;
 }
-.fr-prem-badge--g{
-  background:rgba(52,211,153,0.08);border:1px solid rgba(52,211,153,0.2);color:#34D399;
+.roadmap-title{
+  font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(32px,5vw,48px);
+  color:#F1F5FF;line-height:1.1;margin:16px 0 12px;
 }
-.fr-prem-badge--b{
-  background:rgba(37,99,235,0.08);border:1px solid rgba(37,99,235,0.2);color:#3B82F6;
+.roadmap-sub{
+  font-family:'DM Sans',sans-serif;font-weight:300;font-size:18px;color:#4E6D92;line-height:1.55;
 }
-.fr-prem-badge .bd{width:5px;height:5px;border-radius:50%;flex-shrink:0}
-.fr-prem-badge--g .bd{background:#34D399}
-.fr-prem-badge--b .bd{background:#3B82F6}
-.fr-prem-htitle{
-  font-family:'Syne',sans-serif;font-weight:700;font-size:18px;color:#F1F5FF;
-  margin-top:8px;line-height:1.2;
+.roadmap-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start;
 }
-.fr-prem-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px}
-.fr-prem-row{
-  display:flex;align-items:flex-start;gap:12px;padding:11px 0;
-  border-bottom:1px solid rgba(37,99,235,0.07);
+.roadmap-col{display:flex;flex-direction:column;gap:12px}
+.roadmap-col-head{margin-bottom:4px}
+.roadmap-pill{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:5px 12px;border-radius:100px;
+  font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;font-weight:400;
+  letter-spacing:0.12em;text-transform:uppercase;
 }
-.fr-prem-row:last-child{border-bottom:none}
-.fr-prem-ico{
+.roadmap-pill--12{
+  background:rgba(37,99,235,0.12);border:1px solid rgba(37,99,235,0.25);color:#3B82F6;
+}
+.roadmap-pill--34{
+  background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.18);color:#60A5FA;
+}
+.roadmap-col-title{
+  font-family:'Syne',sans-serif;font-weight:800;font-size:22px;color:#F1F5FF;
+  margin-top:10px;line-height:1.2;
+}
+.roadmap-card{
+  display:flex;align-items:center;gap:14px;
+  padding:16px 20px;border-radius:12px;
+  background:rgba(6,11,20,0.8);border:1px solid rgba(37,99,235,0.10);
+  transition:border-color 200ms ease,background 200ms ease,transform 200ms ease;
+  opacity:0;transform:translateY(12px);
+}
+.roadmap-section.roadmap-inview .roadmap-col--now .roadmap-card{
+  animation:roadmapFadeUp 400ms ease-out forwards;
+}
+.roadmap-section.roadmap-inview .roadmap-col--next .roadmap-card{
+  animation:roadmapFadeUpNext 400ms ease-out forwards;
+}
+.roadmap-section.roadmap-reduced .roadmap-col--now .roadmap-card{
+  opacity:1;transform:none;animation:none;
+}
+.roadmap-section.roadmap-reduced .roadmap-col--next .roadmap-card{
+  opacity:0.85;transform:none;animation:none;
+}
+.roadmap-col--now article.roadmap-card:nth-child(2){animation-delay:0ms}
+.roadmap-col--now article.roadmap-card:nth-child(3){animation-delay:60ms}
+.roadmap-col--now article.roadmap-card:nth-child(4){animation-delay:120ms}
+.roadmap-col--now article.roadmap-card:nth-child(5){animation-delay:180ms}
+.roadmap-col--now article.roadmap-card:nth-child(6){animation-delay:240ms}
+.roadmap-col--now article.roadmap-card:nth-child(7){animation-delay:300ms}
+.roadmap-col--next article.roadmap-card:nth-child(2){animation-delay:0ms}
+.roadmap-col--next article.roadmap-card:nth-child(3){animation-delay:60ms}
+.roadmap-col--next article.roadmap-card:nth-child(4){animation-delay:120ms}
+.roadmap-col--next article.roadmap-card:nth-child(5){animation-delay:180ms}
+.roadmap-col--next article.roadmap-card:nth-child(6){animation-delay:240ms}
+.roadmap-col--next article.roadmap-card:nth-child(7){animation-delay:300ms}
+.roadmap-col--next article.roadmap-card:nth-child(8){animation-delay:360ms}
+.roadmap-col--next article.roadmap-card:nth-child(9){animation-delay:420ms}
+.roadmap-card:hover{
+  transform:translateY(-2px);
+  background:rgba(37,99,235,0.05);border-color:rgba(37,99,235,0.35);
+}
+.roadmap-col--next .roadmap-card:hover{
+  border-color:rgba(96,165,250,0.3);
+  background:rgba(6,11,20,0.85);
+}
+.roadmap-ico{
   flex-shrink:0;width:20px;height:20px;border-radius:50%;
   display:flex;align-items:center;justify-content:center;
-  font-size:10px;line-height:1;
+  font-size:11px;line-height:1;
 }
-.fr-prem-ico--g{
-  background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.2);color:#34D399;
+.roadmap-ico--now{
+  background:rgba(37,99,235,0.12);color:#3B82F6;
 }
-.fr-prem-ico--b{
-  background:rgba(37,99,235,0.1);border:1px solid rgba(37,99,235,0.2);color:#3B82F6;font-size:11px;
+.roadmap-ico--next{
+  background:rgba(78,109,146,0.08);color:#4E6D92;
+  border:1px solid rgba(78,109,146,0.35);box-sizing:border-box;
 }
-.fr-prem-body{min-width:0}
-.fr-prem-h{font-family:'DM Sans',sans-serif;font-weight:500;font-size:13px;color:#EDE8E0;line-height:1.3}
-.fr-prem-d{
-  font-family:'DM Sans',sans-serif;font-weight:300;font-size:12px;
-  color:rgba(74,80,96,0.8);margin-top:2px;line-height:1.45;
+.roadmap-card-body{min-width:0}
+.roadmap-card-title{
+  font-family:'DM Sans',sans-serif;font-weight:500;font-size:15px;color:#F1F5FF;line-height:1.3;
 }
-.fr-prem-foot{
-  text-align:right;margin-top:20px;
-  font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;color:#2A3848;letter-spacing:0.02em;
+.roadmap-card-desc{
+  display:block;font-family:'DM Sans',sans-serif;font-weight:300;font-size:13px;
+  color:#4E6D92;margin-top:4px;line-height:1.45;
 }
-.fr-prem-foot a{color:inherit;text-decoration:none}
-.fr-prem-foot a:hover{text-decoration:underline}
+.roadmap-foot{
+  text-align:center;margin-top:48px;
+  font-family:'DM Sans',sans-serif;font-weight:300;font-size:13px;color:#4E6D92;
+}
+.roadmap-foot a{
+  color:#3B82F6;text-decoration:none;margin-left:6px;
+  transition:text-decoration 150ms ease;
+}
+.roadmap-foot a:hover{text-decoration:underline}
 @media(max-width:900px){
-  .fr-prem-head,.fr-prem-grid{grid-template-columns:1fr}
-  .fr-prem-hdr:last-child{align-items:flex-start;text-align:left}
+  .roadmap-grid{grid-template-columns:1fr}
 }
 .panel-card{
   background:rgba(6,11,22,0.95);
@@ -935,88 +1000,6 @@ footer{
   .stat-row{grid-template-columns:repeat(2,1fr)}
 }
 
-/* Nav Sign In fullscreen transition (nav button only) */
-@keyframes navSigninHexPulse{
-  0%,100%{transform:scale(1);text-shadow:0 0 16px rgba(37,99,235,0.55),0 0 28px rgba(37,99,235,0.35);filter:drop-shadow(0 0 6px rgba(37,99,235,0.5))}
-  50%{transform:scale(1.05);text-shadow:0 0 28px rgba(59,130,246,0.85),0 0 42px rgba(37,99,235,0.45);filter:drop-shadow(0 0 14px rgba(59,130,246,0.75))}
-}
-@keyframes navSigninCharIn{
-  from{opacity:0}
-  to{opacity:1}
-}
-@keyframes navSigninStatusIn{
-  from{opacity:0}
-  to{opacity:1}
-}
-@keyframes navSigninProgFill{
-  from{width:0%}
-  to{width:100%}
-}
-@keyframes navSigninHudPop{
-  from{opacity:0;transform:scale(1.2)}
-  to{opacity:1;transform:scale(1)}
-}
-@keyframes navSigninOverlayIn{
-  from{opacity:0}
-  to{opacity:1}
-}
-.nav-signin-overlay-el{
-  position:fixed;inset:0;z-index:99999;
-  display:flex;align-items:center;justify-content:center;
-  background:#03060D;
-  opacity:0;
-  animation:navSigninOverlayIn 300ms ease forwards;
-  font-family:'DM Sans',sans-serif;
-}
-.nav-signin-overlay-inner{
-  position:relative;
-  display:flex;flex-direction:column;align-items:center;
-  gap:16px;
-  max-width:min(280px,88vw);
-  text-align:center;
-}
-.nav-signin-hex{
-  font-size:64px;line-height:1;color:#2563EB;
-  animation:navSigninHexPulse 1.2s ease-in-out infinite;
-}
-.nav-signin-wordmark{
-  font-family:'Syne',sans-serif;font-size:24px;font-weight:800;
-  letter-spacing:0.2em;color:#fff;
-  display:flex;justify-content:center;gap:0.02em;
-}
-.nav-signin-wordmark span{
-  opacity:0;
-  animation:navSigninCharIn 100ms ease forwards;
-}
-.nav-signin-status{
-  font-family:'JetBrains Mono',ui-monospace,monospace;
-  font-size:10px;letter-spacing:0.25em;
-  color:rgba(37,99,235,0.8);
-  opacity:0;
-  animation:navSigninStatusIn 280ms ease 400ms forwards;
-  white-space:nowrap;
-}
-.nav-signin-progress{
-  width:100%;max-width:280px;height:2px;
-  background:rgba(255,255,255,0.08);
-  border-radius:1px;overflow:hidden;
-}
-.nav-signin-progress-fill{
-  height:100%;width:0;
-  background:linear-gradient(90deg,#2563EB,#3B82F6);
-  box-shadow:0 0 10px rgba(37,99,235,0.65);
-  animation:navSigninProgFill 900ms cubic-bezier(0.4,0,0.2,1) 300ms forwards;
-}
-.nav-signin-hud{
-  position:fixed;width:20px;height:20px;pointer-events:none;
-  border-color:#2563EB;border-style:solid;border-width:0;
-  opacity:0;
-  animation:navSigninHudPop 200ms ease forwards;
-}
-.nav-signin-hud-tl{top:20px;left:20px;border-top-width:2px;border-left-width:2px}
-.nav-signin-hud-tr{top:20px;right:20px;border-top-width:2px;border-right-width:2px}
-.nav-signin-hud-bl{bottom:20px;left:20px;border-bottom-width:2px;border-left-width:2px}
-.nav-signin-hud-br{bottom:20px;right:20px;border-bottom-width:2px;border-right-width:2px}
 </style>
 </head>
 <body>
@@ -1049,7 +1032,7 @@ footer{
   </div>
   <div class="nav-actions">
     <div class="nav-badge"><span class="bdot"></span>Early Access Open</div>
-    <button type="button" class="nav-signin-btn" onclick="triggerNavSignInTransition(event)">Sign In →</button>
+    <button type="button" class="nav-signin-btn" onclick="xevoraTransition(event, 'https://app.xevora.io/auth/login')">Sign In →</button>
   </div>
 </nav>
 
@@ -1089,7 +1072,7 @@ footer{
   <div class="fw" id="waitlist">
     <div class="fs">
       <input type="email" id="ei" placeholder="Enter your work email" autocomplete="email"/>
-      <button onclick="triggerLoginTransition(event)">Get Early Access</button>
+      <button type="button" onclick="xevoraTransition(event, 'https://app.xevora.io/auth/login')">Get Early Access</button>
     </div>
     <p class="fn">No spam. First to know when we launch.</p>
     <p class="succ" id="sm">
@@ -1181,38 +1164,127 @@ footer{
 </section>
 
 <section id="features-panel" class="tab-panel">
-  <div class="content-panel content-panel--fr-premium">
-    <div class="fr-prem-head">
-      <div class="fr-prem-hdr">
-        <span class="fr-prem-badge fr-prem-badge--g"><span class="bd" aria-hidden="true"></span>Stage 1–2</span>
-        <div class="fr-prem-htitle">Building Now</div>
+  <div class="roadmap-section">
+    <div class="roadmap-inner">
+      <header class="roadmap-head">
+        <p class="roadmap-eyebrow">Platform roadmap</p>
+        <h2 class="roadmap-title">Everything your operation needs.</h2>
+        <p class="roadmap-sub">Built in stages. Shipped fast. No fluff.</p>
+      </header>
+      <div class="roadmap-grid">
+        <div class="roadmap-col roadmap-col--now">
+          <div class="roadmap-col-head">
+            <span class="roadmap-pill roadmap-pill--12">● Stage 1–2</span>
+            <h3 class="roadmap-col-title">Building Now</h3>
+          </div>
+          <article class="roadmap-card">
+            <span class="roadmap-ico roadmap-ico--now" aria-hidden="true">✓</span>
+            <div class="roadmap-card-body">
+              <div class="roadmap-card-title">GPS Clock-In</div>
+              <p class="roadmap-card-desc">One tap, location stamped, works from any mobile device</p>
+            </div>
+          </article>
+          <article class="roadmap-card">
+            <span class="roadmap-ico roadmap-ico--now" aria-hidden="true">✓</span>
+            <div class="roadmap-card-body">
+              <div class="roadmap-card-title">Worker Management</div>
+              <p class="roadmap-card-desc">Add W2 and 1099 workers, invite via email, manage profiles</p>
+            </div>
+          </article>
+          <article class="roadmap-card">
+            <span class="roadmap-ico roadmap-ico--now" aria-hidden="true">✓</span>
+            <div class="roadmap-card-body">
+              <div class="roadmap-card-title">Time Entry Approval</div>
+              <p class="roadmap-card-desc">Review, approve or edit hours before payroll</p>
+            </div>
+          </article>
+          <article class="roadmap-card">
+            <span class="roadmap-ico roadmap-ico--now" aria-hidden="true">✓</span>
+            <div class="roadmap-card-body">
+              <div class="roadmap-card-title">Real-time Dashboard</div>
+              <p class="roadmap-card-desc">Live view of who's clocked in, hours this week, payroll estimates</p>
+            </div>
+          </article>
+          <article class="roadmap-card">
+            <span class="roadmap-ico roadmap-ico--now" aria-hidden="true">✓</span>
+            <div class="roadmap-card-body">
+              <div class="roadmap-card-title">Email Notifications</div>
+              <p class="roadmap-card-desc">Clock-in alerts, approval reminders, payroll confirmations</p>
+            </div>
+          </article>
+          <article class="roadmap-card">
+            <span class="roadmap-ico roadmap-ico--now" aria-hidden="true">✓</span>
+            <div class="roadmap-card-body">
+              <div class="roadmap-card-title">Billing &amp; Subscriptions</div>
+              <p class="roadmap-card-desc">Stripe integration, plan management, invoices</p>
+            </div>
+          </article>
+        </div>
+        <div class="roadmap-col roadmap-col--next">
+          <div class="roadmap-col-head">
+            <span class="roadmap-pill roadmap-pill--34">● Stage 3–4</span>
+            <h3 class="roadmap-col-title">Coming Next</h3>
+          </div>
+          <article class="roadmap-card">
+            <span class="roadmap-ico roadmap-ico--next" aria-hidden="true">→</span>
+            <div class="roadmap-card-body">
+              <div class="roadmap-card-title">Check.com Payroll</div>
+              <p class="roadmap-card-desc">Automated direct deposit for W2 and 1099 workers</p>
+            </div>
+          </article>
+          <article class="roadmap-card">
+            <span class="roadmap-ico roadmap-ico--next" aria-hidden="true">→</span>
+            <div class="roadmap-card-body">
+              <div class="roadmap-card-title">Pay Stub Generation</div>
+              <p class="roadmap-card-desc">Auto PDF pay stubs emailed to every worker</p>
+            </div>
+          </article>
+          <article class="roadmap-card">
+            <span class="roadmap-ico roadmap-ico--next" aria-hidden="true">→</span>
+            <div class="roadmap-card-body">
+              <div class="roadmap-card-title">1099 Auto-Filing</div>
+              <p class="roadmap-card-desc">Year-end contractor documents generated automatically</p>
+            </div>
+          </article>
+          <article class="roadmap-card">
+            <span class="roadmap-ico roadmap-ico--next" aria-hidden="true">→</span>
+            <div class="roadmap-card-body">
+              <div class="roadmap-card-title">AI Payroll Assistant</div>
+              <p class="roadmap-card-desc">Natural language payroll runs and anomaly detection</p>
+            </div>
+          </article>
+          <article class="roadmap-card">
+            <span class="roadmap-ico roadmap-ico--next" aria-hidden="true">→</span>
+            <div class="roadmap-card-body">
+              <div class="roadmap-card-title">Fynlo Integration</div>
+              <p class="roadmap-card-desc">Labor costs sync directly to your books</p>
+            </div>
+          </article>
+          <article class="roadmap-card">
+            <span class="roadmap-ico roadmap-ico--next" aria-hidden="true">→</span>
+            <div class="roadmap-card-body">
+              <div class="roadmap-card-title">Mobile App (PWA)</div>
+              <p class="roadmap-card-desc">Installable app for workers, works offline</p>
+            </div>
+          </article>
+          <article class="roadmap-card">
+            <span class="roadmap-ico roadmap-ico--next" aria-hidden="true">→</span>
+            <div class="roadmap-card-body">
+              <div class="roadmap-card-title">QuickBooks Sync</div>
+              <p class="roadmap-card-desc">Import/export financial data</p>
+            </div>
+          </article>
+          <article class="roadmap-card">
+            <span class="roadmap-ico roadmap-ico--next" aria-hidden="true">→</span>
+            <div class="roadmap-card-body">
+              <div class="roadmap-card-title">Mileage Tracking</div>
+              <p class="roadmap-card-desc">Per-mile pay for drivers</p>
+            </div>
+          </article>
+        </div>
       </div>
-      <div class="fr-prem-hdr">
-        <span class="fr-prem-badge fr-prem-badge--b"><span class="bd" aria-hidden="true"></span>Stage 3–4</span>
-        <div class="fr-prem-htitle">Coming Next</div>
-      </div>
+      <p class="roadmap-foot">Feature request? <a href="mailto:hello@xevora.io">hello@xevora.io</a></p>
     </div>
-    <div class="fr-prem-grid">
-      <div class="fr-prem-col">
-        <div class="fr-prem-row"><span class="fr-prem-ico fr-prem-ico--g" aria-hidden="true">✓</span><div class="fr-prem-body"><div class="fr-prem-h">GPS Clock-In</div><div class="fr-prem-d">One tap, location stamped, works from any mobile device</div></div></div>
-        <div class="fr-prem-row"><span class="fr-prem-ico fr-prem-ico--g" aria-hidden="true">✓</span><div class="fr-prem-body"><div class="fr-prem-h">Worker Management</div><div class="fr-prem-d">Add W2 and 1099 workers, invite via email, manage profiles</div></div></div>
-        <div class="fr-prem-row"><span class="fr-prem-ico fr-prem-ico--g" aria-hidden="true">✓</span><div class="fr-prem-body"><div class="fr-prem-h">Time Entry Approval</div><div class="fr-prem-d">Review, approve or edit hours before payroll</div></div></div>
-        <div class="fr-prem-row"><span class="fr-prem-ico fr-prem-ico--g" aria-hidden="true">✓</span><div class="fr-prem-body"><div class="fr-prem-h">Real-time Dashboard</div><div class="fr-prem-d">Live view of who's clocked in, hours this week, payroll estimates</div></div></div>
-        <div class="fr-prem-row"><span class="fr-prem-ico fr-prem-ico--g" aria-hidden="true">✓</span><div class="fr-prem-body"><div class="fr-prem-h">Email Notifications</div><div class="fr-prem-d">Clock-in alerts, approval reminders, payroll confirmations</div></div></div>
-        <div class="fr-prem-row"><span class="fr-prem-ico fr-prem-ico--g" aria-hidden="true">✓</span><div class="fr-prem-body"><div class="fr-prem-h">Billing &amp; Subscriptions</div><div class="fr-prem-d">Stripe integration, plan management, invoices</div></div></div>
-      </div>
-      <div class="fr-prem-col">
-        <div class="fr-prem-row"><span class="fr-prem-ico fr-prem-ico--b" aria-hidden="true">›</span><div class="fr-prem-body"><div class="fr-prem-h">Check.com Payroll</div><div class="fr-prem-d">Automated direct deposit for W2 and 1099 workers</div></div></div>
-        <div class="fr-prem-row"><span class="fr-prem-ico fr-prem-ico--b" aria-hidden="true">›</span><div class="fr-prem-body"><div class="fr-prem-h">Pay Stub Generation</div><div class="fr-prem-d">Auto PDF pay stubs emailed to every worker</div></div></div>
-        <div class="fr-prem-row"><span class="fr-prem-ico fr-prem-ico--b" aria-hidden="true">›</span><div class="fr-prem-body"><div class="fr-prem-h">1099 Auto-Filing</div><div class="fr-prem-d">Year-end contractor documents generated automatically</div></div></div>
-        <div class="fr-prem-row"><span class="fr-prem-ico fr-prem-ico--b" aria-hidden="true">›</span><div class="fr-prem-body"><div class="fr-prem-h">AI Payroll Assistant</div><div class="fr-prem-d">Natural language payroll runs and anomaly detection</div></div></div>
-        <div class="fr-prem-row"><span class="fr-prem-ico fr-prem-ico--b" aria-hidden="true">›</span><div class="fr-prem-body"><div class="fr-prem-h">Fynlo Integration</div><div class="fr-prem-d">Labor costs sync directly to your books</div></div></div>
-        <div class="fr-prem-row"><span class="fr-prem-ico fr-prem-ico--b" aria-hidden="true">›</span><div class="fr-prem-body"><div class="fr-prem-h">Mobile App (PWA)</div><div class="fr-prem-d">Installable app for workers, works offline</div></div></div>
-        <div class="fr-prem-row"><span class="fr-prem-ico fr-prem-ico--b" aria-hidden="true">›</span><div class="fr-prem-body"><div class="fr-prem-h">QuickBooks Sync</div><div class="fr-prem-d">Import/export financial data</div></div></div>
-        <div class="fr-prem-row"><span class="fr-prem-ico fr-prem-ico--b" aria-hidden="true">›</span><div class="fr-prem-body"><div class="fr-prem-h">Mileage Tracking</div><div class="fr-prem-d">Per-mile pay for drivers</div></div></div>
-      </div>
-    </div>
-    <p class="fr-prem-foot">Feature request? <a href="mailto:hello@xevora.io">hello@xevora.io</a></p>
   </div>
 </section>
 
@@ -1262,7 +1334,7 @@ footer{
             <li>Pay Stubs</li>
             <li>Email Support</li>
           </ul>
-          <a class="p-cta" href="https://app.xevora.io/auth/login" onclick="triggerLoginTransition(event)">Join Waitlist</a>
+          <a class="p-cta" href="https://app.xevora.io/auth/login" onclick="xevoraTransition(event, 'https://app.xevora.io/auth/login')">Join Waitlist</a>
         </div>
         <div class="p-card pop">
           <div class="pop">Most Popular</div>
@@ -1276,7 +1348,7 @@ footer{
             <li>1099 Ready</li>
             <li>Priority Support</li>
           </ul>
-          <a class="p-cta" href="https://app.xevora.io/auth/login" onclick="triggerLoginTransition(event)">Join Waitlist</a>
+          <a class="p-cta" href="https://app.xevora.io/auth/login" onclick="xevoraTransition(event, 'https://app.xevora.io/auth/login')">Join Waitlist</a>
         </div>
         <div class="p-card">
           <div class="p-name">Pro</div>
@@ -1289,7 +1361,7 @@ footer{
             <li>Dedicated Support</li>
             <li>API Access</li>
           </ul>
-          <a class="p-cta" href="https://app.xevora.io/auth/login" onclick="triggerLoginTransition(event)">Join Waitlist</a>
+          <a class="p-cta" href="https://app.xevora.io/auth/login" onclick="xevoraTransition(event, 'https://app.xevora.io/auth/login')">Join Waitlist</a>
         </div>
       </div>
       </div>
@@ -1333,6 +1405,7 @@ footer{
   </div>
 </footer>
 
+<script src="transition.js"></script>
 <script>
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -1409,100 +1482,6 @@ async function go(){
   setTimeout(()=>{fs.style.display='none'; sm.classList.add('show');},265);
 }
 
-function triggerLoginTransition(event){
-  if (event && typeof event.preventDefault === 'function') {
-    event.preventDefault();
-  }
-
-  const styleId = 'login-transition-styles';
-  if (!document.getElementById(styleId)) {
-    const styleEl = document.createElement('style');
-    styleEl.id = styleId;
-    styleEl.textContent = `
-      .login-transition-overlay{position:fixed;inset:0;z-index:10000;background:#03060D;display:flex;align-items:center;justify-content:center;overflow:hidden;opacity:0;animation:loginFadeIn 180ms ease forwards}
-      .login-transition-inner{position:relative;display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center}
-      .login-transition-logo{font-size:64px;line-height:1;color:#60A5FA;text-shadow:0 0 18px rgba(37,99,235,.85),0 0 40px rgba(37,99,235,.4);transform:scale(.8);animation:loginLogoPulse 1400ms cubic-bezier(.16,1,.3,1) forwards}
-      .login-transition-text{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;letter-spacing:3px;color:#4E6D92;white-space:nowrap;border-right:1px solid rgba(96,165,250,.6);overflow:hidden;width:0;animation:loginType 820ms steps(27,end) 120ms forwards,loginCaret 700ms steps(1,end) infinite}
-      .login-transition-dots{display:inline-flex;align-items:center;gap:6px}
-      .login-transition-dots span{width:6px;height:6px;border-radius:50%;background:#3B82F6;box-shadow:0 0 10px rgba(37,99,235,.6);opacity:.25;animation:loginDotPulse 900ms ease-in-out infinite}
-      .login-transition-dots span:nth-child(2){animation-delay:.15s}
-      .login-transition-dots span:nth-child(3){animation-delay:.3s}
-      .login-transition-progress{width:260px;height:2px;background:rgba(37,99,235,.18);border-radius:999px;overflow:hidden}
-      .login-transition-progress span{display:block;height:100%;width:0;background:linear-gradient(90deg,#2563EB,#3B82F6);box-shadow:0 0 12px rgba(37,99,235,.8);animation:loginProgress 1200ms cubic-bezier(.16,1,.3,1) 100ms forwards}
-      .login-hud{position:absolute;width:24px;height:24px;opacity:0;animation:loginHudIn 260ms ease 80ms forwards}
-      .login-hud.tl{top:20px;left:20px;border-top:1.5px solid rgba(96,165,250,.6);border-left:1.5px solid rgba(96,165,250,.6)}
-      .login-hud.tr{top:20px;right:20px;border-top:1.5px solid rgba(96,165,250,.6);border-right:1.5px solid rgba(96,165,250,.6)}
-      .login-hud.bl{bottom:20px;left:20px;border-bottom:1.5px solid rgba(96,165,250,.6);border-left:1.5px solid rgba(96,165,250,.6)}
-      .login-hud.br{bottom:20px;right:20px;border-bottom:1.5px solid rgba(96,165,250,.6);border-right:1.5px solid rgba(96,165,250,.6)}
-      @keyframes loginFadeIn{to{opacity:1}}
-      @keyframes loginLogoPulse{0%{transform:scale(.8)}100%{transform:scale(1.2)}}
-      @keyframes loginType{to{width:27ch}}
-      @keyframes loginCaret{50%{border-right-color:transparent}}
-      @keyframes loginDotPulse{0%,100%{opacity:.2;transform:scale(.9)}50%{opacity:1;transform:scale(1)}}
-      @keyframes loginProgress{to{width:100%}}
-      @keyframes loginHudIn{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:scale(1)}}
-    `;
-    document.head.appendChild(styleEl);
-  }
-
-  const overlay = document.createElement('div');
-  overlay.className = 'login-transition-overlay';
-  overlay.innerHTML = `
-    <div class="login-hud tl"></div>
-    <div class="login-hud tr"></div>
-    <div class="login-hud bl"></div>
-    <div class="login-hud br"></div>
-    <div class="login-transition-inner">
-      <div class="login-transition-logo">⬡</div>
-      <div class="login-transition-text">INITIALIZING SECURE SESSION</div>
-      <div class="login-transition-dots"><span></span><span></span><span></span></div>
-      <div class="login-transition-progress"><span></span></div>
-    </div>
-  `;
-  document.body.appendChild(overlay);
-
-  window.setTimeout(() => {
-    window.location.href = 'https://app.xevora.io/auth/login';
-  }, 1400);
-}
-
-function triggerNavSignInTransition(event) {
-  if (event && typeof event.preventDefault === 'function') {
-    event.preventDefault();
-  }
-
-  const overlay = document.createElement('div');
-  overlay.className = 'nav-signin-overlay-el';
-  overlay.setAttribute('role', 'presentation');
-
-  const letters = 'XEVORA'.split('');
-  const spans = letters
-    .map(
-      (ch, i) =>
-        `<span style="animation-delay:${i * 100}ms">${ch}</span>`,
-    )
-    .join('');
-
-  overlay.innerHTML = `
-    <div class="nav-signin-hud nav-signin-hud-tl" aria-hidden="true"></div>
-    <div class="nav-signin-hud nav-signin-hud-tr" aria-hidden="true"></div>
-    <div class="nav-signin-hud nav-signin-hud-bl" aria-hidden="true"></div>
-    <div class="nav-signin-hud nav-signin-hud-br" aria-hidden="true"></div>
-    <div class="nav-signin-overlay-inner">
-      <div class="nav-signin-hex" aria-hidden="true">⬡</div>
-      <div class="nav-signin-wordmark">${spans}</div>
-      <div class="nav-signin-status">INITIALIZING SECURE SESSION</div>
-      <div class="nav-signin-progress"><div class="nav-signin-progress-fill"></div></div>
-    </div>
-  `;
-
-  document.body.appendChild(overlay);
-
-  window.setTimeout(() => {
-    window.location.href = 'https://app.xevora.io/auth/login';
-  }, 1500);
-}
-
 function updateUnderline(newTabId) {
   const tabBar = document.getElementById('site-tabs-inner');
   const underline = document.getElementById('tab-underline');
@@ -1534,8 +1513,8 @@ function switchTab(newTabId) {
   updateUnderline(newTabId);
 
   if (!currentPanel) {
-    // No current panel — just show new one
     newPanel.classList.add('is-active');
+    if (newTabId === 'features-panel') revealRoadmapIfInView();
     return;
   }
 
@@ -1552,7 +1531,19 @@ function switchTab(newTabId) {
     // Force reflow so animation triggers fresh
     void newPanel.offsetWidth;
     newPanel.classList.add('is-active');
+    if (newTabId === 'features-panel') revealRoadmapIfInView();
   }, 165);
+}
+
+function revealRoadmapIfInView() {
+  const rs = document.querySelector('.roadmap-section');
+  if (!rs || rs.classList.contains('roadmap-inview') || rs.classList.contains('roadmap-reduced')) return;
+  requestAnimationFrame(function () {
+    requestAnimationFrame(function () {
+      const r = rs.getBoundingClientRect();
+      if (r.bottom > 0 && r.top < window.innerHeight) rs.classList.add('roadmap-inview');
+    });
+  });
 }
 
 (function(){
@@ -1703,6 +1694,28 @@ function switchTab(newTabId) {
   }
   window.addEventListener('scroll',refPop,true);
   window.addEventListener('resize',refPop);
+})();
+
+/* Features / roadmap — scroll-in stagger */
+(function () {
+  const rs = document.querySelector('.roadmap-section');
+  if (!rs) return;
+  if (reduceMotion) {
+    rs.classList.add('roadmap-reduced', 'roadmap-inview');
+    return;
+  }
+  const obs = new IntersectionObserver(
+    function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) {
+          rs.classList.add('roadmap-inview');
+          obs.disconnect();
+        }
+      });
+    },
+    { threshold: 0.08, rootMargin: '0px 0px -24px 0px' },
+  );
+  obs.observe(rs);
 })();
 
 /* Scroll state for tab bar */
