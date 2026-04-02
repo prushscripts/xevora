@@ -146,8 +146,8 @@ nav{
 @keyframes rpulse{0%{transform:scale(1);opacity:.7}100%{transform:scale(1.6);opacity:0}}
 
 @keyframes xevoraShimmer {
-  0% { background-position: -200% center; }
-  100% { background-position: 200% center; }
+  0%   { background-position: 200% center; }
+  100% { background-position: -100% center; }
 }
 
 .brand-name {
@@ -155,22 +155,24 @@ nav{
   font-weight: 800;
   font-size: 18px;
   letter-spacing: 0.02em;
+  white-space: nowrap;
   background: linear-gradient(
     105deg,
     #F1F5FF 0%,
-    #F1F5FF 35%,
-    #60A5FA 48%,
-    #3B82F6 52%,
-    #93C5FD 56%,
-    #F1F5FF 65%,
+    #F1F5FF 30%,
+    #93C5FD 44%,
+    #60A5FA 50%,
+    #3B82F6 54%,
+    #93C5FD 60%,
+    #F1F5FF 72%,
     #F1F5FF 100%
   );
-  background-size: 250% auto;
+  background-size: 280% auto;
   -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
   background-clip: text;
-  animation: xevoraShimmer 4s linear infinite;
-  white-space: nowrap;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  animation: xevoraShimmer 4.5s linear infinite;
 }
 
 .nav-badge{
@@ -936,7 +938,7 @@ p.sub{
   box-sizing: border-box;
 }
 .why-inner { max-width: 960px; margin: 0 auto; }
-.why-head { text-align: center; margin-bottom: 56px; }
+.why-head { text-align: center; margin-bottom: 40px; }
 .why-eyebrow {
   font-family: 'JetBrains Mono', monospace;
   font-size: 10px; letter-spacing: 0.3em; color: #2563EB;
@@ -944,8 +946,9 @@ p.sub{
 }
 .why-title {
   font-family: 'Syne', sans-serif; font-weight: 800;
-  font-size: clamp(28px, 4.5vw, 44px);
-  color: #F1F5FF; line-height: 1.1; margin-bottom: 14px;
+  font-size: clamp(26px, 3.8vw, 40px);
+  line-height: 1.08;
+  color: #F1F5FF; margin-bottom: 14px;
 }
 .why-sub {
   font-family: 'DM Sans', sans-serif; font-weight: 300;
@@ -956,12 +959,14 @@ p.sub{
   grid-template-columns: 1fr auto 1fr;
   gap: 20px;
   align-items: start;
+  max-width: 900px;
+  margin: 0 auto;
 }
 .why-card--xev {
   background: linear-gradient(145deg, #0A1628 0%, #060B14 100%);
   border: 1px solid rgba(37,99,235,0.3);
   border-radius: 16px;
-  padding: 28px;
+  padding: 24px;
   box-shadow: 0 0 40px rgba(37,99,235,0.08);
 }
 .why-card-header {
@@ -990,7 +995,7 @@ p.sub{
 .why-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
 .why-item {
   display: flex; align-items: flex-start; gap: 12px;
-  padding: 10px 12px; border-radius: 8px;
+  padding: 8px 10px; border-radius: 8px;
 }
 .why-item--good {
   background: rgba(37,99,235,0.04);
@@ -1008,24 +1013,24 @@ p.sub{
 .why-item div { display: flex; flex-direction: column; gap: 2px; }
 .why-item strong {
   font-family: 'DM Sans', sans-serif; font-weight: 500;
-  font-size: 14px; color: #F1F5FF;
+  font-size: 13px; color: #F1F5FF;
 }
 .why-item span {
   font-family: 'DM Sans', sans-serif; font-weight: 300;
-  font-size: 12px; color: #4E6D92; line-height: 1.4;
+  font-size: 11px; color: #4E6D92; line-height: 1.4;
 }
 .why-vs {
   display: flex; align-items: center; justify-content: center;
   font-family: 'Syne', sans-serif; font-weight: 800;
   font-size: 13px; color: #243550; letter-spacing: 0.1em;
-  padding-top: 120px;
+  padding-top: 80px;
   writing-mode: vertical-lr;
 }
 .why-competitors { display: flex; flex-direction: column; gap: 16px; }
 .why-comp-card {
   background: rgba(6,11,20,0.6);
   border: 1px solid rgba(37,99,235,0.08);
-  border-radius: 12px; padding: 20px;
+  border-radius: 12px; padding: 16px;
 }
 .why-comp-name {
   font-family: 'Syne', sans-serif; font-weight: 700;
@@ -1063,6 +1068,112 @@ p.sub{
   .why-competitors { flex-direction: column; }
 }
 
+.feat-section {
+  background: #03060D;
+  background-image: linear-gradient(rgba(37,99,235,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(37,99,235,0.05) 1px, transparent 1px);
+  background-size: 44px 44px;
+  padding: 158px 24px 100px;
+  box-sizing: border-box;
+  min-height: 100vh;
+}
+.feat-inner { max-width: 1160px; margin: 0 auto; }
+.feat-head { text-align: center; margin-bottom: 52px; }
+.feat-eyebrow {
+  display: flex; align-items: center; justify-content: center; gap: 14px;
+  font-family: 'JetBrains Mono', monospace; font-size: 10px;
+  letter-spacing: 0.3em; color: #2563EB; text-transform: uppercase;
+  margin-bottom: 18px;
+}
+.feat-eyebrow span { display: block; width: 36px; height: 1px; background: rgba(37,99,235,0.35); }
+.feat-title {
+  font-family: 'Syne', sans-serif; font-weight: 800;
+  font-size: clamp(28px, 4.5vw, 48px); color: #F1F5FF;
+  line-height: 1.1; margin-bottom: 12px;
+}
+.feat-sub {
+  font-family: 'DM Sans', sans-serif; font-weight: 300;
+  font-size: 17px; color: #4E6D92;
+}
+.feat-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start;
+}
+.feat-col { display: flex; flex-direction: column; }
+.feat-col-top {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px;
+}
+.feat-pill {
+  font-family: 'JetBrains Mono', monospace; font-size: 10px;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  padding: 5px 12px; border-radius: 999px;
+}
+.feat-pill--now { background: rgba(37,99,235,0.12); border: 1px solid rgba(37,99,235,0.25); color: #3B82F6; }
+.feat-pill--next { background: rgba(99,102,241,0.1); border: 1px solid rgba(99,102,241,0.22); color: #A5B4FC; }
+.feat-status {
+  font-family: 'JetBrains Mono', monospace; font-size: 9px;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 4px 10px; border-radius: 999px;
+}
+.feat-status--live { background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.3); color: #4ADE80; }
+.feat-status--planned { background: rgba(99,102,241,0.1); border: 1px solid rgba(99,102,241,0.25); color: #818CF8; }
+.feat-pulse { animation: statusPulse 1.5s ease-in-out infinite; display: inline-block; }
+.feat-col-title {
+  font-family: 'Syne', sans-serif; font-weight: 800; font-size: 26px; margin-bottom: 16px;
+}
+.feat-col-title--now { color: #F1F5FF; }
+.feat-col-title--next { color: #C4CFDF; }
+.feat-cards { display: flex; flex-direction: column; gap: 10px; }
+.feat-card {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 18px; border-radius: 10px;
+  transition: transform 200ms ease, box-shadow 200ms ease, border-color 200ms ease, background 200ms ease;
+}
+.feat-card--now {
+  background: rgba(37,99,235,0.04);
+  border: 1px solid rgba(37,99,235,0.12);
+  border-left: 2px solid #2563EB;
+}
+.feat-card--now:hover {
+  transform: translateY(-2px);
+  background: rgba(37,99,235,0.08);
+  border-color: rgba(37,99,235,0.35);
+  border-left-color: #3B82F6;
+  box-shadow: 0 6px 24px rgba(37,99,235,0.12);
+}
+.feat-card--next {
+  background: rgba(99,102,241,0.02);
+  border: 1px solid rgba(99,102,241,0.1);
+  border-left: 2px solid rgba(99,102,241,0.3);
+  opacity: 0.8;
+}
+.feat-card--next:hover {
+  opacity: 1;
+  transform: translateY(-2px);
+  border-color: rgba(99,102,241,0.25);
+  border-left-color: rgba(129,140,248,0.7);
+  box-shadow: 0 6px 24px rgba(99,102,241,0.08);
+}
+.feat-ico {
+  flex-shrink: 0; width: 22px; height: 22px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700;
+}
+.feat-ico--now { background: rgba(37,99,235,0.18); border: 1px solid rgba(59,130,246,0.35); color: #3B82F6; }
+.feat-ico--next { background: rgba(99,102,241,0.08); border: 1px solid rgba(99,102,241,0.2); color: #818CF8; }
+.feat-body { min-width: 0; }
+.feat-name { font-family: 'DM Sans', sans-serif; font-weight: 500; font-size: 14px; color: #F1F5FF; }
+.feat-col--next .feat-name { color: #C4CFDF; }
+.feat-desc { font-family: 'DM Sans', sans-serif; font-weight: 300; font-size: 12px; color: #4E6D92; margin-top: 2px; }
+.feat-foot {
+  text-align: center; margin-top: 48px;
+  font-family: 'DM Sans', sans-serif; font-weight: 300; font-size: 13px; color: #4E6D92;
+}
+.feat-foot a { color: #3B82F6; text-decoration: none; margin-left: 4px; }
+.feat-foot a:hover { text-decoration: underline; }
+@media (max-width: 860px) {
+  .feat-grid { grid-template-columns: 1fr; gap: 32px; }
+  .feat-section { padding: 130px 16px 80px; }
+}
+
 /* Pricing — premium layout */
 @keyframes pricingFadeUp{
   from{opacity:0;transform:translateY(12px)}
@@ -1091,11 +1202,12 @@ p.sub{
   font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(32px,5vw,48px);
   color:#F1F5FF;line-height:1.1;margin:16px 0 28px;
 }
-.pricing-toggle-wrap{display:flex;justify-content:center}
+.pricing-toggle-wrap{display:flex;justify-content:center;padding:0 16px}
 .pricing-toggle{
   position:relative;display:flex;align-items:stretch;
   background:rgba(6,11,20,1);border:1px solid rgba(37,99,235,0.2);
   border-radius:999px;padding:4px;gap:0;
+  max-width:320px;width:100%;
 }
 .pricing-toggle-thumb{
   position:absolute;top:4px;bottom:4px;left:4px;
@@ -1109,7 +1221,7 @@ p.sub{
   position:relative;z-index:1;flex:1 1 0;min-width:0;
   appearance:none;border:none;background:transparent;cursor:pointer;
   font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;
-  padding:10px 20px;border-radius:999px;color:#4E6D92;
+  padding:10px 16px;border-radius:999px;color:#4E6D92;
   transition:color 250ms ease;
   white-space:nowrap;
 }
@@ -1655,134 +1767,50 @@ footer{
 </section>
 
 <section id="features-panel" class="tab-panel">
-  <div class="roadmap-section">
-    <div class="roadmap-inner">
-      <header class="roadmap-head">
-        <p class="roadmap-eyebrow">Platform roadmap</p>
-        <h2 class="roadmap-title">Everything your operation needs.</h2>
-        <p class="roadmap-sub">Built in stages. Shipped fast. No fluff.</p>
-      </header>
-      <div class="roadmap-grid">
-        <div class="roadmap-col roadmap-col--now">
-          <div class="roadmap-col-head">
-            <div class="roadmap-col-head-row">
-              <span class="roadmap-pill roadmap-pill--12">● Stage 1–2</span>
-              <span class="roadmap-status roadmap-status--live"><span class="roadmap-status-dot" aria-hidden="true">●</span> IN DEVELOPMENT</span>
-              <h3 class="roadmap-col-title roadmap-col-title--now">Building Now</h3>
-            </div>
-          </div>
-          <article class="roadmap-card">
-            <span class="roadmap-ico roadmap-ico--now" aria-hidden="true">✓</span>
-            <div class="roadmap-card-body">
-              <div class="roadmap-card-title">GPS Clock-In</div>
-              <p class="roadmap-card-desc">One tap, location stamped, works from any mobile device</p>
-            </div>
-          </article>
-          <article class="roadmap-card">
-            <span class="roadmap-ico roadmap-ico--now" aria-hidden="true">✓</span>
-            <div class="roadmap-card-body">
-              <div class="roadmap-card-title">Worker Management</div>
-              <p class="roadmap-card-desc">Add W2 and 1099 workers, invite via email, manage profiles</p>
-            </div>
-          </article>
-          <article class="roadmap-card">
-            <span class="roadmap-ico roadmap-ico--now" aria-hidden="true">✓</span>
-            <div class="roadmap-card-body">
-              <div class="roadmap-card-title">Time Entry Approval</div>
-              <p class="roadmap-card-desc">Review, approve or edit hours before payroll</p>
-            </div>
-          </article>
-          <article class="roadmap-card">
-            <span class="roadmap-ico roadmap-ico--now" aria-hidden="true">✓</span>
-            <div class="roadmap-card-body">
-              <div class="roadmap-card-title">Real-time Dashboard</div>
-              <p class="roadmap-card-desc">Live view of who's clocked in, hours this week, payroll estimates</p>
-            </div>
-          </article>
-          <article class="roadmap-card">
-            <span class="roadmap-ico roadmap-ico--now" aria-hidden="true">✓</span>
-            <div class="roadmap-card-body">
-              <div class="roadmap-card-title">Email Notifications</div>
-              <p class="roadmap-card-desc">Clock-in alerts, approval reminders, payroll confirmations</p>
-            </div>
-          </article>
-          <article class="roadmap-card">
-            <span class="roadmap-ico roadmap-ico--now" aria-hidden="true">✓</span>
-            <div class="roadmap-card-body">
-              <div class="roadmap-card-title">Billing &amp; Subscriptions</div>
-              <p class="roadmap-card-desc">Stripe integration, plan management, invoices</p>
-            </div>
-          </article>
+<div class="feat-section">
+  <div class="feat-inner">
+    <header class="feat-head">
+      <div class="feat-eyebrow"><span></span>PLATFORM ROADMAP<span></span></div>
+      <h2 class="feat-title">Everything your operation needs.</h2>
+      <p class="feat-sub">Built in stages. Shipped fast. No fluff.</p>
+    </header>
+    <div class="feat-grid">
+      <div class="feat-col feat-col--now">
+        <div class="feat-col-top">
+          <span class="feat-pill feat-pill--now">● STAGE 1–2</span>
+          <span class="feat-status feat-status--live"><span class="feat-pulse">●</span> IN DEVELOPMENT</span>
         </div>
-        <div class="roadmap-col roadmap-col--next">
-          <div class="roadmap-col-head">
-            <div class="roadmap-col-head-row">
-              <span class="roadmap-pill roadmap-pill--34">● Stage 3–4</span>
-              <span class="roadmap-status roadmap-status--planned"><span aria-hidden="true">●</span> ON ROADMAP</span>
-              <h3 class="roadmap-col-title roadmap-col-title--next">Coming Next</h3>
-            </div>
-          </div>
-          <article class="roadmap-card">
-            <span class="roadmap-ico roadmap-ico--next" aria-hidden="true">→</span>
-            <div class="roadmap-card-body">
-              <div class="roadmap-card-title">Check.com Payroll</div>
-              <p class="roadmap-card-desc">Automated direct deposit for W2 and 1099 workers</p>
-            </div>
-          </article>
-          <article class="roadmap-card">
-            <span class="roadmap-ico roadmap-ico--next" aria-hidden="true">→</span>
-            <div class="roadmap-card-body">
-              <div class="roadmap-card-title">Pay Stub Generation</div>
-              <p class="roadmap-card-desc">Auto PDF pay stubs emailed to every worker</p>
-            </div>
-          </article>
-          <article class="roadmap-card">
-            <span class="roadmap-ico roadmap-ico--next" aria-hidden="true">→</span>
-            <div class="roadmap-card-body">
-              <div class="roadmap-card-title">1099 Auto-Filing</div>
-              <p class="roadmap-card-desc">Year-end contractor documents generated automatically</p>
-            </div>
-          </article>
-          <article class="roadmap-card">
-            <span class="roadmap-ico roadmap-ico--next" aria-hidden="true">→</span>
-            <div class="roadmap-card-body">
-              <div class="roadmap-card-title">AI Payroll Assistant</div>
-              <p class="roadmap-card-desc">Natural language payroll runs and anomaly detection</p>
-            </div>
-          </article>
-          <article class="roadmap-card">
-            <span class="roadmap-ico roadmap-ico--next" aria-hidden="true">→</span>
-            <div class="roadmap-card-body">
-              <div class="roadmap-card-title">Fynlo Integration</div>
-              <p class="roadmap-card-desc">Labor costs sync directly to your books</p>
-            </div>
-          </article>
-          <article class="roadmap-card">
-            <span class="roadmap-ico roadmap-ico--next" aria-hidden="true">→</span>
-            <div class="roadmap-card-body">
-              <div class="roadmap-card-title">Mobile App (PWA)</div>
-              <p class="roadmap-card-desc">Installable app for workers, works offline</p>
-            </div>
-          </article>
-          <article class="roadmap-card">
-            <span class="roadmap-ico roadmap-ico--next" aria-hidden="true">→</span>
-            <div class="roadmap-card-body">
-              <div class="roadmap-card-title">QuickBooks Sync</div>
-              <p class="roadmap-card-desc">Import/export financial data</p>
-            </div>
-          </article>
-          <article class="roadmap-card">
-            <span class="roadmap-ico roadmap-ico--next" aria-hidden="true">→</span>
-            <div class="roadmap-card-body">
-              <div class="roadmap-card-title">Mileage Tracking</div>
-              <p class="roadmap-card-desc">Per-mile pay for drivers</p>
-            </div>
-          </article>
+        <h3 class="feat-col-title feat-col-title--now">Building Now</h3>
+        <div class="feat-cards" id="feat-now-cards">
+          <div class="feat-card feat-card--now"><div class="feat-ico feat-ico--now">✓</div><div class="feat-body"><div class="feat-name">GPS Clock-In</div><div class="feat-desc">One tap, location stamped, works from any mobile device</div></div></div>
+          <div class="feat-card feat-card--now"><div class="feat-ico feat-ico--now">✓</div><div class="feat-body"><div class="feat-name">Worker Management</div><div class="feat-desc">Add W2 and 1099 workers, invite via email, manage profiles</div></div></div>
+          <div class="feat-card feat-card--now"><div class="feat-ico feat-ico--now">✓</div><div class="feat-body"><div class="feat-name">Time Entry Approval</div><div class="feat-desc">Review, approve or edit hours before payroll</div></div></div>
+          <div class="feat-card feat-card--now"><div class="feat-ico feat-ico--now">✓</div><div class="feat-body"><div class="feat-name">Real-time Dashboard</div><div class="feat-desc">Live view of who's clocked in, hours this week, payroll estimates</div></div></div>
+          <div class="feat-card feat-card--now"><div class="feat-ico feat-ico--now">✓</div><div class="feat-body"><div class="feat-name">Email Notifications</div><div class="feat-desc">Clock-in alerts, approval reminders, payroll confirmations</div></div></div>
+          <div class="feat-card feat-card--now"><div class="feat-ico feat-ico--now">✓</div><div class="feat-body"><div class="feat-name">Billing &amp; Subscriptions</div><div class="feat-desc">Stripe integration, plan management, invoices</div></div></div>
         </div>
       </div>
-      <p class="roadmap-foot">Feature request? <a href="mailto:hello@xevora.io">hello@xevora.io</a></p>
+      <div class="feat-col feat-col--next">
+        <div class="feat-col-top">
+          <span class="feat-pill feat-pill--next">● STAGE 3–4</span>
+          <span class="feat-status feat-status--planned">● ON ROADMAP</span>
+        </div>
+        <h3 class="feat-col-title feat-col-title--next">Coming Next</h3>
+        <div class="feat-cards" id="feat-next-cards">
+          <div class="feat-card feat-card--next"><div class="feat-ico feat-ico--next">→</div><div class="feat-body"><div class="feat-name">Check.com Payroll</div><div class="feat-desc">Automated direct deposit for W2 and 1099 workers</div></div></div>
+          <div class="feat-card feat-card--next"><div class="feat-ico feat-ico--next">→</div><div class="feat-body"><div class="feat-name">Pay Stub Generation</div><div class="feat-desc">Auto PDF pay stubs emailed to every worker</div></div></div>
+          <div class="feat-card feat-card--next"><div class="feat-ico feat-ico--next">→</div><div class="feat-body"><div class="feat-name">1099 Auto-Filing</div><div class="feat-desc">Year-end contractor documents generated automatically</div></div></div>
+          <div class="feat-card feat-card--next"><div class="feat-ico feat-ico--next">→</div><div class="feat-body"><div class="feat-name">AI Payroll Assistant</div><div class="feat-desc">Natural language payroll runs and anomaly detection</div></div></div>
+          <div class="feat-card feat-card--next"><div class="feat-ico feat-ico--next">→</div><div class="feat-body"><div class="feat-name">Fynlo Integration</div><div class="feat-desc">Labor costs sync directly to your books</div></div></div>
+          <div class="feat-card feat-card--next"><div class="feat-ico feat-ico--next">→</div><div class="feat-body"><div class="feat-name">Mobile App (PWA)</div><div class="feat-desc">Installable app for workers, works offline</div></div></div>
+          <div class="feat-card feat-card--next"><div class="feat-ico feat-ico--next">→</div><div class="feat-body"><div class="feat-name">QuickBooks Sync</div><div class="feat-desc">Import/export financial data</div></div></div>
+          <div class="feat-card feat-card--next"><div class="feat-ico feat-ico--next">→</div><div class="feat-body"><div class="feat-name">Mileage Tracking</div><div class="feat-desc">Per-mile pay for drivers</div></div></div>
+        </div>
+      </div>
     </div>
+    <p class="feat-foot">Feature request? <a href="mailto:hello@xevora.io">hello@xevora.io</a></p>
   </div>
+</div>
 </section>
 
 <section id="why-panel" class="tab-panel">
