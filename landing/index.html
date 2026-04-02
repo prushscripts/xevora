@@ -1881,25 +1881,18 @@ function switchTab(newTabId) {
 }
 
 function revealPricingIfInView() {
-  const ps = document.querySelector('.pricing-premium-section');
-  if (!ps || ps.classList.contains('pricing-inview') || ps.classList.contains('pricing-reduced')) return;
-  requestAnimationFrame(function () {
-    requestAnimationFrame(function () {
-      const r = ps.getBoundingClientRect();
-      if (r.bottom > 0 && r.top < window.innerHeight) ps.classList.add('pricing-inview');
-    });
-  });
+  var ps = document.querySelector('.pricing-premium-section');
+  if (!ps) return;
+  if (ps.classList.contains('pricing-inview') || ps.classList.contains('pricing-reduced')) return;
+  ps.classList.add('pricing-inview');
 }
 
 function revealRoadmapIfInView() {
-  const rs = document.querySelector('.roadmap-section');
-  if (!rs || rs.classList.contains('roadmap-inview') || rs.classList.contains('roadmap-reduced')) return;
-  requestAnimationFrame(function () {
-    requestAnimationFrame(function () {
-      const r = rs.getBoundingClientRect();
-      if (r.bottom > 0 && r.top < window.innerHeight) rs.classList.add('roadmap-inview');
-    });
-  });
+  var rs = document.querySelector('.roadmap-section');
+  if (!rs) return;
+  if (rs.classList.contains('roadmap-inview') || rs.classList.contains('roadmap-reduced')) return;
+  // Force all cards visible immediately when tab is switched to
+  rs.classList.add('roadmap-inview');
 }
 
 (function(){
