@@ -1126,7 +1126,7 @@ footer{
   </div>
   <div class="nav-actions">
     <div class="nav-badge"><span class="bdot"></span>Early Access Open</div>
-    <button type="button" class="nav-signin-btn" onclick="xevoraTransition(event, 'https://app.xevora.io/auth/login')">Sign In →</button>
+    <button type="button" class="nav-signin-btn sign-in-btn" data-signin>Sign In →</button>
   </div>
 </nav>
 
@@ -1166,7 +1166,7 @@ footer{
   <div class="fw" id="waitlist">
     <div class="fs">
       <input type="email" id="ei" placeholder="Enter your work email" autocomplete="email"/>
-      <button type="button" onclick="xevoraTransition(event, 'https://app.xevora.io/auth/login')">Get Early Access</button>
+      <button type="button" data-signin>Get Early Access</button>
     </div>
     <p class="fn">No spam. First to know when we launch.</p>
     <p class="succ" id="sm">
@@ -1433,7 +1433,7 @@ footer{
             <li><span class="pc-check" aria-hidden="true">✓</span><span>Pay Stubs</span></li>
             <li><span class="pc-check" aria-hidden="true">✓</span><span>Email Support</span></li>
           </ul>
-          <a class="pricing-card-cta pricing-card-cta--outline" href="https://app.xevora.io/auth/login" onclick="xevoraTransition(event, 'https://app.xevora.io/auth/login')">Join Waitlist</a>
+          <a class="pricing-card-cta pricing-card-cta--outline" href="https://app.xevora.io/auth/login">Join Waitlist</a>
         </article>
         <article class="pricing-card pricing-card--growth">
           <span class="pricing-card-badge">Most Popular</span>
@@ -1448,7 +1448,7 @@ footer{
             <li><span class="pc-check" aria-hidden="true">✓</span><span>1099 Ready</span></li>
             <li><span class="pc-check" aria-hidden="true">✓</span><span>Priority Support</span></li>
           </ul>
-          <a class="pricing-card-cta pricing-card-cta--solid" href="https://app.xevora.io/auth/login" onclick="xevoraTransition(event, 'https://app.xevora.io/auth/login')">Join Waitlist</a>
+          <a class="pricing-card-cta pricing-card-cta--solid" href="https://app.xevora.io/auth/login">Join Waitlist</a>
         </article>
         <article class="pricing-card pricing-card--pro">
           <div class="pricing-card-plan">Pro</div>
@@ -1462,7 +1462,7 @@ footer{
             <li><span class="pc-check" aria-hidden="true">✓</span><span>Dedicated Support</span></li>
             <li><span class="pc-check" aria-hidden="true">✓</span><span>API Access</span></li>
           </ul>
-          <a class="pricing-card-cta pricing-card-cta--outline" href="https://app.xevora.io/auth/login" onclick="xevoraTransition(event, 'https://app.xevora.io/auth/login')">Join Waitlist</a>
+          <a class="pricing-card-cta pricing-card-cta--outline" href="https://app.xevora.io/auth/login">Join Waitlist</a>
         </article>
       </div>
       <p class="pricing-premium-note">No credit card required during beta</p>
@@ -1506,6 +1506,28 @@ footer{
 </footer>
 
 <script src="transition.js"></script>
+<script>
+(function () {
+  function bindSignInTransitions() {
+    if (typeof xevoraTransition !== 'function') {
+      console.error('xevoraTransition missing: ensure transition.js loads (same folder as index.html, or set the correct src path).');
+      return;
+    }
+    var signInLinks = document.querySelectorAll('[data-signin], .sign-in-btn, a[href*="app.xevora.io"]');
+    signInLinks.forEach(function (el) {
+      el.addEventListener('click', function (e) {
+        e.preventDefault();
+        xevoraTransition(e, 'https://app.xevora.io/auth/login');
+      });
+    });
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', bindSignInTransitions);
+  } else {
+    bindSignInTransitions();
+  }
+})();
+</script>
 <script>
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
