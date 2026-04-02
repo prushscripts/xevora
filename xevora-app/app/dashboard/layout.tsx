@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { redirect } from "next/navigation";
 import DashboardShellMotion from "@/components/dashboard/DashboardShellMotion";
 import { createClient } from "@/lib/supabase-server";
 
@@ -17,6 +18,10 @@ export default async function DashboardLayout({ children }: { children: ReactNod
   const {
     data: { user },
   } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/auth/login");
+  }
 
   const userName = getUserDisplayName(user?.email, user?.user_metadata?.first_name);
 
