@@ -5,7 +5,7 @@ function xevoraTransition(e, destination) {
   if (existing) return;
 
   var style = document.createElement('style');
-  style.textContent = '@keyframes xevGlow{0%,100%{opacity:0.3}50%{opacity:0.7}} @keyframes xevBarFill{from{width:0%}to{width:100%}} @keyframes xevSlideUp{from{transform:translateY(0)}to{transform:translateY(-100vh)}}';
+  style.textContent = '@keyframes xevGlow{0%,100%{opacity:0.3}50%{opacity:0.7}} @keyframes xevBarFill{from{width:0%}to{width:100%}}';
   document.head.appendChild(style);
 
   var overlay = document.createElement('div');
@@ -39,16 +39,19 @@ function xevoraTransition(e, destination) {
   requestAnimationFrame(function() {
     overlay.style.opacity = '1';
     setTimeout(function() {
-      barFill.style.transition = 'width 950ms cubic-bezier(0.4,0,0.2,1)';
+      barFill.style.transition = 'width 1400ms cubic-bezier(0.4,0,0.2,1)';
       barFill.style.width = '100%';
     }, 60);
   });
 
   setTimeout(function() {
-    overlay.style.transition = 'opacity 200ms ease-out, transform 480ms cubic-bezier(0.4,0,0.2,1)';
-    overlay.style.transform = 'translateY(-100vh)';
+    // Phase 1: flash the overlay white-blue
+    overlay.style.transition = 'background 120ms ease-out';
+    overlay.style.background = 'radial-gradient(ellipse at center, #1a3a7a 0%, #03060D 100%)';
+
     setTimeout(function() {
+      // Phase 2: hard cut to destination — no slide, no reveal of landing page
       window.location.href = destination;
-    }, 380);
-  }, 1100);
+    }, 180);
+  }, 1600);
 }
