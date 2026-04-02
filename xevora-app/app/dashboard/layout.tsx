@@ -1,0 +1,28 @@
+import type { ReactNode } from "react";
+import DashboardShellMotion from "@/components/dashboard/DashboardShellMotion";
+import { createClient } from "@/lib/supabase-server";
+
+function getUserDisplayName(email: string | undefined, firstName: unknown) {
+  if (typeof firstName === "string" && firstName.trim()) {
+    return firstName.trim();
+  }
+
+  if (!email) return "Admin";
+  const prefix = email.split("@")[0];
+  return prefix ? prefix.charAt(0).toUpperCase() + prefix.slice(1) : "Admin";
+}
+
+export default async function DashboardLayout({ children }: { children: ReactNode }) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const userName = getUserDisplayName(user?.email, user?.user_metadata?.first_name);
+
+  return (
+    <div className="min-h-screen bg-[var(--bg)]">
+      <DashboardShellMotion userName={userName}>{children}</DashboardShellMotion>
+    </div>
+  );
+}
