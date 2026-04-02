@@ -587,7 +587,11 @@ p.sub{
 }
 @keyframes roadmapFadeUpNext{
   from{opacity:0;transform:translateY(12px)}
-  to{opacity:0.85;transform:translateY(0)}
+  to{opacity:0.75;transform:translateY(0)}
+}
+@keyframes statusPulse{
+  0%,100%{opacity:1}
+  50%{opacity:0.4}
 }
 .roadmap-section{
   position:relative;overflow:hidden;
@@ -596,14 +600,19 @@ p.sub{
     linear-gradient(rgba(37,99,235,0.06) 1px,transparent 1px),
     linear-gradient(90deg,rgba(37,99,235,0.06) 1px,transparent 1px);
   background-size:40px 40px;
-  padding:158px 24px 120px;
+  padding:80px 24px 100px;
   box-sizing:border-box;
 }
-.roadmap-inner{max-width:1100px;margin:0 auto}
-.roadmap-head{text-align:center;margin-bottom:80px}
+.roadmap-inner{max-width:1200px;margin:0 auto}
+.roadmap-head{text-align:center;margin-bottom:48px}
 .roadmap-eyebrow{
+  display:flex;align-items:center;justify-content:center;gap:12px;
   font-family:'JetBrains Mono',ui-monospace,monospace;
   font-size:10px;font-weight:400;letter-spacing:0.3em;color:#2563EB;text-transform:uppercase;
+  margin:0;
+}
+.roadmap-eyebrow::before,.roadmap-eyebrow::after{
+  content:'';width:40px;height:1px;background:rgba(37,99,235,0.3);flex-shrink:0;
 }
 .roadmap-title{
   font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(32px,5vw,48px);
@@ -613,10 +622,14 @@ p.sub{
   font-family:'DM Sans',sans-serif;font-weight:300;font-size:18px;color:#4E6D92;line-height:1.55;
 }
 .roadmap-grid{
-  display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start;
+  display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start;
 }
 .roadmap-col{display:flex;flex-direction:column;gap:12px}
-.roadmap-col-head{margin-bottom:4px}
+.roadmap-col-head{margin-bottom:0}
+.roadmap-col-head-row{
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+  margin-bottom:4px;
+}
 .roadmap-pill{
   display:inline-flex;align-items:center;gap:6px;
   padding:5px 12px;border-radius:100px;
@@ -627,18 +640,55 @@ p.sub{
   background:rgba(37,99,235,0.12);border:1px solid rgba(37,99,235,0.25);color:#3B82F6;
 }
 .roadmap-pill--34{
-  background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.18);color:#60A5FA;
+  background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.22);color:#A5B4FC;
+}
+.roadmap-status{
+  display:inline-flex;align-items:center;gap:4px;
+  padding:4px 10px;border-radius:999px;
+  font-family:'JetBrains Mono',ui-monospace,monospace;
+  font-size:9px;font-weight:400;letter-spacing:0.1em;text-transform:uppercase;
+  white-space:nowrap;
+}
+.roadmap-status--live{
+  background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.3);color:#4ADE80;
+}
+.roadmap-status--live .roadmap-status-dot{
+  display:inline-block;
+  animation:statusPulse 1.5s ease-in-out infinite;
+}
+.roadmap-status--planned{
+  background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.25);color:#818CF8;
 }
 .roadmap-col-title{
-  font-family:'Syne',sans-serif;font-weight:800;font-size:22px;color:#F1F5FF;
-  margin-top:10px;line-height:1.2;
+  font-family:'Syne',sans-serif;font-weight:800;font-size:24px;line-height:1.2;
+  margin:0;
 }
+.roadmap-col-title--now{color:#F1F5FF}
+.roadmap-col-title--next{color:#C4CFDF}
 .roadmap-card{
   display:flex;align-items:center;gap:14px;
   padding:16px 20px;border-radius:12px;
-  background:rgba(6,11,20,0.8);border:1px solid rgba(37,99,235,0.10);
-  transition:border-color 200ms ease,background 200ms ease,transform 200ms ease;
+  box-sizing:border-box;
+  transition:border-color 200ms ease,background 200ms ease,transform 200ms ease,box-shadow 200ms ease,opacity 200ms ease;
   opacity:0;transform:translateY(12px);
+}
+.roadmap-col--now .roadmap-card{
+  border:1px solid rgba(37,99,235,0.14);
+  border-left:2px solid #2563EB;
+  background:rgba(37,99,235,0.04);
+  box-shadow:0 0 0 0 rgba(37,99,235,0);
+}
+.roadmap-col--now .roadmap-card:hover{
+  transform:translateY(-2px);
+  box-shadow:0 4px 24px rgba(37,99,235,0.12);
+  border-color:rgba(37,99,235,0.4);
+  border-left-color:#2563EB;
+}
+.roadmap-col--next .roadmap-card{
+  border:1px solid rgba(99,102,241,0.12);
+  border-left:2px solid rgba(99,102,241,0.3);
+  background:rgba(99,102,241,0.02);
+  box-shadow:none;
 }
 .roadmap-section.roadmap-inview .roadmap-col--now .roadmap-card{
   animation:roadmapFadeUp 400ms ease-out forwards;
@@ -650,7 +700,7 @@ p.sub{
   opacity:1;transform:none;animation:none;
 }
 .roadmap-section.roadmap-reduced .roadmap-col--next .roadmap-card{
-  opacity:0.85;transform:none;animation:none;
+  opacity:0.75;transform:none;animation:none;
 }
 .roadmap-col--now article.roadmap-card:nth-child(2){animation-delay:0ms}
 .roadmap-col--now article.roadmap-card:nth-child(3){animation-delay:60ms}
@@ -666,31 +716,38 @@ p.sub{
 .roadmap-col--next article.roadmap-card:nth-child(7){animation-delay:300ms}
 .roadmap-col--next article.roadmap-card:nth-child(8){animation-delay:360ms}
 .roadmap-col--next article.roadmap-card:nth-child(9){animation-delay:420ms}
-.roadmap-card:hover{
+.roadmap-section.roadmap-inview .roadmap-col--next .roadmap-card:hover{
+  opacity:1;
   transform:translateY(-2px);
-  background:rgba(37,99,235,0.05);border-color:rgba(37,99,235,0.35);
-}
-.roadmap-col--next .roadmap-card:hover{
-  border-color:rgba(96,165,250,0.3);
-  background:rgba(6,11,20,0.85);
+  border-left-color:rgba(129,140,248,0.6);
+  box-shadow:0 4px 24px rgba(99,102,241,0.08);
+  border-color:rgba(99,102,241,0.2);
 }
 .roadmap-ico{
   flex-shrink:0;width:20px;height:20px;border-radius:50%;
   display:flex;align-items:center;justify-content:center;
-  font-size:11px;line-height:1;
+  font-size:11px;line-height:1;box-sizing:border-box;
 }
 .roadmap-ico--now{
-  background:rgba(37,99,235,0.12);color:#3B82F6;
+  background:rgba(37,99,235,0.2);color:#3B82F6;
+  border:1px solid rgba(59,130,246,0.4);
 }
 .roadmap-ico--next{
-  background:rgba(78,109,146,0.08);color:#4E6D92;
-  border:1px solid rgba(78,109,146,0.35);box-sizing:border-box;
+  background:rgba(99,102,241,0.08);color:#818CF8;
+  border:1px solid rgba(99,102,241,0.2);
 }
 .roadmap-card-body{min-width:0}
-.roadmap-card-title{
+.roadmap-col--now .roadmap-card-title{
   font-family:'DM Sans',sans-serif;font-weight:500;font-size:15px;color:#F1F5FF;line-height:1.3;
 }
-.roadmap-card-desc{
+.roadmap-col--now .roadmap-card-desc{
+  display:block;font-family:'DM Sans',sans-serif;font-weight:300;font-size:13px;
+  color:#8BA4C0;margin-top:4px;line-height:1.45;
+}
+.roadmap-col--next .roadmap-card-title{
+  font-family:'DM Sans',sans-serif;font-weight:500;font-size:15px;color:#C4CFDF;line-height:1.3;
+}
+.roadmap-col--next .roadmap-card-desc{
   display:block;font-family:'DM Sans',sans-serif;font-weight:300;font-size:13px;
   color:#4E6D92;margin-top:4px;line-height:1.45;
 }
@@ -896,6 +953,70 @@ p.sub{
   text-align:center;margin-top:40px;
   font-family:'DM Sans',sans-serif;font-weight:300;font-size:13px;color:#4E6D92;
 }
+.pricing-bundle-divider{
+  border:none;height:1px;background:rgba(37,99,235,0.08);
+  margin:60px auto;max-width:600px;
+}
+.pricing-bundle{text-align:center}
+.pricing-bundle-head{margin-bottom:28px}
+.pricing-bundle-eyebrow{
+  font-family:'JetBrains Mono',ui-monospace,monospace;
+  font-size:10px;font-weight:400;letter-spacing:0.3em;color:#4E6D92;text-transform:uppercase;
+  margin:0 0 12px;
+}
+.pricing-bundle-title{
+  font-family:'Syne',sans-serif;font-weight:800;font-size:32px;color:#F1F5FF;
+  line-height:1.15;margin:0 0 12px;
+}
+.pricing-bundle-sub{
+  font-family:'DM Sans',sans-serif;font-weight:300;font-size:16px;color:#4E6D92;
+  line-height:1.55;max-width:480px;margin:0 auto;
+}
+.pricing-bundle-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:20px;
+  max-width:760px;margin:0 auto;text-align:left;
+}
+.pricing-bundle-card{
+  background:linear-gradient(135deg,rgba(6,11,20,1) 0%,rgba(10,16,32,1) 100%);
+  border:1px solid rgba(37,99,235,0.15);border-radius:14px;padding:28px;
+  transition:border-color 250ms ease,transform 250ms ease,box-shadow 250ms ease;
+  opacity:0;transform:translateY(12px);
+}
+.pricing-bundle-card:hover{
+  border-color:rgba(37,99,235,0.3);
+  transform:translateY(-4px);
+  box-shadow:0 12px 40px rgba(37,99,235,0.08);
+}
+.pricing-premium-section.pricing-inview .pricing-bundle-card{
+  animation:pricingFadeUp 400ms ease-out forwards;
+}
+.pricing-premium-section.pricing-reduced .pricing-bundle-card{
+  opacity:1;transform:none;animation:none;
+}
+.pricing-bundle-grid .pricing-bundle-card:nth-child(1){animation-delay:240ms}
+.pricing-bundle-grid .pricing-bundle-card:nth-child(2){animation-delay:320ms}
+.pricing-bundle-pills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.pricing-bundle-pill{
+  display:inline-flex;align-items:center;
+  padding:4px 10px;border-radius:999px;
+  font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9px;
+  letter-spacing:0.08em;text-transform:uppercase;
+}
+.pricing-bundle-pill--xev{background:rgba(37,99,235,0.12);color:#3B82F6}
+.pricing-bundle-pill--fyn{background:rgba(34,197,94,0.08);color:#4ADE80}
+.pricing-bundle-pill--fp{background:rgba(168,85,247,0.08);color:#C084FC}
+.pricing-bundle-card-title{
+  font-family:'DM Sans',sans-serif;font-weight:500;font-size:17px;color:#F1F5FF;
+  margin:0 0 10px;line-height:1.3;
+}
+.pricing-bundle-card-desc{
+  font-family:'DM Sans',sans-serif;font-weight:300;font-size:14px;color:#4E6D92;
+  line-height:1.55;margin:0;
+}
+.pricing-bundle-card-tag{
+  font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;color:#4E6D92;
+  margin:16px 0 0;
+}
 
 /* PREMIUM MICRO-INTERACTIONS */
 .site-tabs{background:rgba(3,6,13,.8);transition:background-color 300ms ease}
@@ -987,7 +1108,8 @@ nav.load-in{opacity:1 !important;transform:translateY(0) !important;transition:o
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{animation:none !important;transition:none !important;scroll-behavior:auto !important}
   .fr-stagger{opacity:1 !important;transform:none !important}
-  .pricing-premium-section .pricing-card{opacity:1 !important;transform:none !important}
+  .pricing-premium-section .pricing-card,
+  .pricing-premium-section .pricing-bundle-card{opacity:1 !important;transform:none !important}
 }
 
 /* FOOTER */
@@ -1044,7 +1166,7 @@ footer{
   main{padding:140px 16px 50px}
   h1{letter-spacing:-1px}
   .content-panel{padding:132px 16px 100px}
-  .road-grid,.pricing-premium-grid{grid-template-columns:1fr}
+  .road-grid,.pricing-premium-grid,.pricing-bundle-grid{grid-template-columns:1fr}
 
   /* Show dashboard mockup on mobile with safe scaling */
   .preview-section{
@@ -1281,8 +1403,11 @@ footer{
       <div class="roadmap-grid">
         <div class="roadmap-col roadmap-col--now">
           <div class="roadmap-col-head">
-            <span class="roadmap-pill roadmap-pill--12">● Stage 1–2</span>
-            <h3 class="roadmap-col-title">Building Now</h3>
+            <div class="roadmap-col-head-row">
+              <span class="roadmap-pill roadmap-pill--12">● Stage 1–2</span>
+              <span class="roadmap-status roadmap-status--live"><span class="roadmap-status-dot" aria-hidden="true">●</span> IN DEVELOPMENT</span>
+              <h3 class="roadmap-col-title roadmap-col-title--now">Building Now</h3>
+            </div>
           </div>
           <article class="roadmap-card">
             <span class="roadmap-ico roadmap-ico--now" aria-hidden="true">✓</span>
@@ -1329,8 +1454,11 @@ footer{
         </div>
         <div class="roadmap-col roadmap-col--next">
           <div class="roadmap-col-head">
-            <span class="roadmap-pill roadmap-pill--34">● Stage 3–4</span>
-            <h3 class="roadmap-col-title">Coming Next</h3>
+            <div class="roadmap-col-head-row">
+              <span class="roadmap-pill roadmap-pill--34">● Stage 3–4</span>
+              <span class="roadmap-status roadmap-status--planned"><span aria-hidden="true">●</span> ON ROADMAP</span>
+              <h3 class="roadmap-col-title roadmap-col-title--next">Coming Next</h3>
+            </div>
           </div>
           <article class="roadmap-card">
             <span class="roadmap-ico roadmap-ico--next" aria-hidden="true">→</span>
@@ -1477,6 +1605,35 @@ footer{
           </ul>
           <a class="pricing-card-cta pricing-card-cta--outline" href="https://app.xevora.io/auth/login">Join Waitlist</a>
         </article>
+      </div>
+      <hr class="pricing-bundle-divider" aria-hidden="true" />
+      <div class="pricing-bundle">
+        <header class="pricing-bundle-head">
+          <p class="pricing-bundle-eyebrow">Ecosystem bundles</p>
+          <h3 class="pricing-bundle-title">Stack your suite.</h3>
+          <p class="pricing-bundle-sub">Pair Xevora with other Xavorn products for deeper automation and better pricing.</p>
+        </header>
+        <div class="pricing-bundle-grid">
+          <article class="pricing-bundle-card">
+            <div class="pricing-bundle-pills">
+              <span class="pricing-bundle-pill pricing-bundle-pill--xev">XEVORA</span>
+              <span class="pricing-bundle-pill pricing-bundle-pill--fyn">+ FYNLO</span>
+            </div>
+            <h4 class="pricing-bundle-card-title">Payroll + Bookkeeping</h4>
+            <p class="pricing-bundle-card-desc">Time tracking and payroll in Xevora flows directly into your books in Fynlo. No manual entry.</p>
+            <p class="pricing-bundle-card-tag">Bundle pricing coming soon</p>
+          </article>
+          <article class="pricing-bundle-card">
+            <div class="pricing-bundle-pills">
+              <span class="pricing-bundle-pill pricing-bundle-pill--xev">XEVORA</span>
+              <span class="pricing-bundle-pill pricing-bundle-pill--fyn">+ FYNLO</span>
+              <span class="pricing-bundle-pill pricing-bundle-pill--fp">+ FLEETPULSE</span>
+            </div>
+            <h4 class="pricing-bundle-card-title">The Full Operation</h4>
+            <p class="pricing-bundle-card-desc">Workers. Books. Fleet. One login, one dashboard, one source of truth for your entire business.</p>
+            <p class="pricing-bundle-card-tag">For operators running it all</p>
+          </article>
+        </div>
       </div>
       <p class="pricing-premium-note">No credit card required during beta</p>
     </div>
