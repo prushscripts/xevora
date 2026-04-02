@@ -1,7 +1,1 @@
-{
-  "outputDirectory": ".",
-  "rewrites": [
-    { "source": "/pages/login", "destination": "/pages/login.html" },
-    { "source": "/pages/dashboard", "destination": "/pages/dashboard.html" }
-  ]
-}
+{}
