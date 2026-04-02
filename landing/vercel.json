@@ -5,6 +5,5 @@
   ],
   "routes": [
     { "src": "/(.*)", "dest": "/index.html" }
-  ],
-  "ignoreCommand": "[ \"$VERCEL_PROJECT_NAME\" = \"xevora-app\" ] && exit 1 || exit 0"
+  ]
 }
