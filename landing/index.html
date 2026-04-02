@@ -226,7 +226,7 @@ button.site-tab:focus,button.site-tab:focus-visible{outline:none}
   box-shadow:0 0 8px rgba(37,99,235,0.5);
 }
 
-.tab-panels-root{
+.tab-panels-root.tab-panels-container{
   position:relative;
   min-height:400px;
   z-index:8;
@@ -234,47 +234,49 @@ button.site-tab:focus,button.site-tab:focus-visible{outline:none}
   padding-top:48px;
   overflow:visible;
 }
-.tab-panel {
-  display: none;
+.tab-panel{
+  opacity:0;
+  transform:translateY(10px);
+  transition:none;
+  pointer-events:none;
+  position:absolute;
+  width:100%;
+  top:0;left:0;
+  box-sizing:border-box;
 }
-.tab-panel.is-active {
-  display: block;
-  animation: tabFadeIn 350ms cubic-bezier(0.16,1,0.3,1) forwards;
+.tab-panel.panel-active{
+  opacity:1;
+  transform:translateY(0);
+  pointer-events:auto;
+  position:relative;
+  z-index:1;
 }
-.tab-panel.is-leaving {
-  display: block;
-  animation: tabFadeOut 160ms ease-in forwards;
+.tab-panel.panel-active.panel-exit{
+  opacity:0;
+  transform:translateY(-8px);
+  transition:opacity 180ms ease-in,transform 180ms ease-in;
+  pointer-events:none;
+  position:relative;
+  z-index:2;
 }
-
-@keyframes tabFadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(16px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.tab-panel.panel-enter{
+  opacity:0;
+  transform:translateY(12px);
+  position:absolute;
+  z-index:6;
+  pointer-events:none;
 }
-
-@keyframes tabFadeOut {
-  from {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  to {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
+.tab-panel.panel-enter-active{
+  opacity:1;
+  transform:translateY(0);
+  transition:opacity 280ms ease-out,transform 280ms cubic-bezier(0.22,1,0.36,1);
+  position:absolute;
+  z-index:6;
+  pointer-events:none;
 }
-
-@media (prefers-reduced-motion: reduce) {
-  .tab-panel.is-active {
-    animation: none;
-  }
-  .tab-panel.is-leaving {
-    animation: none;
-  }
+@keyframes scanSweep{
+  from{top:0;opacity:1}
+  to{top:100%;opacity:0}
 }
 
 /* Side lines — desktop only */
@@ -901,12 +903,23 @@ p.sub{
 .site-tabs-inner.tab-bar{min-width:max(100%,min-content)}
 .site-tab{transition:color 200ms ease}
 .tab-underline{
-  position:absolute;left:0;bottom:-1px;height:2px;width:0;
-  background-color:#2563EB;z-index:2;
+  position:absolute;left:0;bottom:-1px;height:2px;width:0;z-index:2;
+  background:linear-gradient(90deg,transparent,#3B82F6,transparent);
+  box-shadow:0 0 8px rgba(59,130,246,0.6);
   border-radius:0;
   pointer-events:none;
-  transition:left 300ms cubic-bezier(0.16,1,0.3,1),width 300ms cubic-bezier(0.16,1,0.3,1);
+  transition:left 300ms cubic-bezier(0.22,1,0.36,1),width 300ms cubic-bezier(0.22,1,0.36,1);
 }
+.site-tab.tab-btn:not(.tab-active)::after{
+  content:'';
+  position:absolute;left:14px;right:14px;bottom:-1px;height:2px;
+  background:rgba(59,130,246,0.2);
+  box-shadow:none;
+  opacity:0;
+  transition:opacity 150ms ease;
+  pointer-events:none;
+}
+.site-tab.tab-btn:not(.tab-active):hover::after{opacity:1}
 
 .tab-popover{
   position:fixed;left:0;top:0;width:220px;z-index:60;
@@ -1153,8 +1166,8 @@ footer{
 <div class="vl l"></div>
 <div class="vl r"></div>
 
-<div class="tab-panels-root" id="tab-panels-root">
-<section id="overview-panel" class="tab-panel is-active">
+<div class="tab-panels-root tab-panels-container" id="tab-panels-root">
+<section id="overview-panel" class="tab-panel panel-active">
 <main>
   <div class="eyebrow"><span class="eb"></span>Coming Soon<span class="eb r"></span></div>
   <h1>
@@ -1615,48 +1628,68 @@ function updateUnderline(newTabId) {
   underline.style.width = br.width + 'px';
 }
 
+function tabScanline(container) {
+  if (!container || reduceMotion) return;
+  const line = document.createElement('div');
+  line.style.cssText =
+    'position:absolute;left:0;right:0;top:0;height:1px;' +
+    'background:linear-gradient(90deg,transparent,rgba(59,130,246,0.4),transparent);' +
+    'z-index:10;pointer-events:none;' +
+    'animation:scanSweep 350ms ease-out forwards';
+  container.style.position = 'relative';
+  container.appendChild(line);
+  setTimeout(function () {
+    if (line.parentNode) line.parentNode.removeChild(line);
+  }, 400);
+}
+
 function switchTab(newTabId) {
-  const allPanels = document.querySelectorAll('.tab-panel');
+  const container = document.getElementById('tab-panels-root');
   const allTabBtns = document.querySelectorAll('.tab-btn');
-  const currentPanel = document.querySelector('.tab-panel.is-active');
+  const currentPanel = document.querySelector('.tab-panel.panel-active');
   const newPanel = document.getElementById(newTabId);
 
   if (!newPanel || currentPanel === newPanel) return;
 
-  // Update tab button states
-  allTabBtns.forEach(btn => {
+  allTabBtns.forEach(function (btn) {
     btn.classList.remove('tab-active');
-    if (btn.dataset.tab === newTabId) {
-      btn.classList.add('tab-active');
-    }
+    if (btn.dataset.tab === newTabId) btn.classList.add('tab-active');
   });
-
-  // Update sliding underline
   updateUnderline(newTabId);
 
-  if (!currentPanel) {
-    newPanel.classList.add('is-active');
+  function finishReveal() {
     if (newTabId === 'features-panel') revealRoadmapIfInView();
     if (newTabId === 'pricing-panel') revealPricingIfInView();
+  }
+
+  if (reduceMotion) {
+    if (currentPanel) currentPanel.classList.remove('panel-active');
+    newPanel.classList.add('panel-active');
+    finishReveal();
     return;
   }
 
-  // Step 1: animate current panel out
-  currentPanel.classList.remove('is-active');
-  currentPanel.classList.add('is-leaving');
+  if (!currentPanel) {
+    newPanel.classList.add('panel-active');
+    finishReveal();
+    return;
+  }
 
-  // Step 2: after outgoing animation completes, 
-  // show new panel
-  setTimeout(() => {
-    currentPanel.classList.remove('is-leaving');
-    currentPanel.style.display = 'none';
-    newPanel.style.display = 'block';
-    // Force reflow so animation triggers fresh
+  currentPanel.classList.add('panel-exit');
+
+  setTimeout(function () {
+    currentPanel.classList.remove('panel-active', 'panel-exit');
+    newPanel.classList.add('panel-enter');
     void newPanel.offsetWidth;
-    newPanel.classList.add('is-active');
-    if (newTabId === 'features-panel') revealRoadmapIfInView();
-    if (newTabId === 'pricing-panel') revealPricingIfInView();
-  }, 165);
+    tabScanline(container);
+    newPanel.classList.add('panel-enter-active');
+
+    setTimeout(function () {
+      newPanel.classList.remove('panel-enter', 'panel-enter-active');
+      newPanel.classList.add('panel-active');
+      finishReveal();
+    }, 280);
+  }, 180);
 }
 
 function revealPricingIfInView() {
@@ -1682,35 +1715,16 @@ function revealRoadmapIfInView() {
 }
 
 (function(){
-  const sectionTransition=document.getElementById('section-transition');
-  const scanLine=document.getElementById('scan-line');
   const cinematicTabs=new Set(['overview-panel','features-panel','why-panel','pricing-panel']);
-
-  function runSectionTransition(action){
-    if(!sectionTransition||!scanLine||reduceMotion){
-      action();
-      return;
-    }
-    sectionTransition.classList.add('active');
-    scanLine.classList.add('active');
-    setTimeout(action,130);
-    setTimeout(()=>{
-      scanLine.classList.remove('active');
-      sectionTransition.classList.remove('active');
-    },400);
-  }
-
   const tabBtns=document.querySelectorAll('.tab-btn');
   tabBtns.forEach(btn=>{
     btn.addEventListener('click',function(){
       const id=this.getAttribute('data-tab');
       if(!id)return;
-      runSectionTransition(()=>{
-        switchTab(id);
-        if(cinematicTabs.has(id)){
-          window.scrollTo({top:0,behavior:reduceMotion?'auto':'smooth'});
-        }
-      });
+      switchTab(id);
+      if(cinematicTabs.has(id)){
+        window.scrollTo({top:0,behavior:reduceMotion?'auto':'smooth'});
+      }
     });
   });
 
