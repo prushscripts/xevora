@@ -92,20 +92,48 @@ nav{
   overflow:hidden;
 }
 
-.nav-brand-wrap{display:flex;flex-direction:column;align-items:flex-start;gap:6px;flex-shrink:0;min-width:0}
-.nav-brand-lockup{display:flex;align-items:center;gap:9px;flex-shrink:0}
-.nav-xavorn-badge{
-  font-family:'DM Sans',sans-serif;
-  font-size:10px;font-weight:400;letter-spacing:0.15em;
-  color:rgba(255,255,255,0.3);text-decoration:none;text-transform:uppercase;
-  white-space:nowrap;transition:color 200ms cubic-bezier(0.4,0,0.2,1);
+.nav-brand-wrap{display:flex;flex-direction:column;align-items:flex-start;flex-shrink:0;min-width:0}
+.nav-brand-group{
+  display:flex;align-items:center;flex-shrink:0;
 }
-.nav-xavorn-badge:hover{color:rgba(255,255,255,0.5)}
+.nav-brand-sep{
+  flex-shrink:0;width:1px;height:28px;margin:0 12px;
+  background:rgba(37,99,235,0.2);
+}
+.nav-brand-text-stack{
+  display:flex;flex-direction:column;align-items:flex-start;gap:6px;
+  min-width:0;
+}
+.nav-xavorn-badge{
+  text-decoration:none;line-height:1;
+}
+.nav-xavorn-pill{
+  display:inline-block;
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:999px;
+  padding:2px 8px;
+  font-family:'JetBrains Mono',ui-monospace,monospace;
+  font-size:8px;font-weight:400;letter-spacing:0.15em;
+  color:#4E6D92;text-transform:uppercase;
+  white-space:nowrap;
+  transition:background 200ms ease,border-color 200ms ease,color 200ms ease;
+}
+.nav-xavorn-badge:hover .nav-xavorn-pill{
+  background:rgba(255,255,255,0.06);
+  border-color:rgba(255,255,255,0.12);
+  color:#6B8AA8;
+}
 
 .logo-ring{
-  position:relative;width:28px;height:28px;
+  position:relative;width:28px;height:28px;border-radius:8px;
   display:flex;align-items:center;justify-content:center;
   flex-shrink:0;
+  box-shadow:0 0 12px rgba(37,99,235,0.25),0 0 0 1px rgba(59,130,246,0.15);
+  transition:box-shadow 250ms ease;
+}
+.nav-brand-group:hover .logo-ring{
+  box-shadow:0 0 18px rgba(37,99,235,0.4),0 0 0 1px rgba(59,130,246,0.25);
 }
 .logo-ring::before,.logo-ring::after{
   content:'';position:absolute;inset:-5px;border-radius:50%;
@@ -113,13 +141,13 @@ nav{
   animation:rpulse 2.8s ease-out infinite;
 }
 .logo-ring::after{inset:-11px;border-color:rgba(37,99,235,0.15);animation-delay:.9s}
-.logo-ring svg{width:28px;height:28px;position:relative;z-index:2;filter:drop-shadow(0 0 8px rgba(37,99,235,0.55))}
+.logo-ring svg{width:28px;height:28px;position:relative;z-index:2}
 
 @keyframes rpulse{0%{transform:scale(1);opacity:.7}100%{transform:scale(1.6);opacity:0}}
 
 .brand-name{
   font-family:'Syne',sans-serif;font-weight:800;
-  font-size:18px;letter-spacing:0.08em;color:var(--text);
+  font-size:18px;letter-spacing:0.02em;color:#F1F5FF;
   white-space:nowrap;
 }
 
@@ -1240,7 +1268,7 @@ footer{
 
 <nav>
   <div class="nav-brand-wrap">
-    <div class="nav-brand-lockup">
+    <div class="nav-brand-group">
       <div class="logo-ring">
         <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
           <polygon points="50,6 89,28 89,72 50,94 11,72 11,28" fill="#0B1422" stroke="rgba(37,99,235,0.5)" stroke-width="1.5"/>
@@ -1255,9 +1283,12 @@ footer{
           <circle cx="11" cy="28" r="1.8" fill="rgba(37,99,235,.5)"/>
         </svg>
       </div>
-      <span class="brand-name">XEVORA</span>
+      <span class="nav-brand-sep" aria-hidden="true"></span>
+      <div class="nav-brand-text-stack">
+        <span class="brand-name">XEVORA</span>
+        <a class="nav-xavorn-badge" href="https://xavorn.com" target="_blank" rel="noopener noreferrer"><span class="nav-xavorn-pill">PART OF XAVORN</span></a>
+      </div>
     </div>
-    <a class="nav-xavorn-badge" href="https://xavorn.com" target="_blank" rel="noopener noreferrer">Part of Xavorn</a>
   </div>
   <div class="nav-actions">
     <div class="nav-badge"><span class="bdot"></span>Early Access Open</div>
