@@ -15,6 +15,7 @@ const dmSans = DM_Sans({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://app.xevora.io"),
   title: "Xevora — Workforce & Payroll",
   description: "GPS time tracking and automated payroll for field workers.",
 };
