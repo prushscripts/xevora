@@ -92,54 +92,65 @@ nav{
   overflow:hidden;
 }
 
-.nav-brand-wrap{display:flex;align-items:center;gap:14px;flex-shrink:0;min-width:0}
-.nav-xavorn-crumb{
-  font-family:'JetBrains Mono',ui-monospace,monospace;
-  font-size:11px;font-weight:400;
-  color:rgba(184,150,90,.5);text-decoration:none;letter-spacing:.02em;
-  white-space:nowrap;flex-shrink:0;transition:color .2s ease;
+.nav-brand-wrap{display:flex;flex-direction:column;align-items:flex-start;gap:6px;flex-shrink:0;min-width:0}
+.nav-brand-lockup{display:flex;align-items:center;gap:9px;flex-shrink:0}
+.nav-xavorn-badge{
+  font-family:'DM Sans',sans-serif;
+  font-size:10px;font-weight:400;letter-spacing:0.15em;
+  color:rgba(255,255,255,0.35);text-decoration:none;text-transform:uppercase;
+  white-space:nowrap;transition:color 200ms ease;
 }
-.nav-xavorn-crumb:hover{color:rgba(184,150,90,.9)}
-.nav-crumb-divider{width:1px;height:22px;background:rgba(184,150,90,.2);flex-shrink:0}
-.nav-brand{display:flex;align-items:center;gap:11px;flex-shrink:0}
+.nav-xavorn-badge:hover{color:rgba(255,255,255,0.55)}
 
 .logo-ring{
-  position:relative;width:36px;height:36px;
+  position:relative;width:28px;height:28px;
   display:flex;align-items:center;justify-content:center;
   flex-shrink:0;
 }
 .logo-ring::before,.logo-ring::after{
-  content:'';position:absolute;inset:-6px;border-radius:50%;
+  content:'';position:absolute;inset:-5px;border-radius:50%;
   border:1px solid rgba(37,99,235,0.35);
   animation:rpulse 2.8s ease-out infinite;
 }
-.logo-ring::after{inset:-13px;border-color:rgba(37,99,235,0.15);animation-delay:.9s}
-.logo-ring svg{width:36px;height:36px;position:relative;z-index:2;filter:drop-shadow(0 0 10px rgba(37,99,235,0.6))}
+.logo-ring::after{inset:-11px;border-color:rgba(37,99,235,0.15);animation-delay:.9s}
+.logo-ring svg{width:28px;height:28px;position:relative;z-index:2;filter:drop-shadow(0 0 8px rgba(37,99,235,0.55))}
 
 @keyframes rpulse{0%{transform:scale(1);opacity:.7}100%{transform:scale(1.6);opacity:0}}
 
 .brand-name{
   font-family:'Syne',sans-serif;font-weight:800;
-  font-size:14px;letter-spacing:3.5px;color:var(--text);
+  font-size:18px;letter-spacing:0.08em;color:var(--text);
   white-space:nowrap;
 }
 
 .nav-badge{
-  display:flex;align-items:center;gap:7px;
+  display:flex;align-items:center;gap:6px;
   font-size:11px;font-weight:500;color:var(--sub);
   background:rgba(37,99,235,0.08);
   border:1px solid rgba(37,99,235,0.18);
-  border-radius:100px;padding:5px 12px;
+  border-radius:100px;padding:4px 10px;
   white-space:nowrap;flex-shrink:0;
 }
-.nav-actions{display:flex;align-items:center;gap:14px;flex-shrink:0}
-.nav-signin{
-  font-size:12px;
-  color:#60A5FA;
-  text-decoration:none;
-  letter-spacing:.2px;
+.nav-actions{display:flex;align-items:center;gap:12px;flex-shrink:0}
+.nav-signin-btn{
+  appearance:none;
+  border:1px solid rgba(37,99,235,0.5);
+  background:transparent;
+  color:#fff;
+  padding:8px 20px;
+  border-radius:6px;
+  font-family:'DM Sans',sans-serif;
+  font-size:13px;font-weight:500;
+  cursor:pointer;
+  letter-spacing:0.02em;
+  transition:background 200ms cubic-bezier(0.4,0,0.2,1),border-color 200ms cubic-bezier(0.4,0,0.2,1),transform 200ms cubic-bezier(0.4,0,0.2,1),box-shadow 200ms cubic-bezier(0.4,0,0.2,1);
 }
-.nav-signin:hover{text-decoration:underline}
+.nav-signin-btn:hover{
+  background:rgba(37,99,235,0.15);
+  border-color:#2563EB;
+  transform:translateY(-1px);
+  box-shadow:0 0 12px rgba(37,99,235,0.25);
+}
 .bdot{
   width:6px;height:6px;border-radius:50%;
   background:var(--blue);box-shadow:0 0 8px var(--blue);
@@ -178,8 +189,8 @@ nav{
   border-radius:0;
   cursor:pointer;
   font-family:'DM Sans',sans-serif;
-  font-size:13px;font-weight:400;letter-spacing:0.3px;
-  color:#4E6D92;
+  font-size:13px;font-weight:400;letter-spacing:0.04em;
+  color:rgba(255,255,255,0.6);
   padding:14px 24px;
   transition:color 200ms ease;
   position:relative;
@@ -188,21 +199,20 @@ nav{
 }
 .site-tab:focus,.site-tab:focus-visible{outline:none}
 button.site-tab:focus,button.site-tab:focus-visible{outline:none}
-.site-tab:hover{color:#8AA8CC}
+.site-tab:hover{color:#fff}
 .site-tab.tab-active{
-  color:#F1F5FF;
-  font-weight:500;
+  color:#fff;
+  font-weight:400;
   background:transparent;
   border:none;
   outline:none;
   box-shadow:none;
   border-radius:0;
 }
-.site-tab.fynlo{color:rgba(0,200,150,0.7)}
+.site-tab.fynlo{color:rgba(0,200,150,0.49)}
 .site-tab.fynlo:hover{color:rgba(0,200,150,1)}
-.site-tab.fleetpulse{color:rgba(96,165,250,0.85)}
+.site-tab.fleetpulse{color:rgba(147,197,253,0.49)}
 .site-tab.fleetpulse:hover{color:#93C5FD}
-.nav-link { cursor: pointer; }
 #section-transition.active { opacity: 0.45; pointer-events: none; }
 #scan-line.active { opacity: 1; transform: scaleX(1); }
 .site-tab.fynlo::before{
@@ -719,17 +729,14 @@ p.sub{
 .p-fine{font-size:11px;color:var(--sub);margin-top:12px}
 
 /* PREMIUM MICRO-INTERACTIONS */
-.nav-signin{transition:color 200ms ease,letter-spacing 200ms ease}
-.nav-signin:hover{letter-spacing:.7px;color:#8cc2ff}
 .site-tabs{background:rgba(3,6,13,.8);transition:background-color 300ms ease}
 .site-tabs.scrolled{background:rgba(3,6,13,.97)}
 .site-tabs-inner.tab-bar{min-width:max(100%,min-content)}
-.site-tab{transition:color 200ms ease,font-weight 200ms ease}
+.site-tab{transition:color 200ms ease}
 .tab-underline{
   position:absolute;left:0;bottom:-1px;height:2px;width:0;background:#2563EB;z-index:2;
-  border-radius:2px 2px 0 0;
+  border-radius:0;
   pointer-events:none;
-  box-shadow:0 0 8px rgba(37,99,235,0.5);
   transition:left 300ms cubic-bezier(0.16,1,0.3,1),width 300ms cubic-bezier(0.16,1,0.3,1);
 }
 
@@ -926,6 +933,89 @@ footer{
   .dash-sidebar{width:150px}
   .stat-row{grid-template-columns:repeat(2,1fr)}
 }
+
+/* Nav Sign In fullscreen transition (nav button only) */
+@keyframes navSigninHexPulse{
+  0%,100%{transform:scale(1);text-shadow:0 0 16px rgba(37,99,235,0.55),0 0 28px rgba(37,99,235,0.35);filter:drop-shadow(0 0 6px rgba(37,99,235,0.5))}
+  50%{transform:scale(1.05);text-shadow:0 0 28px rgba(59,130,246,0.85),0 0 42px rgba(37,99,235,0.45);filter:drop-shadow(0 0 14px rgba(59,130,246,0.75))}
+}
+@keyframes navSigninCharIn{
+  from{opacity:0}
+  to{opacity:1}
+}
+@keyframes navSigninStatusIn{
+  from{opacity:0}
+  to{opacity:1}
+}
+@keyframes navSigninProgFill{
+  from{width:0%}
+  to{width:100%}
+}
+@keyframes navSigninHudPop{
+  from{opacity:0;transform:scale(1.2)}
+  to{opacity:1;transform:scale(1)}
+}
+@keyframes navSigninOverlayIn{
+  from{opacity:0}
+  to{opacity:1}
+}
+.nav-signin-overlay-el{
+  position:fixed;inset:0;z-index:99999;
+  display:flex;align-items:center;justify-content:center;
+  background:#03060D;
+  opacity:0;
+  animation:navSigninOverlayIn 300ms ease forwards;
+  font-family:'DM Sans',sans-serif;
+}
+.nav-signin-overlay-inner{
+  position:relative;
+  display:flex;flex-direction:column;align-items:center;
+  gap:16px;
+  max-width:min(280px,88vw);
+  text-align:center;
+}
+.nav-signin-hex{
+  font-size:64px;line-height:1;color:#2563EB;
+  animation:navSigninHexPulse 1.2s ease-in-out infinite;
+}
+.nav-signin-wordmark{
+  font-family:'Syne',sans-serif;font-size:24px;font-weight:800;
+  letter-spacing:0.2em;color:#fff;
+  display:flex;justify-content:center;gap:0.02em;
+}
+.nav-signin-wordmark span{
+  opacity:0;
+  animation:navSigninCharIn 100ms ease forwards;
+}
+.nav-signin-status{
+  font-family:'JetBrains Mono',ui-monospace,monospace;
+  font-size:10px;letter-spacing:0.25em;
+  color:rgba(37,99,235,0.8);
+  opacity:0;
+  animation:navSigninStatusIn 280ms ease 400ms forwards;
+  white-space:nowrap;
+}
+.nav-signin-progress{
+  width:100%;max-width:280px;height:2px;
+  background:rgba(255,255,255,0.08);
+  border-radius:1px;overflow:hidden;
+}
+.nav-signin-progress-fill{
+  height:100%;width:0;
+  background:linear-gradient(90deg,#2563EB,#3B82F6);
+  box-shadow:0 0 10px rgba(37,99,235,0.65);
+  animation:navSigninProgFill 900ms cubic-bezier(0.4,0,0.2,1) 300ms forwards;
+}
+.nav-signin-hud{
+  position:fixed;width:20px;height:20px;pointer-events:none;
+  border-color:#2563EB;border-style:solid;border-width:0;
+  opacity:0;
+  animation:navSigninHudPop 200ms ease forwards;
+}
+.nav-signin-hud-tl{top:20px;left:20px;border-top-width:2px;border-left-width:2px}
+.nav-signin-hud-tr{top:20px;right:20px;border-top-width:2px;border-right-width:2px}
+.nav-signin-hud-bl{bottom:20px;left:20px;border-bottom-width:2px;border-left-width:2px}
+.nav-signin-hud-br{bottom:20px;right:20px;border-bottom-width:2px;border-right-width:2px}
 </style>
 </head>
 <body>
@@ -937,29 +1027,28 @@ footer{
 
 <nav>
   <div class="nav-brand-wrap">
-    <a class="nav-xavorn-crumb" href="https://www.xavorn.com" target="_blank" rel="noopener noreferrer"><span aria-hidden="true">⬡</span> Xavorn</a>
-    <span class="nav-crumb-divider" aria-hidden="true"></span>
-    <div class="nav-brand">
-    <div class="logo-ring">
-      <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <polygon points="50,6 89,28 89,72 50,94 11,72 11,28" fill="#0B1422" stroke="rgba(37,99,235,0.5)" stroke-width="1.5"/>
-        <polygon points="50,21 76,36 76,64 50,79 24,64 24,36" fill="none" stroke="rgba(37,99,235,0.13)" stroke-width="1"/>
-        <path d="M33,25 L43,25 L50,37 L57,25 L67,25 L55,50 L67,75 L57,75 L50,63 L43,75 L33,75 L45,50 Z" fill="#2563EB"/>
-        <polygon points="50,43 57,50 50,57 43,50" fill="#60A5FA"/>
-        <circle cx="50" cy="6"  r="2.2" fill="rgba(37,99,235,.85)"/>
-        <circle cx="89" cy="28" r="1.8" fill="rgba(37,99,235,.5)"/>
-        <circle cx="89" cy="72" r="1.8" fill="rgba(37,99,235,.5)"/>
-        <circle cx="50" cy="94" r="2.2" fill="rgba(37,99,235,.85)"/>
-        <circle cx="11" cy="72" r="1.8" fill="rgba(37,99,235,.5)"/>
-        <circle cx="11" cy="28" r="1.8" fill="rgba(37,99,235,.5)"/>
-      </svg>
+    <div class="nav-brand-lockup">
+      <div class="logo-ring">
+        <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="50,6 89,28 89,72 50,94 11,72 11,28" fill="#0B1422" stroke="rgba(37,99,235,0.5)" stroke-width="1.5"/>
+          <polygon points="50,21 76,36 76,64 50,79 24,64 24,36" fill="none" stroke="rgba(37,99,235,0.13)" stroke-width="1"/>
+          <path d="M33,25 L43,25 L50,37 L57,25 L67,25 L55,50 L67,75 L57,75 L50,63 L43,75 L33,75 L45,50 Z" fill="#2563EB"/>
+          <polygon points="50,43 57,50 50,57 43,50" fill="#60A5FA"/>
+          <circle cx="50" cy="6"  r="2.2" fill="rgba(37,99,235,.85)"/>
+          <circle cx="89" cy="28" r="1.8" fill="rgba(37,99,235,.5)"/>
+          <circle cx="89" cy="72" r="1.8" fill="rgba(37,99,235,.5)"/>
+          <circle cx="50" cy="94" r="2.2" fill="rgba(37,99,235,.85)"/>
+          <circle cx="11" cy="72" r="1.8" fill="rgba(37,99,235,.5)"/>
+          <circle cx="11" cy="28" r="1.8" fill="rgba(37,99,235,.5)"/>
+        </svg>
+      </div>
+      <span class="brand-name">XEVORA</span>
     </div>
-    <span class="brand-name">XEVORA</span>
-    </div>
+    <a class="nav-xavorn-badge" href="https://xavorn.com" target="_blank" rel="noopener noreferrer">Part of Xavorn</a>
   </div>
   <div class="nav-actions">
     <div class="nav-badge"><span class="bdot"></span>Early Access Open</div>
-    <a class="nav-signin nav-link" href="https://app.xevora.io/auth/login" onclick="triggerLoginTransition(event)">Sign In →</a>
+    <button type="button" class="nav-signin-btn" onclick="triggerNavSignInTransition(event)">Sign In</button>
   </div>
 </nav>
 
@@ -1374,6 +1463,43 @@ function triggerLoginTransition(event){
   window.setTimeout(() => {
     window.location.href = 'https://app.xevora.io/auth/login';
   }, 1400);
+}
+
+function triggerNavSignInTransition(event) {
+  if (event && typeof event.preventDefault === 'function') {
+    event.preventDefault();
+  }
+
+  const overlay = document.createElement('div');
+  overlay.className = 'nav-signin-overlay-el';
+  overlay.setAttribute('role', 'presentation');
+
+  const letters = 'XEVORA'.split('');
+  const spans = letters
+    .map(
+      (ch, i) =>
+        `<span style="animation-delay:${i * 100}ms">${ch}</span>`,
+    )
+    .join('');
+
+  overlay.innerHTML = `
+    <div class="nav-signin-hud nav-signin-hud-tl" aria-hidden="true"></div>
+    <div class="nav-signin-hud nav-signin-hud-tr" aria-hidden="true"></div>
+    <div class="nav-signin-hud nav-signin-hud-bl" aria-hidden="true"></div>
+    <div class="nav-signin-hud nav-signin-hud-br" aria-hidden="true"></div>
+    <div class="nav-signin-overlay-inner">
+      <div class="nav-signin-hex" aria-hidden="true">⬡</div>
+      <div class="nav-signin-wordmark">${spans}</div>
+      <div class="nav-signin-status">INITIALIZING SECURE SESSION</div>
+      <div class="nav-signin-progress"><div class="nav-signin-progress-fill"></div></div>
+    </div>
+  `;
+
+  document.body.appendChild(overlay);
+
+  window.setTimeout(() => {
+    window.location.href = 'https://app.xevora.io/auth/login';
+  }, 1500);
 }
 
 function updateUnderline(newTabId) {
