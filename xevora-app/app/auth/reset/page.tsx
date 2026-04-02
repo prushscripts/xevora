@@ -43,11 +43,17 @@ export default function ResetPage() {
     setLoading(false);
   }
 
+  const inputClass =
+    "w-full min-h-[52px] min-w-0 rounded-[10px] border border-[rgba(37,99,235,0.25)] bg-[#030710] px-4 py-4 text-base leading-normal text-[var(--text)] outline-none transition focus:border-[rgba(37,99,235,0.7)] focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)] md:min-h-0 md:py-3";
+
   return (
-    <main className="flex min-h-screen items-center justify-center bg-[var(--bg)] px-5 py-8">
-      <section className="w-full max-w-md rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-8">
-        <Link href="/auth/login" className="mb-6 inline-flex items-center gap-1 text-xs text-[var(--muted)] hover:text-[var(--blue-bright)]">
-          <ArrowLeftIcon className="h-4 w-4" />
+    <main className="flex min-h-dvh w-full min-w-0 flex-col justify-center bg-[#03060D] px-6 py-10 md:min-h-screen md:bg-[var(--bg)] md:px-5 md:py-8">
+      <section className="mx-auto w-full min-w-0 max-w-md rounded-none border-0 bg-transparent p-0 md:rounded-2xl md:border md:border-[var(--border)] md:bg-[var(--surface)] md:p-8">
+        <Link
+          href="/auth/login"
+          className="mb-6 inline-flex min-h-[44px] items-center gap-1 text-sm text-[var(--muted)] hover:text-[var(--blue-bright)] md:min-h-0 md:text-xs"
+        >
+          <ArrowLeftIcon className="h-4 w-4 shrink-0" />
           Back to login
         </Link>
 
@@ -55,43 +61,39 @@ export default function ResetPage() {
           <XevoraLogo />
         </div>
 
-        <h1 className="text-center text-2xl font-extrabold">Reset your password</h1>
-        <p className="mx-auto mt-2 max-w-xs text-center text-[13px] font-light text-[var(--muted)]">
+        <h1 className="text-center text-[28px] font-extrabold leading-snug md:text-2xl">Reset your password</h1>
+        <p className="mx-auto mt-2 max-w-md text-center text-[14px] font-light leading-snug text-[var(--muted)] md:max-w-xs md:text-[13px]">
           Enter your email and we&apos;ll send you a reset link.
         </p>
 
-        <div className="mt-6 h-px w-full bg-[var(--border)]" />
+        <div className="mt-6 h-px w-full min-w-0 bg-[var(--border)]" />
 
         {sent ? (
           <div className="mt-6 rounded-xl border border-[rgba(52,211,153,0.2)] bg-[rgba(52,211,153,0.08)] p-5">
             <CheckCircleIcon className="h-8 w-8 text-[var(--green)]" />
             <h2 className="mt-3 text-lg font-semibold">Reset link sent!</h2>
-            <p className="mt-2 text-sm text-[var(--muted)]">
+            <p className="mt-2 text-base leading-snug text-[var(--muted)] md:text-sm">
               Check your email for a password reset link. It expires in 1 hour.
             </p>
-            <Link
-              href="/auth/login"
-              className="mt-4 inline-flex rounded-[10px] border border-[var(--border)] px-4 py-2 text-sm text-[var(--text)] transition hover:border-[var(--blue)] hover:text-[var(--blue-bright)]"
-            >
-              Back to Sign In
-            </Link>
+            <div className="mt-6 flex justify-center md:justify-start">
+              <Link
+                href="/auth/login"
+                className="inline-flex min-h-[52px] w-full max-w-xs items-center justify-center rounded-[10px] border border-[var(--border)] px-4 text-base text-[var(--text)] transition hover:border-[var(--blue)] hover:text-[var(--blue-bright)] md:min-h-0 md:w-auto md:py-2 md:text-sm"
+              >
+                Back to Sign In
+              </Link>
+            </div>
           </div>
         ) : (
-          <form onSubmit={onSubmit} className="mt-6 space-y-4">
-            <div>
-              <label className="mb-2 block text-[11px] uppercase tracking-[1px] text-[var(--muted)]">Work Email</label>
-              <input
-                type="email"
-                required
-                value={email}
-                onChange={(event) => setEmail(event.target.value)}
-                className="w-full rounded-[10px] border border-[rgba(37,99,235,0.2)] bg-[#030508] px-4 py-3 text-[14px] text-[var(--text)] outline-none transition focus:border-[var(--blue)] focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)]"
-              />
+          <form onSubmit={onSubmit} className="mt-6 w-full min-w-0 space-y-4">
+            <div className="min-w-0">
+              <label className="mb-2 block text-xs uppercase tracking-[1px] text-[var(--muted)] md:text-[11px]">Work Email</label>
+              <input type="email" required value={email} onChange={(event) => setEmail(event.target.value)} className={inputClass} />
             </div>
             <button
               type="submit"
               disabled={loading}
-              className="flex w-full items-center justify-center gap-2 rounded-[10px] bg-[var(--blue)] px-4 py-[14px] text-[14px] font-medium tracking-[0.5px] text-white transition duration-250 ease-in-out hover:-translate-y-px hover:bg-[#1D4ED8] hover:shadow-[0_4px_20px_rgba(37,99,235,0.4)] disabled:cursor-not-allowed disabled:opacity-70"
+              className="flex min-h-[52px] w-full items-center justify-center gap-2 rounded-[10px] bg-[var(--blue)] px-4 text-base font-medium tracking-[0.5px] text-white transition duration-250 ease-in-out hover:-translate-y-px hover:bg-[#1D4ED8] hover:shadow-[0_4px_20px_rgba(37,99,235,0.4)] disabled:cursor-not-allowed disabled:opacity-70 md:min-h-0 md:py-[14px] md:text-sm"
             >
               {loading ? (
                 <>
@@ -104,8 +106,8 @@ export default function ResetPage() {
             </button>
 
             {error ? (
-              <p className="flex items-center gap-1 text-[12px] text-[var(--red)]">
-                <ExclamationCircleIcon className="h-4 w-4" />
+              <p className="flex min-w-0 items-start gap-1 break-words text-sm text-[var(--red)]">
+                <ExclamationCircleIcon className="h-4 w-4 shrink-0" />
                 {error}
               </p>
             ) : null}

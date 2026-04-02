@@ -10,17 +10,28 @@ const mono = JetBrains_Mono({
   weight: ["400"],
 });
 
+const SHOW_STARS_QUERY = "(min-width: 768px)";
+
 export default function LoginTransition() {
   const router = useRouter();
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const particlesRef = useRef<
     Array<{ x: number; y: number; vx: number; vy: number; radius: number; opacity: number; color: "37,99,235" | "96,165,250" }>
   >([]);
+  const [starsActive, setStarsActive] = useState(false);
   const [phase, setPhase] = useState(0);
   const [overlayOpacity, setOverlayOpacity] = useState(1);
   const [portalOut, setPortalOut] = useState(false);
   const [done, setDone] = useState(false);
   const [statusIndex, setStatusIndex] = useState(0);
+
+  useEffect(() => {
+    const mq = window.matchMedia(SHOW_STARS_QUERY);
+    const apply = () => setStarsActive(mq.matches);
+    apply();
+    mq.addEventListener("change", apply);
+    return () => mq.removeEventListener("change", apply);
+  }, []);
 
   const word = useMemo(() => "XEVORA".split(""), []);
   const statuses = useMemo(
@@ -57,6 +68,7 @@ export default function LoginTransition() {
   }, [phase, statuses.length]);
 
   useEffect(() => {
+    if (!starsActive) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
     const context = canvas.getContext("2d");
@@ -129,7 +141,7 @@ export default function LoginTransition() {
       cancelAnimationFrame(frameId);
       window.removeEventListener("resize", resize);
     };
-  }, []);
+  }, [starsActive]);
 
   if (done) return null;
 
@@ -138,9 +150,9 @@ export default function LoginTransition() {
       initial={{ opacity: 0 }}
       animate={{ opacity: overlayOpacity }}
       transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-      className="fixed inset-0 z-[9999] flex items-center justify-center bg-[#03060D]"
+      className="fixed inset-0 z-[9999] flex items-center justify-center overflow-x-hidden overflow-y-auto bg-[#03060D] px-4"
     >
-      <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" />
+      {starsActive ? <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" /> : null}
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_30%_40%,rgba(37,99,235,0.08)_0%,transparent_60%)]" />
       <motion.div
         initial={{ scale: 0.8, opacity: 0 }}
@@ -171,7 +183,7 @@ export default function LoginTransition() {
       <motion.div
         animate={portalOut ? { scale: 8, opacity: 0 } : { scale: phase >= 4 ? 1.03 : 1, opacity: 1 }}
         transition={portalOut ? { duration: 0.4, ease: "easeIn" } : { duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-        className="relative z-10 flex flex-col items-center"
+        className="relative z-10 flex w-full max-w-[100vw] flex-col items-center"
       >
         <div className="login-ring" />
         <div className="login-ring login-ring-reverse" />
@@ -184,9 +196,14 @@ export default function LoginTransition() {
                 : "0 0 0 0 rgba(37,99,235,0)",
           }}
           transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-          className="relative z-20 flex h-[220px] w-[220px] items-center justify-center rounded-full"
+          className="relative z-20 flex h-[min(200px,52vw)] w-[min(200px,52vw)] max-w-[220px] items-center justify-center rounded-full md:h-[220px] md:w-[220px]"
         >
-          <svg width="160" height="160" viewBox="0 0 88 88" fill="none" aria-hidden="true">
+          <svg
+            className="h-[min(120px,38vw)] w-[min(120px,38vw)] max-w-[160px] md:h-[160px] md:w-[160px]"
+            viewBox="0 0 88 88"
+            fill="none"
+            aria-hidden="true"
+          >
             <motion.polygon
               points="44,4 76,22 76,66 44,84 12,66 12,22"
               fill="#060B14"
@@ -219,10 +236,11 @@ export default function LoginTransition() {
 
         {phase >= 2 ? (
           <>
-            <div className="mt-4 flex text-[36px] font-extrabold tracking-[14px] text-[var(--text)] [text-shadow:0_0_30px_rgba(37,99,235,0.5)]">
+            <div className="mt-4 flex max-w-full flex-wrap justify-center gap-x-0.5 text-center text-[clamp(22px,7vw,36px)] font-extrabold tracking-[0.2em] text-[var(--text)] [text-shadow:0_0_30px_rgba(37,99,235,0.5)] md:tracking-[14px]">
               {word.map((letter, index) => (
                 <motion.span
                   key={`${letter}-${index}`}
+                  className="inline-block"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: phase >= 2 ? 1 : 0 }}
                   transition={{ duration: 0.2, delay: 1.2 + index * 0.15 }}
@@ -231,7 +249,7 @@ export default function LoginTransition() {
                 </motion.span>
               ))}
             </div>
-            <div className="mt-4 h-[2px] w-[280px] overflow-hidden rounded-full bg-[rgba(37,99,235,0.15)]">
+            <div className="mt-4 h-[2px] w-[min(280px,88vw)] max-w-full shrink-0 overflow-hidden rounded-full bg-[rgba(37,99,235,0.15)]">
               <motion.div
                 initial={{ width: 0 }}
                 animate={{ width: phase >= 3 ? "100%" : "0%" }}
@@ -244,7 +262,7 @@ export default function LoginTransition() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.2 }}
-              className={`${mono.className} mt-3 text-[11px] tracking-[3px] text-[var(--muted)]`}
+              className={`${mono.className} mt-3 max-w-[min(340px,90vw)] px-2 text-center text-[10px] leading-relaxed tracking-[0.18em] text-[var(--muted)] md:text-[11px] md:tracking-[3px]`}
             >
               {phase >= 4 ? "Ready." : statuses[statusIndex]}
             </motion.p>
