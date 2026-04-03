@@ -1212,80 +1212,34 @@ p.sub{
   text-align:center;margin-top:40px;
   font-family:'DM Sans',sans-serif;font-weight:300;font-size:13px;color:#4E6D92;
 }
-.pricing-bundle-divider{
-  border:none;height:1px;background:rgba(37,99,235,0.08);
-  margin:60px auto;max-width:600px;
-}
-.pricing-bundle{text-align:center}
-.pricing-bundle-head{margin-bottom:28px}
-.pricing-bundle-eyebrow{
-  font-family:'JetBrains Mono',ui-monospace,monospace;
-  font-size:10px;font-weight:400;letter-spacing:0.3em;color:#4E6D92;text-transform:uppercase;
-  margin:0 0 12px;
-}
-.pricing-bundle-title{
-  font-family:'Syne',sans-serif;font-weight:800;font-size:32px;color:#F1F5FF;
-  line-height:1.15;margin:0 0 12px;
-}
-.pricing-bundle-sub{
-  font-family:'DM Sans',sans-serif;font-weight:300;font-size:16px;color:#4E6D92;
-  line-height:1.55;max-width:480px;margin:0 auto;
-}
-.pricing-bundle-grid{
-  display:grid;grid-template-columns:1fr 1fr;gap:20px;
-  max-width:760px;margin:0 auto;text-align:left;
-}
-.pricing-bundle-card{
-  background:linear-gradient(135deg,rgba(6,11,20,1) 0%,rgba(10,16,32,1) 100%);
-  border:1px solid rgba(37,99,235,0.15);border-radius:14px;padding:28px;
-  border-left:2px solid rgba(37,99,235,0.2);
-  transition:border-color 250ms ease,border-left-color 250ms ease,transform 250ms ease,box-shadow 250ms ease;
-  opacity:0;transform:translateY(12px);
-}
-.pricing-bundle-card:hover{
-  border-color:rgba(37,99,235,0.3);
-  border-left-color:rgba(37,99,235,0.5);
-  transform:translateY(-4px);
-  box-shadow:0 12px 40px rgba(37,99,235,0.08);
-}
-.pricing-premium-section.pricing-inview .pricing-bundle-card{
-  animation:pricingFadeUp 400ms ease-out forwards;
-}
-.pricing-premium-section.pricing-reduced .pricing-bundle-card{
-  opacity:1;transform:none;animation:none;
-}
-.pricing-bundle-grid .pricing-bundle-card:nth-child(1){animation-delay:240ms}
-.pricing-bundle-grid .pricing-bundle-card:nth-child(2){animation-delay:320ms}
-.pricing-bundle-grid .pricing-bundle-card:nth-child(2){
-  border-left:2px solid rgba(168,85,247,0.3);
-  background:linear-gradient(135deg,rgba(6,11,20,1) 0%,rgba(12,8,24,1) 100%);
-}
-.pricing-bundle-grid .pricing-bundle-card:nth-child(2):hover{
-  border-left-color:rgba(168,85,247,0.6);
-  box-shadow:0 12px 40px rgba(168,85,247,0.06);
-}
-.pricing-bundle-pills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
-.pricing-bundle-pill{
-  display:inline-flex;align-items:center;
-  padding:4px 10px;border-radius:999px;
-  font-family:'JetBrains Mono',ui-monospace,monospace;font-size:9px;
-  letter-spacing:0.08em;text-transform:uppercase;
-}
-.pricing-bundle-pill--xev{background:rgba(37,99,235,0.12);color:#3B82F6}
-.pricing-bundle-pill--fyn{background:rgba(34,197,94,0.08);color:#4ADE80}
-.pricing-bundle-pill--fp{background:rgba(168,85,247,0.08);color:#C084FC}
-.pricing-bundle-card-title{
-  font-family:'DM Sans',sans-serif;font-weight:500;font-size:17px;color:#F1F5FF;
-  margin:0 0 10px;line-height:1.3;
-}
-.pricing-bundle-card-desc{
-  font-family:'DM Sans',sans-serif;font-weight:300;font-size:14px;color:#4E6D92;
-  line-height:1.55;margin:0;
-}
-.pricing-bundle-card-tag{
-  font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;color:#4E6D92;
-  margin:16px 0 0;
-}
+.pricing-section-label { display: flex; align-items: center; gap: 16px; margin: 40px 0 24px; }
+.pricing-section-line { flex: 1; height: 1px; background: rgba(37,99,235,0.15); }
+.pricing-section-text { font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.25em; color: #4E6D92; text-transform: uppercase; white-space: nowrap; }
+.pricing-bundles-new { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; }
+.pbn-card { background: #060B14; border: 1px solid rgba(37,99,235,0.12); border-radius: 16px; padding: 28px; display: flex; flex-direction: column; gap: 14px; position: relative; transition: transform 300ms cubic-bezier(0.34,1.56,0.64,1), box-shadow 300ms ease, border-color 300ms ease; }
+.pbn-card:hover { transform: translateY(-6px); border-color: rgba(37,99,235,0.3); box-shadow: 0 16px 48px rgba(37,99,235,0.1); }
+.pbn-card--featured { background: linear-gradient(145deg,#0D1F3C 0%,#060B14 60%,#0A1220 100%); border-color: rgba(59,130,246,0.4); box-shadow: 0 0 0 1px rgba(59,130,246,0.08), 0 20px 60px rgba(37,99,235,0.15); }
+.pbn-card--featured:hover { border-color: rgba(59,130,246,0.65); box-shadow: 0 24px 80px rgba(37,99,235,0.28); transform: translateY(-8px); }
+.pbn-featured-badge { position: absolute; top: -14px; left: 50%; transform: translateX(-50%); background: linear-gradient(90deg,#1D4ED8,#3B82F6); color: #fff; font-family: 'JetBrains Mono', monospace; font-size: 8px; letter-spacing: 0.2em; padding: 5px 16px; border-radius: 999px; white-space: nowrap; box-shadow: 0 4px 16px rgba(37,99,235,0.5); }
+.pbn-top { display: flex; flex-direction: column; gap: 6px; }
+.pbn-pills { display: flex; flex-wrap: wrap; gap: 6px; }
+.pbn-pill { font-family: 'JetBrains Mono', monospace; font-size: 8px; letter-spacing: 0.1em; text-transform: uppercase; padding: 3px 9px; border-radius: 999px; }
+.pbn-pill--xev { background: rgba(37,99,235,0.12); color: #3B82F6; border: 1px solid rgba(37,99,235,0.2); }
+.pbn-pill--fyn { background: rgba(34,197,94,0.08); color: #4ADE80; border: 1px solid rgba(34,197,94,0.2); }
+.pbn-pill--fp { background: rgba(168,85,247,0.08); color: #C084FC; border: 1px solid rgba(168,85,247,0.2); }
+.pbn-tag { font-family: 'DM Sans', sans-serif; font-size: 11px; color: #4E6D92; }
+.pbn-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 22px; color: #F1F5FF; }
+.pbn-price { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 38px; color: #F1F5FF; line-height: 1; }
+.pbn-price small { font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 300; color: #4E6D92; }
+.pbn-fp-note { font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 300; color: #4E6D92; }
+.pbn-save { font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.1em; color: #4ADE80; text-transform: uppercase; }
+.pbn-features { list-style: none; display: flex; flex-direction: column; gap: 7px; flex: 1; margin: 0; padding: 0; }
+.pbn-features li { font-family: 'DM Sans', sans-serif; font-size: 13px; color: #C4CFDF; display: flex; align-items: flex-start; gap: 8px; }
+.pbn-cta { display: block; width: 100%; box-sizing: border-box; text-align: center; padding: 13px; border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; text-decoration: none; background: transparent; border: 1px solid rgba(37,99,235,0.3); color: #3B82F6; transition: all 200ms ease; margin-top: auto; }
+.pbn-cta:hover { background: rgba(37,99,235,0.1); }
+.pbn-cta--solid { background: #2563EB; border-color: #2563EB; color: #fff; }
+.pbn-cta--solid:hover { background: #1D4ED8; }
+@media(max-width:860px){ .pricing-bundles-new{grid-template-columns:1fr;} }
 
 /* PREMIUM MICRO-INTERACTIONS */
 .site-tabs{transition:background-color 300ms ease}
@@ -1358,8 +1312,7 @@ nav.load-in{opacity:1 !important;transform:translateY(0) !important;transition:o
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{animation:none !important;transition:none !important;scroll-behavior:auto !important}
   .fr-stagger{opacity:1 !important;transform:none !important}
-  .pricing-premium-section .pricing-card,
-  .pricing-premium-section .pricing-bundle-card{opacity:1 !important;transform:none !important}
+  .pricing-premium-section .pricing-card{opacity:1 !important;transform:none !important}
 }
 
 /* FOOTER */
@@ -1428,7 +1381,7 @@ footer{
   main{padding:140px 16px 50px}
   h1{letter-spacing:-1px}
   .content-panel{padding:132px 16px 100px}
-  .road-grid,.pricing-premium-grid,.pricing-bundle-grid{grid-template-columns:1fr}
+  .road-grid,.pricing-premium-grid,.pricing-bundles-new{grid-template-columns:1fr}
 
   /* Show dashboard mockup on mobile with safe scaling */
   .preview-section{
@@ -1990,91 +1943,144 @@ footer{
 <section id="pricing-panel" class="tab-panel">
   <div class="pricing-premium-section">
     <div class="pricing-premium-inner">
-      <header class="pricing-premium-head">
-        <p class="pricing-premium-eyebrow">Simple pricing</p>
-        <h2 class="pricing-premium-title">One price. No surprises.</h2>
-        <div class="pricing-toggle-wrap">
-          <div class="pricing-toggle" id="pricing-billing-toggle" role="group" aria-label="Billing period">
-            <span class="pricing-toggle-thumb" aria-hidden="true"></span>
-            <button type="button" class="pricing-toggle-btn is-active" id="pricing-btn-monthly" data-billing="monthly" aria-pressed="true">Monthly</button>
-            <button type="button" class="pricing-toggle-btn" id="pricing-btn-annual" data-billing="annual" aria-pressed="false">Annual (20% off)</button>
-          </div>
-        </div>
-      </header>
-      <div class="pricing-premium-grid">
-        <article class="pricing-card pricing-card--starter">
-          <div class="pricing-card-plan">Starter</div>
-          <div class="pricing-card-price" data-monthly="49" data-annual="39">$49<small>/mo</small></div>
-          <hr class="pricing-card-divider" />
-          <ul class="pricing-card-features">
-            <li><span class="pc-check" aria-hidden="true">✓</span><span>Up to 10 workers</span></li>
-            <li><span class="pc-check" aria-hidden="true">✓</span><span>GPS Time Tracking</span></li>
-            <li><span class="pc-check" aria-hidden="true">✓</span><span>Basic Payroll</span></li>
-            <li><span class="pc-check" aria-hidden="true">✓</span><span>Pay Stubs</span></li>
-            <li><span class="pc-check" aria-hidden="true">✓</span><span>Email Support</span></li>
-          </ul>
-          <a class="pricing-card-cta pricing-card-cta--outline" href="https://app.xevora.io/auth/login">Join Waitlist</a>
-        </article>
-        <article class="pricing-card pricing-card--growth">
-          <span class="pricing-card-badge">Most Popular</span>
-          <div class="pricing-card-plan">Growth</div>
-          <div class="pricing-card-price" data-monthly="99" data-annual="79">$99<small>/mo</small></div>
-          <hr class="pricing-card-divider" />
-          <ul class="pricing-card-features">
-            <li><span class="pc-check" aria-hidden="true">✓</span><span>Up to 30 workers</span></li>
-            <li><span class="pc-check" aria-hidden="true">✓</span><span>Everything in Starter</span></li>
-            <li><span class="pc-check" aria-hidden="true">✓</span><span>AI Assistant</span></li>
-            <li><span class="pc-check" aria-hidden="true">✓</span><span>Advanced Reports</span></li>
-            <li><span class="pc-check" aria-hidden="true">✓</span><span>1099 Ready</span></li>
-            <li><span class="pc-check" aria-hidden="true">✓</span><span>Priority Support</span></li>
-          </ul>
-          <a class="pricing-card-cta pricing-card-cta--solid" href="https://app.xevora.io/auth/login">Join Waitlist</a>
-        </article>
-        <article class="pricing-card pricing-card--pro">
-          <div class="pricing-card-plan">Pro</div>
-          <div class="pricing-card-price" data-monthly="199" data-annual="159">$199<small>/mo</small></div>
-          <hr class="pricing-card-divider" />
-          <ul class="pricing-card-features">
-            <li><span class="pc-check" aria-hidden="true">✓</span><span>Unlimited workers</span></li>
-            <li><span class="pc-check" aria-hidden="true">✓</span><span>Everything in Growth</span></li>
-            <li><span class="pc-check" aria-hidden="true">✓</span><span>Auto 1099 Filing</span></li>
-            <li><span class="pc-check" aria-hidden="true">✓</span><span>Custom Integrations</span></li>
-            <li><span class="pc-check" aria-hidden="true">✓</span><span>Dedicated Support</span></li>
-            <li><span class="pc-check" aria-hidden="true">✓</span><span>API Access</span></li>
-          </ul>
-          <a class="pricing-card-cta pricing-card-cta--outline" href="https://app.xevora.io/auth/login">Join Waitlist</a>
-        </article>
+<header class="pricing-premium-head">
+  <p class="pricing-premium-eyebrow">SIMPLE PRICING</p>
+  <h2 class="pricing-premium-title">One price. No surprises.</h2>
+  <div class="pricing-toggle-wrap">
+    <div class="pricing-toggle" id="pricing-billing-toggle" role="group" aria-label="Billing period">
+      <span class="pricing-toggle-thumb" aria-hidden="true"></span>
+      <button type="button" class="pricing-toggle-btn is-active" id="pricing-btn-monthly" data-billing="monthly" aria-pressed="true">Monthly</button>
+      <button type="button" class="pricing-toggle-btn" id="pricing-btn-annual" data-billing="annual" aria-pressed="false">Annual (20% off)</button>
+    </div>
+  </div>
+</header>
+
+<div class="pricing-section-label">
+  <span class="pricing-section-line"></span>
+  <span class="pricing-section-text">XEVORA STANDALONE</span>
+  <span class="pricing-section-line"></span>
+</div>
+
+<div class="pricing-premium-grid">
+  <article class="pricing-card pricing-card--starter">
+    <div class="pricing-card-plan">Starter</div>
+    <div class="pricing-card-price" data-monthly="49" data-annual="39">$49<small>/mo</small></div>
+    <hr class="pricing-card-divider" />
+    <ul class="pricing-card-features">
+      <li><span class="pc-check" aria-hidden="true">✓</span><span>Up to 10 workers</span></li>
+      <li><span class="pc-check" aria-hidden="true">✓</span><span>GPS Time Tracking</span></li>
+      <li><span class="pc-check" aria-hidden="true">✓</span><span>Basic Payroll</span></li>
+      <li><span class="pc-check" aria-hidden="true">✓</span><span>Pay Stubs</span></li>
+      <li><span class="pc-check" aria-hidden="true">✓</span><span>Email Support</span></li>
+    </ul>
+    <a class="pricing-card-cta pricing-card-cta--outline" href="https://app.xevora.io/auth/login">Join Waitlist</a>
+  </article>
+  <article class="pricing-card pricing-card--growth">
+    <span class="pricing-card-badge">Most Popular</span>
+    <div class="pricing-card-plan">Growth</div>
+    <div class="pricing-card-price" data-monthly="99" data-annual="79">$99<small>/mo</small></div>
+    <hr class="pricing-card-divider" />
+    <ul class="pricing-card-features">
+      <li><span class="pc-check" aria-hidden="true">✓</span><span>Up to 30 workers</span></li>
+      <li><span class="pc-check" aria-hidden="true">✓</span><span>Everything in Starter</span></li>
+      <li><span class="pc-check" aria-hidden="true">✓</span><span>AI Assistant</span></li>
+      <li><span class="pc-check" aria-hidden="true">✓</span><span>Advanced Reports</span></li>
+      <li><span class="pc-check" aria-hidden="true">✓</span><span>1099 Ready</span></li>
+      <li><span class="pc-check" aria-hidden="true">✓</span><span>Priority Support</span></li>
+    </ul>
+    <a class="pricing-card-cta pricing-card-cta--solid" href="https://app.xevora.io/auth/login">Join Waitlist</a>
+  </article>
+  <article class="pricing-card pricing-card--pro">
+    <div class="pricing-card-plan">Pro</div>
+    <div class="pricing-card-price" data-monthly="199" data-annual="159">$199<small>/mo</small></div>
+    <hr class="pricing-card-divider" />
+    <ul class="pricing-card-features">
+      <li><span class="pc-check" aria-hidden="true">✓</span><span>Unlimited workers</span></li>
+      <li><span class="pc-check" aria-hidden="true">✓</span><span>Everything in Growth</span></li>
+      <li><span class="pc-check" aria-hidden="true">✓</span><span>Auto 1099 Filing</span></li>
+      <li><span class="pc-check" aria-hidden="true">✓</span><span>Custom Integrations</span></li>
+      <li><span class="pc-check" aria-hidden="true">✓</span><span>Dedicated Support</span></li>
+      <li><span class="pc-check" aria-hidden="true">✓</span><span>API Access</span></li>
+    </ul>
+    <a class="pricing-card-cta pricing-card-cta--outline" href="https://app.xevora.io/auth/login">Join Waitlist</a>
+  </article>
+</div>
+
+<div class="pricing-section-label" style="margin-top:56px;">
+  <span class="pricing-section-line"></span>
+  <span class="pricing-section-text" style="color:#818CF8;">XAVORN ECOSYSTEM BUNDLES</span>
+  <span class="pricing-section-line" style="background:rgba(99,102,241,0.3);"></span>
+</div>
+
+<div class="pricing-bundles-new">
+  <article class="pbn-card pbn-card--ops">
+    <div class="pbn-top">
+      <div class="pbn-pills">
+        <span class="pbn-pill pbn-pill--xev">XEVORA</span>
+        <span class="pbn-pill pbn-pill--fyn">+ FYNLO</span>
       </div>
-      <hr class="pricing-bundle-divider" aria-hidden="true" />
-      <div class="pricing-bundle">
-        <header class="pricing-bundle-head">
-          <p class="pricing-bundle-eyebrow">Ecosystem bundles</p>
-          <h3 class="pricing-bundle-title">Stack your suite.</h3>
-          <p class="pricing-bundle-sub">Pair Xevora with other Xavorn products for deeper automation and better pricing.</p>
-        </header>
-        <div class="pricing-bundle-grid">
-          <article class="pricing-bundle-card">
-            <div class="pricing-bundle-pills">
-              <span class="pricing-bundle-pill pricing-bundle-pill--xev">XEVORA</span>
-              <span class="pricing-bundle-pill pricing-bundle-pill--fyn">+ FYNLO</span>
-            </div>
-            <h4 class="pricing-bundle-card-title">Payroll + Bookkeeping</h4>
-            <p class="pricing-bundle-card-desc">Time tracking and payroll in Xevora flows directly into your books in Fynlo. No manual entry.</p>
-            <p class="pricing-bundle-card-tag">Bundle pricing coming soon</p>
-          </article>
-          <article class="pricing-bundle-card">
-            <div class="pricing-bundle-pills">
-              <span class="pricing-bundle-pill pricing-bundle-pill--xev">XEVORA</span>
-              <span class="pricing-bundle-pill pricing-bundle-pill--fyn">+ FYNLO</span>
-              <span class="pricing-bundle-pill pricing-bundle-pill--fp">+ FLEETPULSE</span>
-            </div>
-            <h4 class="pricing-bundle-card-title">The Full Operation</h4>
-            <p class="pricing-bundle-card-desc">Workers. Books. Fleet. One login, one dashboard, one source of truth for your entire business.</p>
-            <p class="pricing-bundle-card-tag">For operators running it all</p>
-          </article>
-        </div>
+      <div class="pbn-tag">For operators who pay workers and bill clients</div>
+    </div>
+    <div class="pbn-title">Ops + Books</div>
+    <div class="pbn-price">$129<small>/mo</small></div>
+    <div class="pbn-save">Save $19/mo vs separate plans</div>
+    <ul class="pbn-features">
+      <li>✓ Full Xevora Growth plan</li>
+      <li>✓ Fynlo invoicing + bookkeeping</li>
+      <li>✓ Automatic payroll → books sync</li>
+      <li>✓ Unified Xavorn dashboard</li>
+      <li>✓ Single login, one support team</li>
+    </ul>
+    <a class="pbn-cta" href="https://app.xevora.io/auth/login">Join Waitlist</a>
+  </article>
+
+  <article class="pbn-card pbn-card--fleet">
+    <div class="pbn-top">
+      <div class="pbn-pills">
+        <span class="pbn-pill pbn-pill--xev">XEVORA</span>
+        <span class="pbn-pill pbn-pill--fp">+ FLEETPULSE</span>
       </div>
-      <p class="pricing-premium-note">No credit card required during beta</p>
+      <div class="pbn-tag">For operators managing drivers and vehicles</div>
+    </div>
+    <div class="pbn-title">Workforce + Fleet</div>
+    <div class="pbn-price">$139<small>/mo</small><span class="pbn-fp-note"> + $6/vehicle</span></div>
+    <div class="pbn-save">Save $10/mo vs separate plans</div>
+    <ul class="pbn-features">
+      <li>✓ Full Xevora Growth plan</li>
+      <li>✓ FleetPulse Professional plan</li>
+      <li>✓ Worker-to-vehicle assignment sync</li>
+      <li>✓ Mileage tracking tied to payroll</li>
+      <li>✓ Single login, one support team</li>
+    </ul>
+    <a class="pbn-cta" href="https://app.xevora.io/auth/login">Join Waitlist</a>
+  </article>
+
+  <article class="pbn-card pbn-card--full pbn-card--featured">
+    <div class="pbn-featured-badge">THE FULL SUITE</div>
+    <div class="pbn-top">
+      <div class="pbn-pills">
+        <span class="pbn-pill pbn-pill--xev">XEVORA</span>
+        <span class="pbn-pill pbn-pill--fyn">+ FYNLO</span>
+        <span class="pbn-pill pbn-pill--fp">+ FLEETPULSE</span>
+      </div>
+      <div class="pbn-tag">For operators running the full operation</div>
+    </div>
+    <div class="pbn-title">The Full Operation</div>
+    <div class="pbn-price">$199<small>/mo</small><span class="pbn-fp-note"> + $6/vehicle</span></div>
+    <div class="pbn-save">Save $48/mo vs separate plans</div>
+    <ul class="pbn-features">
+      <li>✓ Full Xevora Pro plan</li>
+      <li>✓ Fynlo invoicing + bookkeeping</li>
+      <li>✓ FleetPulse Professional plan</li>
+      <li>✓ Everything synced — workers, fleet, books</li>
+      <li>✓ One login, one dashboard, one team</li>
+      <li>✓ Dedicated Xavorn account manager</li>
+    </ul>
+    <a class="pbn-cta pbn-cta--solid" href="https://app.xevora.io/auth/login">Join Waitlist</a>
+  </article>
+</div>
+
+<p class="pricing-premium-note">No credit card required during beta · All bundle pricing subject to change at launch</p>
     </div>
   </div>
 </section>
