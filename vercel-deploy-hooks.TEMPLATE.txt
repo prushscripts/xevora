@@ -9,6 +9,10 @@
 # Vercel: each project (xevora + xevora-app) -> Settings -> Git -> Deploy Hooks
 # -> Create hook -> Branch: main -> Copy the HTTPS URL.
 #
+# Two REQUIRED lines (different URLs — one per Vercel project):
+#   Line 1: Deploy Hook from project **xevora** (marketing site)
+#   Line 2: Deploy Hook from project **xevora-app** (Next.js app)  <- must NOT be the same URL as line 1
+#
 # One https:// URL per line (no quotes). Lines starting with # are ignored.
 #
 # https://api.vercel.com/v1/integrations/deploy/prj_xxxx/yyyyyyyy
