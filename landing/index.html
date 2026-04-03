@@ -1595,6 +1595,99 @@ footer{
 .xrf-foot a:hover{text-decoration:underline;}
 @media(max-width:860px){.xrf-grid{grid-template-columns:1fr;gap:20px;}.xrf-wrap{padding:110px 16px 80px;}}
 
+.fp-showcase { background: #03060D; padding: 140px 32px 100px; box-sizing: border-box; min-height: 100vh; }
+.fp-showcase-inner { max-width: 1160px; margin: 0 auto; }
+.fp-hero { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; margin-bottom: 72px; }
+.fp-hero-left { display: flex; flex-direction: column; gap: 24px; }
+.fp-live-badge { display: inline-flex; align-items: center; gap: 8px; font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 600; color: #4ADE80; letter-spacing: 0.05em; text-transform: uppercase; }
+.fp-live-dot { width: 7px; height: 7px; border-radius: 50%; background: #4ADE80; box-shadow: 0 0 10px rgba(74,222,128,0.6); animation: blink 1.8s ease-in-out infinite; }
+.fp-hero-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: clamp(28px, 3.5vw, 42px); color: #F1F5FF; line-height: 1.1; margin: 0; }
+.fp-hero-sub { font-family: 'DM Sans', sans-serif; font-weight: 300; font-size: 16px; color: #4E6D92; line-height: 1.7; margin: 0; }
+.fp-stats-row { display: flex; gap: 28px; }
+.fp-stat { display: flex; flex-direction: column; gap: 3px; }
+.fp-stat-num { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 22px; color: #3B82F6; }
+.fp-stat-label { font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.1em; color: #4E6D92; text-transform: uppercase; }
+.fp-cta { display: inline-flex; align-items: center; justify-content: center; padding: 13px 28px; border-radius: 10px; background: #2563EB; color: #fff; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600; text-decoration: none; letter-spacing: 0.2px; box-shadow: 0 8px 28px rgba(37,99,235,0.4); transition: background 200ms ease, box-shadow 200ms ease; width: fit-content; }
+.fp-cta:hover { background: #1D4ED8; box-shadow: 0 10px 36px rgba(37,99,235,0.55); }
+.fp-cta-secondary { background: transparent; border: 1px solid rgba(37,99,235,0.4); color: #3B82F6; box-shadow: none; margin-top: 24px; }
+.fp-cta-secondary:hover { background: rgba(37,99,235,0.1); box-shadow: none; }
+.fp-mock-browser { background: #060C18; border-radius: 12px; border: 1px solid rgba(37,99,235,0.15); overflow: hidden; box-shadow: 0 24px 80px rgba(0,0,0,0.5); }
+.fp-mock-bar { background: #04080F; padding: 10px 14px; display: flex; align-items: center; gap: 6px; border-bottom: 1px solid rgba(37,99,235,0.08); }
+.fp-mock-dot { width: 9px; height: 9px; border-radius: 50%; }
+.fp-mock-dot-r { background: #FF5F57; }
+.fp-mock-dot-y { background: #FFBD2E; }
+.fp-mock-dot-g { background: #28CA41; }
+.fp-mock-url { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: rgba(78,109,146,0.6); margin-left: 8px; }
+.fp-mock-screen { display: flex; min-height: 280px; }
+.fp-mock-sidebar { width: 130px; flex-shrink: 0; background: #03070F; padding: 12px 0; border-right: 1px solid rgba(37,99,235,0.07); }
+.fp-mock-nav-item { padding: 8px 14px; font-family: 'DM Sans', sans-serif; font-size: 11px; color: rgba(78,109,146,0.7); cursor: pointer; border-left: 2px solid transparent; }
+.fp-mock-nav-active { color: #F1F5FF; border-left-color: #2563EB; background: rgba(37,99,235,0.08); }
+.fp-mock-main { flex: 1; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+.fp-mock-stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; }
+.fp-mock-stat-card { background: #08101F; border: 1px solid rgba(37,99,235,0.08); border-radius: 8px; padding: 10px; }
+.fp-mock-stat-label { font-size: 8px; color: #4E6D92; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 4px; }
+.fp-mock-stat-val { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 18px; color: #F1F5FF; }
+.fp-mock-stat-sub { font-size: 8px; color: #4E6D92; margin-top: 2px; }
+.fp-mock-table-header { font-family: 'DM Sans', sans-serif; font-size: 10px; font-weight: 500; color: #4E6D92; letter-spacing: 0.3px; }
+.fp-mock-table { display: flex; flex-direction: column; gap: 4px; }
+.fp-mock-row { display: flex; align-items: center; justify-content: space-between; padding: 6px 8px; background: rgba(3,6,13,0.5); border-radius: 5px; border: 1px solid rgba(37,99,235,0.05); font-family: 'DM Sans', sans-serif; font-size: 10px; color: rgba(241,245,255,0.7); }
+.fp-mock-badge { font-size: 8px; font-weight: 600; padding: 2px 7px; border-radius: 999px; }
+.fp-mock-badge-green { background: rgba(74,222,128,0.12); color: #4ADE80; }
+.fp-mock-badge-yellow { background: rgba(251,183,36,0.12); color: #FBB724; }
+.fp-mock-badge-gray { background: rgba(78,109,146,0.12); color: #4E6D92; }
+.fp-features-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; margin-bottom: 56px; }
+.fp-feat-card { background: rgba(6,11,20,0.8); border: 1px solid rgba(37,99,235,0.1); border-radius: 12px; padding: 20px; transition: border-color 200ms ease, transform 200ms ease; }
+.fp-feat-card:hover { border-color: rgba(37,99,235,0.28); transform: translateY(-3px); }
+.fp-feat-icon { font-size: 20px; margin-bottom: 10px; }
+.fp-feat-title { font-family: 'DM Sans', sans-serif; font-weight: 500; font-size: 14px; color: #F1F5FF; margin-bottom: 6px; }
+.fp-feat-desc { font-family: 'DM Sans', sans-serif; font-weight: 300; font-size: 12px; color: #4E6D92; line-height: 1.6; }
+.fp-pricing-strip { background: rgba(6,11,20,0.6); border: 1px solid rgba(37,99,235,0.1); border-radius: 16px; padding: 32px; text-align: center; }
+.fp-pricing-strip-head { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 18px; color: #F1F5FF; margin-bottom: 24px; }
+.fp-pricing-strip-cards { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; margin-bottom: 0; }
+.fp-pricing-strip-card { background: #060B14; border: 1px solid rgba(37,99,235,0.1); border-radius: 10px; padding: 20px; position: relative; }
+.fp-ps-featured { border-color: rgba(59,130,246,0.4); background: linear-gradient(145deg,#0A1628,#060B14); }
+.fp-ps-badge { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: linear-gradient(90deg,#2563EB,#3B82F6); color: #fff; font-family: 'JetBrains Mono', monospace; font-size: 8px; letter-spacing: 0.15em; padding: 4px 12px; border-radius: 999px; white-space: nowrap; }
+.fp-ps-plan { font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 500; color: #4E6D92; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px; }
+.fp-ps-price { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 28px; color: #F1F5FF; margin-bottom: 6px; }
+.fp-ps-price span { font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 300; color: #4E6D92; }
+.fp-ps-desc { font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 300; color: #4E6D92; line-height: 1.5; }
+@media(max-width:860px){ .fp-hero{grid-template-columns:1fr;} .fp-features-grid{grid-template-columns:1fr 1fr;} .fp-pricing-strip-cards{grid-template-columns:1fr;} .fp-showcase{padding:120px 16px 80px;} .fp-mock-stats{grid-template-columns:repeat(2,1fr);} }
+
+.fyn-showcase { background: #03060D; padding: 140px 32px 100px; box-sizing: border-box; min-height: 100vh; }
+.fyn-showcase-inner { max-width: 1160px; margin: 0 auto; }
+.fyn-hero { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; margin-bottom: 48px; }
+.fyn-hero-left { display: flex; flex-direction: column; gap: 20px; }
+.fyn-coming-badge { display: inline-flex; align-items: center; gap: 6px; font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: #818CF8; background: rgba(99,102,241,0.1); border: 1px solid rgba(99,102,241,0.25); padding: 5px 12px; border-radius: 999px; width: fit-content; }
+.fyn-hero-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: clamp(26px, 3.2vw, 40px); color: #F1F5FF; line-height: 1.1; margin: 0; }
+.fyn-hero-sub { font-family: 'DM Sans', sans-serif; font-weight: 300; font-size: 16px; color: #4E6D92; line-height: 1.7; margin: 0; }
+.fyn-features-list { display: flex; flex-direction: column; gap: 8px; }
+.fyn-feat { display: flex; align-items: center; gap: 10px; font-family: 'DM Sans', sans-serif; font-size: 14px; color: #C4CFDF; }
+.fyn-feat-dot { width: 6px; height: 6px; border-radius: 50%; background: #818CF8; box-shadow: 0 0 6px rgba(129,140,248,0.5); flex-shrink: 0; }
+.fyn-cta { display: inline-flex; align-items: center; justify-content: center; padding: 13px 28px; border-radius: 10px; background: rgba(99,102,241,0.15); border: 1px solid rgba(99,102,241,0.35); color: #A5B4FC; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600; text-decoration: none; transition: all 200ms ease; width: fit-content; }
+.fyn-cta:hover { background: rgba(99,102,241,0.25); border-color: rgba(99,102,241,0.5); }
+.fyn-mock-browser { background: #060C18; border-radius: 12px; border: 1px solid rgba(99,102,241,0.15); overflow: hidden; box-shadow: 0 24px 80px rgba(0,0,0,0.5); }
+.fyn-mock-bar { background: #04080F; padding: 10px 14px; display: flex; align-items: center; gap: 6px; border-bottom: 1px solid rgba(99,102,241,0.08); }
+.fyn-mock-screen { display: flex; min-height: 280px; }
+.fyn-mock-sidebar { width: 120px; flex-shrink: 0; background: #03070F; padding: 12px 0; border-right: 1px solid rgba(99,102,241,0.07); }
+.fyn-mock-nav { padding: 8px 14px; font-family: 'DM Sans', sans-serif; font-size: 11px; color: rgba(78,109,146,0.7); border-left: 2px solid transparent; }
+.fyn-mock-nav.fp-mock-nav-active { color: #A5B4FC; border-left-color: #818CF8; background: rgba(99,102,241,0.08); }
+.fyn-mock-main { flex: 1; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+.fyn-mock-stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; }
+.fyn-mock-card { background: #08101F; border: 1px solid rgba(99,102,241,0.08); border-radius: 8px; padding: 10px; }
+.fyn-mock-val { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 16px; color: #F1F5FF; }
+.fyn-mock-invoice-header { font-family: 'DM Sans', sans-serif; font-size: 10px; font-weight: 500; color: #4E6D92; }
+.fyn-mock-invoices { display: flex; flex-direction: column; gap: 4px; }
+.fyn-sync-banner { background: rgba(99,102,241,0.06); border: 1px solid rgba(99,102,241,0.15); border-radius: 6px; padding: 6px 10px; font-family: 'JetBrains Mono', monospace; font-size: 9px; color: #818CF8; letter-spacing: 0.05em; display: flex; align-items: center; gap: 6px; }
+.fyn-sync-icon { font-size: 12px; }
+.fyn-ecosystem-note { display: flex; align-items: center; gap: 24px; background: linear-gradient(135deg, rgba(10,16,32,1) 0%, rgba(6,11,20,1) 100%); border: 1px solid rgba(99,102,241,0.2); border-radius: 14px; padding: 28px 32px; }
+.fyn-eco-icon { font-size: 28px; flex-shrink: 0; }
+.fyn-eco-text { flex: 1; }
+.fyn-eco-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 17px; color: #F1F5FF; margin-bottom: 6px; }
+.fyn-eco-sub { font-family: 'DM Sans', sans-serif; font-weight: 300; font-size: 14px; color: #4E6D92; line-height: 1.6; }
+.fyn-eco-cta { display: inline-flex; align-items: center; padding: 10px 20px; border-radius: 8px; background: rgba(99,102,241,0.12); border: 1px solid rgba(99,102,241,0.3); color: #A5B4FC; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; text-decoration: none; white-space: nowrap; flex-shrink: 0; transition: all 200ms ease; }
+.fyn-eco-cta:hover { background: rgba(99,102,241,0.22); }
+@media(max-width:860px){ .fyn-hero{grid-template-columns:1fr;} .fyn-mock-stats{grid-template-columns:1fr 1fr;} .fyn-ecosystem-note{flex-direction:column;text-align:center;} .fyn-showcase{padding:120px 16px 80px;} }
+
 </style>
 </head>
 <body>
@@ -1641,7 +1734,7 @@ footer{
     <button type="button" class="site-tab tab-btn" data-tab="why-panel" data-tab-target="why-panel">Why Xevora</button>
     <button type="button" class="site-tab tab-btn" data-tab="pricing-panel" data-tab-target="pricing-panel">Pricing</button>
     <button type="button" class="site-tab tab-btn fleetpulse" data-tab="fleetpulse-panel" data-tab-target="fleetpulse-panel" data-ecosystem-popover="fleetpulse">FleetPulse ↗</button>
-    <a class="site-tab fynlo" href="https://fynlo.io" target="_blank" rel="noopener noreferrer" data-ecosystem-popover="fynlo">Fynlo ↗</a>
+    <button type="button" class="site-tab tab-btn fynlo" data-tab="fynlo-panel" data-tab-target="fynlo-panel">Fynlo ↗</button>
     <span class="tab-underline" id="tab-underline" aria-hidden="true"></span>
   </div>
 </div>
@@ -1987,21 +2080,180 @@ footer{
 </section>
 
 <section id="fleetpulse-panel" class="tab-panel">
-  <div class="content-panel">
-    <div class="panel-card">
-      <div class="eco-live fr-stagger"><span class="eco-live-dot" aria-hidden="true"></span>Live Now</div>
-      <h2 class="tab-section-title fr-stagger">Fleet management for real operators.</h2>
-      <p class="tab-section-sub fr-stagger">Track every vehicle, every driver, every mile — from one intelligent dashboard.</p>
-      <div class="fp-lines">
-        <div class="fr-line fr-stagger"><span class="fr-line-ic fr-mono-dot fr-mono-dot--b" aria-hidden="true"></span><p class="fr-line-txt"><strong>Vehicle Tracking:</strong> <span class="mut">Real-time mileage, location, and health monitoring</span></p></div>
-        <div class="fr-line fr-stagger"><span class="fr-line-ic fr-mono-dot fr-mono-dot--b" aria-hidden="true"></span><p class="fr-line-txt"><strong>Digital Inspections:</strong> <span class="mut">Pre and post-trip with photo documentation</span></p></div>
-        <div class="fr-line fr-stagger"><span class="fr-line-ic fr-mono-dot fr-mono-dot--b" aria-hidden="true"></span><p class="fr-line-txt"><strong>Driver Management:</strong> <span class="mut">Assign vehicles, track performance, maintain records</span></p></div>
-        <div class="fr-line fr-stagger"><span class="fr-line-ic fr-mono-dot fr-mono-dot--b" aria-hidden="true"></span><p class="fr-line-txt"><strong>Smart Alerts:</strong> <span class="mut">Oil changes, compliance, document expiration — before they become problems</span></p></div>
-        <div class="fr-line fr-stagger"><span class="fr-line-ic fr-mono-dot fr-mono-dot--b" aria-hidden="true"></span><p class="fr-line-txt"><strong>Maintenance Scheduling:</strong> <span class="mut">Never miss a service again</span></p></div>
+<div class="fp-showcase">
+  <div class="fp-showcase-inner">
+
+    <div class="fp-hero">
+      <div class="fp-hero-left">
+        <div class="fp-live-badge"><span class="fp-live-dot"></span>Live Now</div>
+        <h2 class="fp-hero-title">Fleet management for<br>real operators.</h2>
+        <p class="fp-hero-sub">Every vehicle. Every driver. One command center. Real-time visibility into your entire fleet from a single intelligent dashboard.</p>
+        <div class="fp-stats-row">
+          <div class="fp-stat"><div class="fp-stat-num">69+</div><div class="fp-stat-label">Vehicles tracked</div></div>
+          <div class="fp-stat"><div class="fp-stat-num">18,400+</div><div class="fp-stat-label">Miles monitored</div></div>
+          <div class="fp-stat"><div class="fp-stat-num">99.9%</div><div class="fp-stat-label">Uptime</div></div>
+        </div>
+        <a class="fp-cta" href="https://fleetpulsehq.com" target="_blank" rel="noopener noreferrer">Visit FleetPulse →</a>
       </div>
-      <a class="eco-cta fr-stagger" href="https://fleetpulsehq.com" target="_blank" rel="noopener noreferrer">Visit FleetPulse →</a>
+      <div class="fp-hero-right">
+        <div class="fp-mock-browser">
+          <div class="fp-mock-bar">
+            <span class="fp-mock-dot fp-mock-dot-r"></span>
+            <span class="fp-mock-dot fp-mock-dot-y"></span>
+            <span class="fp-mock-dot fp-mock-dot-g"></span>
+            <span class="fp-mock-url">fleetpulsehq.com/dashboard</span>
+          </div>
+          <div class="fp-mock-screen">
+            <div class="fp-mock-sidebar">
+              <div class="fp-mock-nav-item fp-mock-nav-active">Dashboard</div>
+              <div class="fp-mock-nav-item">Vehicles</div>
+              <div class="fp-mock-nav-item">Drivers</div>
+              <div class="fp-mock-nav-item">Inspections</div>
+              <div class="fp-mock-nav-item">Alerts</div>
+            </div>
+            <div class="fp-mock-main">
+              <div class="fp-mock-stats">
+                <div class="fp-mock-stat-card"><div class="fp-mock-stat-label">Active Vehicles</div><div class="fp-mock-stat-val">67</div><div class="fp-mock-stat-sub" style="color:#4ADE80">↑ All running</div></div>
+                <div class="fp-mock-stat-card"><div class="fp-mock-stat-label">Oil Overdue</div><div class="fp-mock-stat-val" style="color:#FBB724">4</div><div class="fp-mock-stat-sub">Action needed</div></div>
+                <div class="fp-mock-stat-card"><div class="fp-mock-stat-label">Inspections Today</div><div class="fp-mock-stat-val">3</div><div class="fp-mock-stat-sub">Completed</div></div>
+                <div class="fp-mock-stat-card"><div class="fp-mock-stat-label">Open Alerts</div><div class="fp-mock-stat-val" style="color:#F87171">2</div><div class="fp-mock-stat-sub">Review now</div></div>
+              </div>
+              <div class="fp-mock-table-header">Recent Vehicles</div>
+              <div class="fp-mock-table">
+                <div class="fp-mock-row"><span>Unit 04 — RAM ProMaster</span><span class="fp-mock-badge fp-mock-badge-green">Active</span></div>
+                <div class="fp-mock-row"><span>Unit 07 — Nissan NV2500</span><span class="fp-mock-badge fp-mock-badge-yellow">Oil Due</span></div>
+                <div class="fp-mock-row"><span>Unit 12 — Ford Transit</span><span class="fp-mock-badge fp-mock-badge-green">Active</span></div>
+                <div class="fp-mock-row"><span>Unit 15 — Ford Transit</span><span class="fp-mock-badge fp-mock-badge-gray">Inspection</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fp-features-grid">
+      <div class="fp-feat-card">
+        <div class="fp-feat-icon">🚗</div>
+        <div class="fp-feat-title">Vehicle Tracking</div>
+        <div class="fp-feat-desc">Mileage, oil changes, and maintenance schedules with automated alerts before issues become breakdowns.</div>
+      </div>
+      <div class="fp-feat-card">
+        <div class="fp-feat-icon">👤</div>
+        <div class="fp-feat-title">Driver Management</div>
+        <div class="fp-feat-desc">Assign drivers to vehicles, track performance, and maintain complete driver records in one place.</div>
+      </div>
+      <div class="fp-feat-card">
+        <div class="fp-feat-icon">📋</div>
+        <div class="fp-feat-title">Digital Inspections</div>
+        <div class="fp-feat-desc">Pre and post-trip inspections with photo documentation, sign-off workflows, and full audit trails.</div>
+      </div>
+      <div class="fp-feat-card">
+        <div class="fp-feat-icon">🔔</div>
+        <div class="fp-feat-title">Smart Alerts</div>
+        <div class="fp-feat-desc">Compliance reminders, document expiration alerts, and service due notifications — delivered instantly.</div>
+      </div>
+      <div class="fp-feat-card">
+        <div class="fp-feat-icon">📊</div>
+        <div class="fp-feat-title">Fleet Analytics</div>
+        <div class="fp-feat-desc">Monitor fleet health, oil change percentages, and operational efficiency from a unified dashboard.</div>
+      </div>
+      <div class="fp-feat-card">
+        <div class="fp-feat-icon">📄</div>
+        <div class="fp-feat-title">Document Management</div>
+        <div class="fp-feat-desc">Registrations, insurance, and permits with expiration tracking — never miss a renewal again.</div>
+      </div>
+    </div>
+
+    <div class="fp-pricing-strip">
+      <div class="fp-pricing-strip-head">Simple per-vehicle pricing. Start free for 14 days.</div>
+      <div class="fp-pricing-strip-cards">
+        <div class="fp-pricing-strip-card">
+          <div class="fp-ps-plan">Starter</div>
+          <div class="fp-ps-price">$3<span>/vehicle/mo</span></div>
+          <div class="fp-ps-desc">Basic tracking, service records, issue tracking</div>
+        </div>
+        <div class="fp-pricing-strip-card fp-ps-featured">
+          <div class="fp-ps-badge">Most Popular</div>
+          <div class="fp-ps-plan">Professional</div>
+          <div class="fp-ps-price">$6<span>/vehicle/mo</span></div>
+          <div class="fp-ps-desc">Driver management, digital inspections, analytics</div>
+        </div>
+        <div class="fp-pricing-strip-card">
+          <div class="fp-ps-plan">Premium</div>
+          <div class="fp-ps-price">$9<span>/vehicle/mo</span></div>
+          <div class="fp-ps-desc">API access, custom integrations, dedicated support</div>
+        </div>
+      </div>
+      <a class="fp-cta fp-cta-secondary" href="https://fleetpulsehq.com" target="_blank" rel="noopener noreferrer">Start Free Trial at FleetPulse →</a>
+    </div>
+
+  </div>
+</div>
+</section>
+
+<section id="fynlo-panel" class="tab-panel">
+<div class="fyn-showcase">
+  <div class="fyn-showcase-inner">
+    <div class="fyn-hero">
+      <div class="fyn-hero-left">
+        <div class="fyn-coming-badge">● IN DEVELOPMENT</div>
+        <h2 class="fyn-hero-title">Invoicing & bookkeeping<br>built for operators.</h2>
+        <p class="fyn-hero-sub">Fynlo connects directly to Xevora — your payroll flows into your books automatically. No accountant needed, no manual entry, no spreadsheets.</p>
+        <div class="fyn-features-list">
+          <div class="fyn-feat"><span class="fyn-feat-dot"></span><span>Automated invoicing and billing</span></div>
+          <div class="fyn-feat"><span class="fyn-feat-dot"></span><span>Expense tracking and categorization</span></div>
+          <div class="fyn-feat"><span class="fyn-feat-dot"></span><span>Direct Xevora payroll sync</span></div>
+          <div class="fyn-feat"><span class="fyn-feat-dot"></span><span>Tax-ready financial reports</span></div>
+          <div class="fyn-feat"><span class="fyn-feat-dot"></span><span>Client billing and payment collection</span></div>
+          <div class="fyn-feat"><span class="fyn-feat-dot"></span><span>Real-time profit and loss dashboard</span></div>
+        </div>
+        <a class="fyn-cta" href="https://fynlo.io" target="_blank" rel="noopener noreferrer">Visit Fynlo.io →</a>
+      </div>
+      <div class="fyn-hero-right">
+        <div class="fyn-mock-browser">
+          <div class="fyn-mock-bar">
+            <span class="fp-mock-dot fp-mock-dot-r"></span>
+            <span class="fp-mock-dot fp-mock-dot-y"></span>
+            <span class="fp-mock-dot fp-mock-dot-g"></span>
+            <span class="fp-mock-url">app.fynlo.io/dashboard</span>
+          </div>
+          <div class="fyn-mock-screen">
+            <div class="fyn-mock-sidebar">
+              <div class="fyn-mock-nav fp-mock-nav-active">Overview</div>
+              <div class="fyn-mock-nav">Invoices</div>
+              <div class="fyn-mock-nav">Expenses</div>
+              <div class="fyn-mock-nav">Payroll Sync</div>
+              <div class="fyn-mock-nav">Reports</div>
+            </div>
+            <div class="fyn-mock-main">
+              <div class="fyn-mock-stats">
+                <div class="fyn-mock-card"><div class="fp-mock-stat-label">Revenue MTD</div><div class="fyn-mock-val">$24,180</div><div class="fp-mock-stat-sub" style="color:#4ADE80">↑ 12% vs last month</div></div>
+                <div class="fyn-mock-card"><div class="fp-mock-stat-label">Outstanding</div><div class="fyn-mock-val" style="color:#FBB724">$3,400</div><div class="fp-mock-stat-sub">2 invoices pending</div></div>
+                <div class="fyn-mock-card"><div class="fp-mock-stat-label">Labor Costs</div><div class="fyn-mock-val">$8,960</div><div class="fp-mock-stat-sub" style="color:#60A5FA">Synced from Xevora</div></div>
+              </div>
+              <div class="fyn-mock-invoice-header">Recent Invoices</div>
+              <div class="fyn-mock-invoices">
+                <div class="fp-mock-row"><span>INV-0041 — Route Client A</span><span class="fp-mock-badge fp-mock-badge-green">Paid</span></div>
+                <div class="fp-mock-row"><span>INV-0042 — Route Client B</span><span class="fp-mock-badge fp-mock-badge-yellow">Pending</span></div>
+                <div class="fp-mock-row"><span>INV-0043 — Route Client C</span><span class="fp-mock-badge fp-mock-badge-green">Paid</span></div>
+              </div>
+              <div class="fyn-sync-banner"><span class="fyn-sync-icon">⟳</span> Payroll data synced from Xevora · Last updated just now</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fyn-ecosystem-note">
+      <div class="fyn-eco-icon">🔗</div>
+      <div class="fyn-eco-text">
+        <div class="fyn-eco-title">The Xavorn connection</div>
+        <div class="fyn-eco-sub">When Fynlo launches, your Xevora payroll will sync automatically to your books. Every hour logged, every worker paid — reflected in your P&amp;L without lifting a finger.</div>
+      </div>
+      <a class="fyn-eco-cta" href="https://fynlo.io" target="_blank" rel="noopener noreferrer">Get notified at launch →</a>
     </div>
   </div>
+</div>
 </section>
 </div>
 
@@ -2211,7 +2463,7 @@ function revealRoadmapIfInView() {
 }
 
 (function(){
-  const cinematicTabs=new Set(['overview-panel','features-panel','why-panel','pricing-panel']);
+  const cinematicTabs=new Set(['overview-panel','features-panel','why-panel','pricing-panel','fleetpulse-panel','fynlo-panel']);
   const tabBtns=document.querySelectorAll('.tab-btn');
   tabBtns.forEach(btn=>{
     btn.addEventListener('click',function(){
