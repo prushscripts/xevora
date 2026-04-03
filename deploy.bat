@@ -7,13 +7,14 @@ echo ========================================
 echo   Xevora — Deploy
 echo ========================================
 echo   Directory: %CD%
-echo   Stages all changes, updates revision stamps in landing\ AND xevora-app\
-echo   ^(so Vercel rebuilds BOTH projects when each uses that root on main^).
-echo   Then commits and pushes origin main.
+echo   Targets BOTH Vercel projects: xevora ^(marketing^) + xevora-app ^(app^).
+echo   1^) Stages changes, stamps landing\ + xevora-app\ ^(git sees both roots^).
+echo   2^) Commits and pushes origin main.
+echo   3^) If .vercel-deploy-hooks.txt exists, POSTs each URL ^(forces a build per project^).
 echo ========================================
 echo.
 
-echo [1/4] Staging your changes ^(git add .^)...
+echo [1/5] Staging your changes ^(git add .^)...
 git add .
 if errorlevel 1 (
   echo.
@@ -25,7 +26,7 @@ if errorlevel 1 (
 echo       Done.
 echo.
 
-echo [2/4] Updating deploy revision stamps ^(landing + xevora-app^)...
+echo [2/5] Updating deploy revision stamps ^(landing + xevora-app^)...
 powershell -NoProfile -ExecutionPolicy Bypass -Command "& { $ErrorActionPreference='Stop'; Set-Location -LiteralPath '%CD%'; $ts=(Get-Date).ToUniversalTime().ToString('yyyy-MM-ddTHH:mm:ssZ'); foreach($sub in @('landing','xevora-app')) { $dir=Join-Path (Get-Location) $sub; if(-not(Test-Path -LiteralPath $dir)){ throw ('Missing folder: '+$sub) }; $p=Join-Path $dir '.vercel-deploy-revision.txt'; Set-Content -LiteralPath $p -Value $ts -Encoding ascii } }"
 if errorlevel 1 (
   echo.
@@ -38,7 +39,7 @@ git add landing/.vercel-deploy-revision.txt xevora-app/.vercel-deploy-revision.t
 echo       Done.
 echo.
 
-echo [3/4] Verifying there is something to commit...
+echo [3/5] Verifying there is something to commit...
 git diff --quiet HEAD
 if not errorlevel 1 (
   echo.
@@ -86,7 +87,7 @@ if errorlevel 1 (
 echo       Commit created.
 echo.
 
-echo [4/4] Pushing to origin main...
+echo [4/5] Pushing to origin main...
 git push origin main
 if errorlevel 1 (
   echo.
@@ -102,11 +103,20 @@ echo       Latest commit ^(local^):
 git log -1 --oneline
 echo.
 
+echo [5/5] Vercel Deploy Hooks ^(optional — forces xevora + xevora-app builds^)...
+powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0deploy-invoke-hooks.ps1" -RepoRoot "%CD%"
+if errorlevel 1 (
+  echo.
+  echo WARNING: A deploy hook failed ^(git push already succeeded^). Fix .vercel-deploy-hooks.txt or Vercel.
+  echo.
+)
+
+echo.
 echo ========================================
-echo   Done — check Vercel for BOTH projects:
-echo   - Root landing     ^(xevora.io marketing^)
-echo   - Root xevora-app  ^(app.xevora.io^)
-echo   Each should show this commit or newer.
+echo   Done. Confirm in Vercel:
+echo   - Project xevora ^(marketing / landing root^)
+echo   - Project xevora-app
+echo   With hooks configured, both should show a new deployment now.
 echo ========================================
 echo.
 pause

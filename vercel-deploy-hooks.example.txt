@@ -1,0 +1,11 @@
+# Copy to .vercel-deploy-hooks.txt in the repo root (same folder as deploy.bat).
+# That file is gitignored — paste your real hook URLs there.
+#
+# Vercel: open EACH project (xevora + xevora-app) → Settings → Git → Deploy Hooks
+# → Add hook → Branch: main → Production. Copy the HTTPS URL.
+#
+# One URL per line (no quotes). Lines starting with # are ignored.
+# Example order: marketing site first, then app (any order is fine).
+#
+# https://api.vercel.com/v1/integrations/deploy/prj_xxxx/yyyyyyyy
+# https://api.vercel.com/v1/integrations/deploy/prj_zzzz/wwwwwwww
