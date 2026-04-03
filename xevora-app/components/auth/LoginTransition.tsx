@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { JetBrains_Mono } from "next/font/google";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { createClient } from "@/lib/supabase";
 
 const mono = JetBrains_Mono({
   subsets: ["latin"],
@@ -47,8 +48,21 @@ export default function LoginTransition() {
       setTimeout(() => setPhase(4), 3200),
       setTimeout(() => setPortalOut(true), 3200),
       setTimeout(() => {
-        router.push("/dashboard");
-        router.refresh();
+        void (async () => {
+          const supabase = createClient();
+          const {
+            data: { user },
+          } = await supabase.auth.getUser();
+          let path = "/dashboard";
+          if (user) {
+            const { data } = await supabase.from("workers").select("role").eq("user_id", user.id).maybeSingle();
+            if (data?.role === "driver") {
+              path = "/driver";
+            }
+          }
+          router.push(path);
+          router.refresh();
+        })();
       }, 4200),
       setTimeout(() => setOverlayOpacity(0), 4200),
       setTimeout(() => setDone(true), 4600),

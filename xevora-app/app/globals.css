@@ -29,6 +29,10 @@ body {
   font-family: "DM Sans", sans-serif;
 }
 
+.font-jb {
+  font-family: var(--font-jetbrains), ui-monospace, monospace;
+}
+
 h1,
 h2,
 h3 {

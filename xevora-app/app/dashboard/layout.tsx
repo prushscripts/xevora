@@ -23,6 +23,12 @@ export default async function DashboardLayout({ children }: { children: ReactNod
     redirect("/auth/login");
   }
 
+  const { data: workerRow } = await supabase.from("workers").select("role").eq("user_id", user.id).maybeSingle();
+
+  if (workerRow?.role === "driver") {
+    redirect("/driver");
+  }
+
   const userName = getUserDisplayName(user?.email, user?.user_metadata?.first_name);
 
   return (
