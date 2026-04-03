@@ -1274,110 +1274,6 @@ footer{
   .stat-row{grid-template-columns:repeat(2,1fr)}
 }
 
-#xev-brand-text {
-  font-family: 'Syne', sans-serif !important;
-  font-weight: 800 !important;
-  font-size: 18px !important;
-  letter-spacing: 0.02em !important;
-  white-space: nowrap !important;
-  display: inline-block !important;
-  background: linear-gradient(
-    105deg,
-    #ffffff 0%,
-    #ffffff 25%,
-    #93C5FD 40%,
-    #60A5FA 50%,
-    #3B82F6 55%,
-    #93C5FD 65%,
-    #ffffff 78%,
-    #ffffff 100%
-  ) !important;
-  background-size: 300% auto !important;
-  -webkit-background-clip: text !important;
-  background-clip: text !important;
-  -webkit-text-fill-color: transparent !important;
-  color: transparent !important;
-  animation: xBrandShimmer 4s linear infinite !important;
-}
-
-@keyframes xBrandShimmer {
-  0%   { background-position: 200% center; }
-  100% { background-position: -100% center; }
-}
-
-.xrf-wrap{min-height:100vh;padding:95px 32px 60px;box-sizing:border-box;background:#03060D;background-image:linear-gradient(rgba(37,99,235,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(37,99,235,0.04) 1px,transparent 1px);background-size:40px 40px;max-width:1200px;margin:0 auto;}
-.xrf-eye{display:flex;align-items:center;justify-content:center;gap:12px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.3em;color:#3B82F6;text-transform:uppercase;margin-bottom:6px;}
-.xrf-eline{display:block;width:32px;height:1px;background:rgba(37,99,235,0.4);}
-.xrf-title{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(20px,2.8vw,32px);color:#F1F5FF;text-align:center;margin:0 0 4px;line-height:1.1;letter-spacing:-0.5px;}
-.xrf-sub{font-family:'DM Sans',sans-serif;font-weight:300;font-size:13px;color:#4E6D92;text-align:center;margin:0;margin-bottom:0;}
-.xrf-stats{display:none;}
-.xrf-stat{text-align:center;padding:14px 28px;flex:1;position:relative;}
-.xrf-stat+.xrf-stat::before{content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);height:28px;width:1px;background:rgba(37,99,235,0.12);}
-.xrf-stat-num{font-family:'Syne',sans-serif;font-weight:800;font-size:22px;letter-spacing:-0.5px;line-height:1;}
-.xrf-num-now{background:linear-gradient(105deg,#4ADE80,#22C55E);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;}
-.xrf-num-next{background:linear-gradient(105deg,#A5B4FC,#818CF8);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;}
-.xrf-num-total{background:linear-gradient(105deg,#F1F5FF,#94A3B8);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;}
-.xrf-stat-label{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:0.12em;text-transform:uppercase;color:#4E6D92;margin-top:3px;}
-.xrf-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:0;margin-top:16px;}
-.xrf-col{border-radius:14px;padding:22px;position:relative;overflow:hidden;}
-.xrf-col-now{background:linear-gradient(160deg,rgba(16,32,16,0.95) 0%,rgba(3,6,13,1) 100%);border:1px solid rgba(34,197,94,0.18);box-shadow:0 0 60px rgba(34,197,94,0.04);}
-.xrf-col-now::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(34,197,94,0.5),transparent);}
-.xrf-col-next{background:linear-gradient(160deg,rgba(15,12,36,0.95) 0%,rgba(3,6,13,1) 100%);border:1px solid rgba(99,102,241,0.2);box-shadow:0 0 60px rgba(99,102,241,0.05);}
-.xrf-col-next::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(99,102,241,0.5),transparent);}
-.xrf-scan{position:absolute;left:0;right:0;height:1px;pointer-events:none;z-index:1;}
-.xrf-scan-now{background:linear-gradient(90deg,transparent,rgba(34,197,94,0.35),transparent);animation:xrfScanNow 4s linear infinite;}
-.xrf-scan-next{background:linear-gradient(90deg,transparent,rgba(99,102,241,0.35),transparent);animation:xrfScanNext 5s linear infinite 2s;}
-@keyframes xrfScanNow{0%{top:-2px;opacity:0}5%{opacity:1}95%{opacity:1}100%{top:100%;opacity:0}}
-@keyframes xrfScanNext{0%{top:-2px;opacity:0}5%{opacity:0.7}95%{opacity:0.7}100%{top:100%;opacity:0}}
-.xrf-col-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px;position:relative;z-index:2;}
-.xrf-stage{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;padding:4px 11px;border-radius:999px;}
-.xrf-stage-now{background:rgba(34,197,94,0.12);border:1px solid rgba(34,197,94,0.3);color:#4ADE80;}
-.xrf-stage-next{background:rgba(99,102,241,0.12);border:1px solid rgba(99,102,241,0.3);color:#A5B4FC;}
-.xrf-badge{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:0.1em;text-transform:uppercase;padding:4px 10px;border-radius:999px;}
-.xrf-badge-live{background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.25);color:#86EFAC;}
-.xrf-badge-plan{background:rgba(168,85,247,0.1);border:1px solid rgba(168,85,247,0.25);color:#D8B4FE;}
-.xrf-pulse{display:inline-block;animation:xrfPulse 1.5s ease-in-out infinite;}
-@keyframes xrfPulse{0%,100%{opacity:1}50%{opacity:0.3}}
-.xrf-col-title{font-family:'Syne',sans-serif;font-weight:800;font-size:16px;margin:0 0 7px;display:flex;align-items:center;gap:10px;position:relative;z-index:2;}
-.xrf-col-title::before{content:'';display:block;width:3px;height:18px;border-radius:999px;flex-shrink:0;}
-.xrf-col-title-now{background:linear-gradient(105deg,#F1F5FF 0%,#86EFAC 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;}
-.xrf-col-title-now::before{background:linear-gradient(to bottom,#4ADE80,#16A34A);}
-.xrf-col-title-next{background:linear-gradient(105deg,#C4CFDF 0%,#A5B4FC 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;}
-.xrf-col-title-next::before{background:linear-gradient(to bottom,#818CF8,#6D28D9);}
-.xrf-progress-row{display:flex;justify-content:space-between;margin-bottom:5px;position:relative;z-index:2;}
-.xrf-prog-label{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:0.1em;text-transform:uppercase;}
-.xrf-prog-label-now{color:rgba(34,197,94,0.6);}
-.xrf-prog-label-next{color:rgba(99,102,241,0.6);}
-.xrf-prog-pct{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:0.1em;}
-.xrf-prog-pct-now{color:rgba(34,197,94,0.6);}
-.xrf-prog-pct-next{color:rgba(99,102,241,0.6);}
-.xrf-prog-track{height:3px;border-radius:999px;overflow:hidden;margin-bottom:8px;position:relative;z-index:2;}
-.xrf-prog-track-now{background:rgba(34,197,94,0.1);}
-.xrf-prog-track-next{background:rgba(99,102,241,0.1);}
-.xrf-prog-fill{height:100%;border-radius:999px;}
-.xrf-prog-fill-now{width:72%;background:linear-gradient(90deg,#16A34A,#4ADE80);box-shadow:0 0 8px rgba(34,197,94,0.5);}
-.xrf-prog-fill-next{width:15%;background:linear-gradient(90deg,#4338CA,#818CF8);box-shadow:0 0 8px rgba(99,102,241,0.4);}
-.xrf-list{display:flex;flex-direction:column;gap:4px;position:relative;z-index:2;}
-.xrf-item{display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:8px;cursor:default;transition:all 180ms ease;}
-.xrf-item-now{background:rgba(34,197,94,0.04);border:1px solid rgba(34,197,94,0.1);border-left:2px solid rgba(34,197,94,0.5);}
-.xrf-item-now:hover{background:rgba(34,197,94,0.09);border-color:rgba(34,197,94,0.28);border-left-color:#4ADE80;box-shadow:0 4px 16px rgba(34,197,94,0.08);transform:translateX(3px);}
-.xrf-item-next{background:rgba(99,102,241,0.04);border:1px solid rgba(99,102,241,0.1);border-left:2px solid rgba(99,102,241,0.35);opacity:0.78;}
-.xrf-item-next:hover{opacity:1;background:rgba(99,102,241,0.08);border-color:rgba(99,102,241,0.22);border-left-color:#818CF8;box-shadow:0 4px 16px rgba(99,102,241,0.1);transform:translateX(3px);}
-.xrf-ico{flex-shrink:0;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;}
-.xrf-ico-now{background:rgba(34,197,94,0.15);border:1px solid rgba(34,197,94,0.35);color:#4ADE80;}
-.xrf-ico-next{background:rgba(99,102,241,0.12);border:1px solid rgba(99,102,241,0.28);color:#A5B4FC;}
-.xrf-body{min-width:0;}
-.xrf-name{font-family:'DM Sans',sans-serif;font-weight:500;font-size:12px;line-height:1.3;}
-.xrf-name-now{color:#E8FFF2;}
-.xrf-name-next{color:#C4CFDF;}
-.xrf-desc{font-family:'DM Sans',sans-serif;font-weight:300;font-size:10px;margin-top:1px;}
-.xrf-desc-now{color:rgba(74,222,128,0.45);}
-.xrf-desc-next{color:rgba(99,102,241,0.5);}
-.xrf-foot{text-align:center;margin-top:28px;font-family:'DM Sans',sans-serif;font-weight:300;font-size:13px;color:#4E6D92;}
-.xrf-foot a{color:#3B82F6;text-decoration:none;margin-left:4px;}
-.xrf-foot a:hover{text-decoration:underline;}
-@media(max-width:860px){.xrf-grid{grid-template-columns:1fr;gap:20px;}.xrf-wrap{padding:95px 16px 60px;}}
-
 .fp-showcase { background: #03060D; padding: 110px 32px 100px; box-sizing: border-box; min-height: 100vh; }
 .fp-showcase-inner { max-width: 1160px; margin: 0 auto; }
 .fp-hero { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; margin-bottom: 72px; }
@@ -1511,6 +1407,96 @@ footer{
   .why2-wrap{padding:100px 16px 60px;}
 }
 
+.phase-wrap{background:#03060D;background-image:linear-gradient(rgba(37,99,235,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(37,99,235,0.04) 1px,transparent 1px);background-size:44px 44px;padding:90px 40px 60px;box-sizing:border-box;min-height:100vh;display:flex;flex-direction:column;justify-content:center;max-width:100%;}
+.phase-head{text-align:center;margin-bottom:32px;}
+.phase-eye{display:flex;align-items:center;justify-content:center;gap:12px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.3em;color:#2563EB;text-transform:uppercase;margin-bottom:8px;}
+.phase-eye-line{display:block;width:28px;height:1px;background:rgba(37,99,235,0.4);}
+.phase-title{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(20px,2.8vw,34px);color:#F1F5FF;line-height:1.1;margin-bottom:6px;}
+.phase-sub{font-family:'DM Sans',sans-serif;font-weight:300;font-size:13px;color:#4E6D92;}
+.phase-timeline{display:flex;flex-direction:column;gap:24px;max-width:1200px;margin:0 auto;width:100%;}
+.phase-block{display:grid;grid-template-columns:48px 1fr;gap:0;}
+.phase-block-left{display:flex;flex-direction:column;align-items:center;padding-top:4px;}
+.phase-node{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;z-index:2;}
+.phase-node--done{background:rgba(34,197,94,0.15);border:2px solid rgba(34,197,94,0.5);color:#4ADE80;}
+.phase-node--next{background:rgba(99,102,241,0.12);border:2px solid rgba(99,102,241,0.35);color:#818CF8;}
+.phase-connector{width:2px;flex:1;margin-top:6px;}
+.phase-connector--done{background:linear-gradient(to bottom,rgba(34,197,94,0.4),rgba(99,102,241,0.2));}
+.phase-connector--next{background:rgba(99,102,241,0.1);}
+.phase-block-right{padding:0 0 0 16px;}
+.phase-block-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px;}
+.phase-tag{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;padding:3px 10px;border-radius:999px;}
+.phase-tag--done{background:rgba(34,197,94,0.12);border:1px solid rgba(34,197,94,0.3);color:#4ADE80;}
+.phase-tag--next{background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.25);color:#A5B4FC;}
+.phase-status{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:0.1em;text-transform:uppercase;padding:3px 9px;border-radius:999px;}
+.phase-status--live{background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.2);color:#86EFAC;}
+.phase-status--planned{background:rgba(99,102,241,0.08);border:1px solid rgba(99,102,241,0.2);color:#818CF8;}
+.phase-pulse{display:inline-block;animation:statusPulse 1.5s ease-in-out infinite;}
+.phase-prog{font-family:'JetBrains Mono',monospace;font-size:8px;color:rgba(34,197,94,0.6);letter-spacing:0.1em;text-transform:uppercase;}
+.phase-prog--next{color:rgba(99,102,241,0.5);}
+.phase-block-title{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;margin:0 0 12px;display:flex;align-items:center;gap:8px;}
+.phase-block-title--done{color:#F1F5FF;}
+.phase-block-title--next{color:#C4CFDF;}
+.phase-cards-row{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;}
+.phase-block--next .phase-cards-row{grid-template-columns:repeat(8,1fr);}
+.phase-card{padding:10px 12px;border-radius:8px;transition:transform 160ms ease,box-shadow 160ms ease;}
+.phase-card--done{background:rgba(34,197,94,0.04);border:1px solid rgba(34,197,94,0.12);border-left:2px solid rgba(34,197,94,0.5);}
+.phase-card--done:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(34,197,94,0.08);border-color:rgba(34,197,94,0.25);}
+.phase-card--next{background:rgba(99,102,241,0.03);border:1px solid rgba(99,102,241,0.1);border-left:2px solid rgba(99,102,241,0.3);opacity:0.8;}
+.phase-card--next:hover{opacity:1;transform:translateY(-2px);box-shadow:0 4px 16px rgba(99,102,241,0.08);}
+.phase-card-icon{font-size:14px;margin-bottom:5px;}
+.phase-card-name{font-family:'DM Sans',sans-serif;font-weight:500;font-size:11px;color:#F1F5FF;line-height:1.2;margin-bottom:3px;}
+.phase-card--next .phase-card-name{color:#C4CFDF;}
+.phase-card-desc{font-family:'DM Sans',sans-serif;font-weight:300;font-size:9px;color:#4E6D92;line-height:1.35;}
+.phase-foot{text-align:center;margin-top:20px;font-family:'DM Sans',sans-serif;font-size:12px;color:#4E6D92;}
+.phase-foot a{color:#3B82F6;text-decoration:none;}
+@media(max-width:900px){
+  .phase-cards-row{grid-template-columns:repeat(3,1fr)!important;}
+  .phase-wrap{padding:110px 16px 60px;}
+}
+
+.xev-wordmark {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 18px;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  display: inline-block;
+  position: relative;
+  color: #F1F5FF;
+}
+
+.xev-wordmark::after {
+  content: 'XEVORA';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 0%,
+    transparent 25%,
+    rgba(147,197,253,0.95) 40%,
+    rgba(96,165,250,1) 50%,
+    rgba(59,130,246,0.95) 55%,
+    transparent 70%,
+    transparent 100%
+  );
+  background-size: 280% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  animation: xevShimmer 3.5s linear infinite;
+  pointer-events: none;
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 18px;
+  letter-spacing: 0.02em;
+}
+
+@keyframes xevShimmer {
+  0%   { background-position: 220% center; }
+  100% { background-position: -80% center; }
+}
+
 </style>
 </head>
 <body>
@@ -1539,7 +1525,7 @@ footer{
       </div>
       <span class="nav-brand-sep" aria-hidden="true"></span>
       <div class="nav-brand-text-stack">
-        <span id="xev-brand-text">XEVORA</span>
+        <span class="xev-wordmark" aria-label="XEVORA">XEVORA</span>
         <a class="nav-xavorn-badge" href="https://xavorn.com" target="_blank" rel="noopener noreferrer"><span class="nav-xavorn-pill">PART OF XAVORN</span></a>
       </div>
     </div>
@@ -1679,56 +1665,65 @@ footer{
 </section>
 
 <section id="features-panel" class="tab-panel">
-<div class="xrf-wrap">
-  <div class="xrf-eye"><span class="xrf-eline"></span>PLATFORM ROADMAP<span class="xrf-eline"></span></div>
-  <h2 class="xrf-title">Everything your operation needs.</h2>
-  <p class="xrf-sub">Built in stages. Shipped fast. No fluff.</p>
-  <div class="xrf-stats">
-    <div class="xrf-stat"><div class="xrf-stat-num xrf-num-now">6</div><div class="xrf-stat-label">In Build</div></div>
-    <div class="xrf-stat"><div class="xrf-stat-num xrf-num-next">8</div><div class="xrf-stat-label">On Roadmap</div></div>
-    <div class="xrf-stat"><div class="xrf-stat-num xrf-num-total">14</div><div class="xrf-stat-label">Total Features</div></div>
-  </div>
-  <div class="xrf-grid">
-    <div class="xrf-col xrf-col-now">
-      <div class="xrf-scan xrf-scan-now"></div>
-      <div class="xrf-col-meta">
-        <span class="xrf-stage xrf-stage-now">● STAGE 1–2</span>
-        <span class="xrf-badge xrf-badge-live"><span class="xrf-pulse">●</span> IN DEVELOPMENT</span>
+<div class="phase-wrap">
+  <header class="phase-head">
+    <p class="phase-eye"><span class="phase-eye-line"></span>PLATFORM ROADMAP<span class="phase-eye-line"></span></p>
+    <h2 class="phase-title">Everything your operation needs.</h2>
+    <p class="phase-sub">Built in phases. Shipped fast. No fluff.</p>
+  </header>
+
+  <div class="phase-timeline">
+
+    <div class="phase-block phase-block--done">
+      <div class="phase-block-left">
+        <div class="phase-node phase-node--done">✓</div>
+        <div class="phase-connector phase-connector--done"></div>
       </div>
-      <h3 class="xrf-col-title xrf-col-title-now">Building Now</h3>
-      <div class="xrf-progress-row"><span class="xrf-prog-label xrf-prog-label-now">BUILD PROGRESS</span><span class="xrf-prog-pct xrf-prog-pct-now">72%</span></div>
-      <div class="xrf-prog-track xrf-prog-track-now"><div class="xrf-prog-fill xrf-prog-fill-now"></div></div>
-      <div class="xrf-list">
-        <div class="xrf-item xrf-item-now"><div class="xrf-ico xrf-ico-now">✓</div><div class="xrf-body"><div class="xrf-name xrf-name-now">GPS Clock-In</div><div class="xrf-desc xrf-desc-now">One tap, location stamped, any device</div></div></div>
-        <div class="xrf-item xrf-item-now"><div class="xrf-ico xrf-ico-now">✓</div><div class="xrf-body"><div class="xrf-name xrf-name-now">Worker Management</div><div class="xrf-desc xrf-desc-now">W2 + 1099, invite via email</div></div></div>
-        <div class="xrf-item xrf-item-now"><div class="xrf-ico xrf-ico-now">✓</div><div class="xrf-body"><div class="xrf-name xrf-name-now">Time Entry Approval</div><div class="xrf-desc xrf-desc-now">Review and edit hours before payroll</div></div></div>
-        <div class="xrf-item xrf-item-now"><div class="xrf-ico xrf-ico-now">✓</div><div class="xrf-body"><div class="xrf-name xrf-name-now">Real-time Dashboard</div><div class="xrf-desc xrf-desc-now">Live clocked-in view, payroll estimates</div></div></div>
-        <div class="xrf-item xrf-item-now"><div class="xrf-ico xrf-ico-now">✓</div><div class="xrf-body"><div class="xrf-name xrf-name-now">Email Notifications</div><div class="xrf-desc xrf-desc-now">Alerts, reminders, confirmations</div></div></div>
-        <div class="xrf-item xrf-item-now"><div class="xrf-ico xrf-ico-now">✓</div><div class="xrf-body"><div class="xrf-name xrf-name-now">Billing &amp; Subscriptions</div><div class="xrf-desc xrf-desc-now">Stripe, plan management, invoices</div></div></div>
-      </div>
-    </div>
-    <div class="xrf-col xrf-col-next">
-      <div class="xrf-scan xrf-scan-next"></div>
-      <div class="xrf-col-meta">
-        <span class="xrf-stage xrf-stage-next">● STAGE 3–4</span>
-        <span class="xrf-badge xrf-badge-plan">● ON ROADMAP</span>
-      </div>
-      <h3 class="xrf-col-title xrf-col-title-next">Coming Next</h3>
-      <div class="xrf-progress-row"><span class="xrf-prog-label xrf-prog-label-next">PLANNED</span><span class="xrf-prog-pct xrf-prog-pct-next">Q3 2026</span></div>
-      <div class="xrf-prog-track xrf-prog-track-next"><div class="xrf-prog-fill xrf-prog-fill-next"></div></div>
-      <div class="xrf-list">
-        <div class="xrf-item xrf-item-next"><div class="xrf-ico xrf-ico-next">→</div><div class="xrf-body"><div class="xrf-name xrf-name-next">Check.com Payroll</div><div class="xrf-desc xrf-desc-next">Direct deposit for W2 and 1099</div></div></div>
-        <div class="xrf-item xrf-item-next"><div class="xrf-ico xrf-ico-next">→</div><div class="xrf-body"><div class="xrf-name xrf-name-next">Pay Stub Generation</div><div class="xrf-desc xrf-desc-next">Auto PDF stubs emailed to workers</div></div></div>
-        <div class="xrf-item xrf-item-next"><div class="xrf-ico xrf-ico-next">→</div><div class="xrf-body"><div class="xrf-name xrf-name-next">1099 Auto-Filing</div><div class="xrf-desc xrf-desc-next">Year-end contractor docs, automated</div></div></div>
-        <div class="xrf-item xrf-item-next"><div class="xrf-ico xrf-ico-next">→</div><div class="xrf-body"><div class="xrf-name xrf-name-next">AI Payroll Assistant</div><div class="xrf-desc xrf-desc-next">Natural language runs, anomaly detection</div></div></div>
-        <div class="xrf-item xrf-item-next"><div class="xrf-ico xrf-ico-next">→</div><div class="xrf-body"><div class="xrf-name xrf-name-next">Fynlo Integration</div><div class="xrf-desc xrf-desc-next">Labor costs sync to your books</div></div></div>
-        <div class="xrf-item xrf-item-next"><div class="xrf-ico xrf-ico-next">→</div><div class="xrf-body"><div class="xrf-name xrf-name-next">Mobile App (PWA)</div><div class="xrf-desc xrf-desc-next">Installable, works offline</div></div></div>
-        <div class="xrf-item xrf-item-next"><div class="xrf-ico xrf-ico-next">→</div><div class="xrf-body"><div class="xrf-name xrf-name-next">QuickBooks Sync</div><div class="xrf-desc xrf-desc-next">Import/export financial data</div></div></div>
-        <div class="xrf-item xrf-item-next"><div class="xrf-ico xrf-ico-next">→</div><div class="xrf-body"><div class="xrf-name xrf-name-next">Mileage Tracking</div><div class="xrf-desc xrf-desc-next">Per-mile pay for drivers</div></div></div>
+      <div class="phase-block-right">
+        <div class="phase-block-meta">
+          <span class="phase-tag phase-tag--done">STAGE 1–2</span>
+          <span class="phase-status phase-status--live"><span class="phase-pulse">●</span> IN DEVELOPMENT</span>
+          <span class="phase-prog">72% complete</span>
+        </div>
+        <h3 class="phase-block-title phase-block-title--done">Building Now</h3>
+        <div class="phase-cards-row">
+          <div class="phase-card phase-card--done"><div class="phase-card-icon">📍</div><div class="phase-card-name">GPS Clock-In</div><div class="phase-card-desc">One tap, location stamped</div></div>
+          <div class="phase-card phase-card--done"><div class="phase-card-icon">👥</div><div class="phase-card-name">Worker Management</div><div class="phase-card-desc">W2 + 1099, invite via email</div></div>
+          <div class="phase-card phase-card--done"><div class="phase-card-icon">⏱</div><div class="phase-card-name">Time Entry Approval</div><div class="phase-card-desc">Review hours before payroll</div></div>
+          <div class="phase-card phase-card--done"><div class="phase-card-icon">📊</div><div class="phase-card-name">Real-time Dashboard</div><div class="phase-card-desc">Live clocked-in view</div></div>
+          <div class="phase-card phase-card--done"><div class="phase-card-icon">🔔</div><div class="phase-card-name">Email Notifications</div><div class="phase-card-desc">Alerts and confirmations</div></div>
+          <div class="phase-card phase-card--done"><div class="phase-card-icon">💳</div><div class="phase-card-name">Billing &amp; Subscriptions</div><div class="phase-card-desc">Stripe, plan management</div></div>
+        </div>
       </div>
     </div>
+
+    <div class="phase-block phase-block--next">
+      <div class="phase-block-left">
+        <div class="phase-node phase-node--next">→</div>
+        <div class="phase-connector phase-connector--next"></div>
+      </div>
+      <div class="phase-block-right">
+        <div class="phase-block-meta">
+          <span class="phase-tag phase-tag--next">STAGE 3–4</span>
+          <span class="phase-status phase-status--planned">● ON ROADMAP</span>
+          <span class="phase-prog phase-prog--next">Q3 2026</span>
+        </div>
+        <h3 class="phase-block-title phase-block-title--next">Coming Next</h3>
+        <div class="phase-cards-row">
+          <div class="phase-card phase-card--next"><div class="phase-card-icon">💸</div><div class="phase-card-name">Check.com Payroll</div><div class="phase-card-desc">Direct deposit W2 + 1099</div></div>
+          <div class="phase-card phase-card--next"><div class="phase-card-icon">📄</div><div class="phase-card-name">Pay Stub Generation</div><div class="phase-card-desc">Auto PDF to every worker</div></div>
+          <div class="phase-card phase-card--next"><div class="phase-card-icon">🗂</div><div class="phase-card-name">1099 Auto-Filing</div><div class="phase-card-desc">Year-end docs automated</div></div>
+          <div class="phase-card phase-card--next"><div class="phase-card-icon">🤖</div><div class="phase-card-name">AI Payroll Assistant</div><div class="phase-card-desc">Natural language runs</div></div>
+          <div class="phase-card phase-card--next"><div class="phase-card-icon">🔗</div><div class="phase-card-name">Fynlo Integration</div><div class="phase-card-desc">Labor costs → your books</div></div>
+          <div class="phase-card phase-card--next"><div class="phase-card-icon">📱</div><div class="phase-card-name">Mobile App (PWA)</div><div class="phase-card-desc">Installable, works offline</div></div>
+          <div class="phase-card phase-card--next"><div class="phase-card-icon">📦</div><div class="phase-card-name">QuickBooks Sync</div><div class="phase-card-desc">Import/export financial data</div></div>
+          <div class="phase-card phase-card--next"><div class="phase-card-icon">🚗</div><div class="phase-card-name">Mileage Tracking</div><div class="phase-card-desc">Per-mile pay for drivers</div></div>
+        </div>
+      </div>
+    </div>
+
   </div>
-  <p class="xrf-foot">Feature request? <a href="mailto:hello@xevora.io">hello@xevora.io</a></p>
+  <p class="phase-foot">Feature request? <a href="mailto:hello@xevora.io">hello@xevora.io</a></p>
 </div>
 </section>
 
