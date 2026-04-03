@@ -168,3 +168,9 @@ input:-webkit-autofill:focus {
 .auth-mobile-hex {
   animation: hexPulse 2.5s ease-in-out infinite;
 }
+
+.xev-svg-wordmark {
+  display: inline-block;
+  vertical-align: middle;
+  overflow: visible;
+}

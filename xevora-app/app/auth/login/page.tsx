@@ -313,7 +313,38 @@ function BrandPanel() {
             <div className="drop-shadow-[0_0_24px_rgba(37,99,235,0.5)]">
               <HexLogo />
             </div>
-            <p className="text-[20px] font-extrabold tracking-[5px] text-[#F1F5FF]">XEVORA</p>
+            <svg className="xev-svg-wordmark" viewBox="0 0 130 24" height="22" aria-label="XEVORA">
+              <defs>
+                <linearGradient id="xev-shimmer-login" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor="#F1F5FF" stopOpacity="1" />
+                  <stop offset="35%" stopColor="#F1F5FF" stopOpacity="1" />
+                  <stop offset="45%" stopColor="#93C5FD" stopOpacity="1" />
+                  <stop offset="50%" stopColor="#60A5FA" stopOpacity="1" />
+                  <stop offset="55%" stopColor="#93C5FD" stopOpacity="1" />
+                  <stop offset="65%" stopColor="#F1F5FF" stopOpacity="1" />
+                  <stop offset="100%" stopColor="#F1F5FF" stopOpacity="1" />
+                  <animateTransform
+                    attributeName="gradientTransform"
+                    type="translate"
+                    from="-1.5 0"
+                    to="1.5 0"
+                    dur="3.5s"
+                    repeatCount="indefinite"
+                  />
+                </linearGradient>
+              </defs>
+              <text
+                x="0"
+                y="19"
+                fontFamily="Syne, sans-serif"
+                fontWeight="800"
+                fontSize="19"
+                letterSpacing="1"
+                fill="url(#xev-shimmer-login)"
+              >
+                XEVORA
+              </text>
+            </svg>
           </div>
 
           <div className="mt-16">
