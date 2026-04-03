@@ -10,7 +10,7 @@ echo   Directory: %CD%
 echo   Targets BOTH Vercel projects: xevora ^(marketing^) + xevora-app ^(app^).
 echo   1^) Stages changes, stamps landing\ + xevora-app\ ^(git sees both roots^).
 echo   2^) Commits and pushes origin main.
-echo   3^) If .vercel-deploy-hooks.txt exists, POSTs each URL ^(forces a build per project^).
+echo   3^) If a hooks file exists ^(see vercel-deploy-hooks.TEMPLATE.txt^), POSTs each URL.
 echo ========================================
 echo.
 
@@ -107,7 +107,7 @@ echo [5/5] Vercel Deploy Hooks ^(optional - forces xevora + xevora-app builds^).
 powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0deploy-invoke-hooks.ps1" -RepoRoot "%CD%"
 if errorlevel 1 (
   echo.
-  echo WARNING: A deploy hook failed ^(git push already succeeded^). Fix .vercel-deploy-hooks.txt or Vercel.
+  echo WARNING: A deploy hook failed ^(git push already succeeded^). Fix your hooks file or Vercel.
   echo.
 )
 

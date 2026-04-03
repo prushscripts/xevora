@@ -1,0 +1,15 @@
+# vercel-deploy-hooks.TEMPLATE.txt (tracked in git — no secrets here)
+#
+# Put real hook URLs in a LOCAL file only. The deploy script looks for (first match wins):
+#   .vercel-deploy-hooks.txt
+#   vercel-deploy-hooks.txt
+#   vercel-deploy-hooks.example.txt   <- same name you already use; gitignored
+#   vercel-deploy-hooks.example       <- if Windows hides .txt
+#
+# Vercel: each project (xevora + xevora-app) -> Settings -> Git -> Deploy Hooks
+# -> Create hook -> Branch: main -> Copy the HTTPS URL.
+#
+# One https:// URL per line (no quotes). Lines starting with # are ignored.
+#
+# https://api.vercel.com/v1/integrations/deploy/prj_xxxx/yyyyyyyy
+# https://api.vercel.com/v1/integrations/deploy/prj_zzzz/wwwwwwww

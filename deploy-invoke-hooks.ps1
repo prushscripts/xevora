@@ -7,7 +7,9 @@ $root = [System.IO.Path]::GetFullPath($RepoRoot.TrimEnd('\', '/'))
 
 $candidates = @(
   (Join-Path $root '.vercel-deploy-hooks.txt'),
-  (Join-Path $root 'vercel-deploy-hooks.txt')
+  (Join-Path $root 'vercel-deploy-hooks.txt'),
+  (Join-Path $root 'vercel-deploy-hooks.example.txt'),
+  (Join-Path $root 'vercel-deploy-hooks.example')
 )
 
 $p = $null
@@ -19,13 +21,14 @@ foreach ($c in $candidates) {
 }
 
 if (-not $p) {
-  Write-Host "       Hooks file not found. Looked for:"
+  Write-Host '       Hooks file not found. Looked for:'
   foreach ($c in $candidates) { Write-Host "         - $c" }
   Write-Host ''
-  Write-Host '       Create ONE of these in the repo root (same folder as deploy.bat):'
-  Write-Host '         .vercel-deploy-hooks.txt   (leading dot - in Notepad use "All files" when saving)'
-  Write-Host '         vercel-deploy-hooks.txt    (no dot - also accepted)'
-  Write-Host '       Put one https://... hook URL per line. Do not use .txt.txt double extension.'
+  Write-Host '       Add your Vercel hook URLs to ONE of these (repo root, next to deploy.bat):'
+  Write-Host '         vercel-deploy-hooks.example.txt   (recommended; gitignored)'
+  Write-Host '         .vercel-deploy-hooks.txt'
+  Write-Host '         vercel-deploy-hooks.txt'
+  Write-Host '       See vercel-deploy-hooks.TEMPLATE.txt for instructions.'
   exit 0
 }
 
