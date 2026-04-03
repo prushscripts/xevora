@@ -157,27 +157,21 @@ nav{
   letter-spacing: 0.02em;
   white-space: nowrap;
   display: inline-block;
-  position: relative;
-}
-
-.brand-shimmer {
-  display: inline-block;
   background: linear-gradient(
     105deg,
-    #F1F5FF 0%,
-    #F1F5FF 28%,
+    #ffffff 0%,
+    #ffffff 28%,
     #93C5FD 42%,
     #60A5FA 50%,
     #3B82F6 54%,
     #93C5FD 62%,
-    #F1F5FF 74%,
-    #F1F5FF 100%
+    #ffffff 74%,
+    #ffffff 100%
   );
   background-size: 300% auto;
   -webkit-background-clip: text;
-  background-clip: text;
   -webkit-text-fill-color: transparent;
-  color: transparent;
+  background-clip: text;
   animation: brandShimmer 4s linear infinite;
 }
 
@@ -1079,110 +1073,221 @@ p.sub{
   .why-competitors { flex-direction: column; }
 }
 
-.feat-section {
-  background: #03060D;
-  background-image: linear-gradient(rgba(37,99,235,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(37,99,235,0.05) 1px, transparent 1px);
-  background-size: 44px 44px;
-  padding: 158px 24px 100px;
-  box-sizing: border-box;
+.feat-wrap {
   min-height: 100vh;
+  padding: 130px 32px 100px;
+  box-sizing: border-box;
+  background: #03060D;
+  background-image:
+    linear-gradient(rgba(37,99,235,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(37,99,235,0.05) 1px, transparent 1px);
+  background-size: 44px 44px;
+  max-width: 1200px;
+  margin: 0 auto;
 }
-.feat-inner { max-width: 1160px; margin: 0 auto; }
-.feat-head { text-align: center; margin-bottom: 52px; }
+.feat-head {
+  text-align: center;
+  margin-bottom: 40px;
+}
 .feat-eyebrow {
-  display: flex; align-items: center; justify-content: center; gap: 14px;
-  font-family: 'JetBrains Mono', monospace; font-size: 10px;
-  letter-spacing: 0.3em; color: #2563EB; text-transform: uppercase;
-  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  color: #2563EB;
+  text-transform: uppercase;
+  margin-bottom: 14px;
 }
-.feat-eyebrow span { display: block; width: 36px; height: 1px; background: rgba(37,99,235,0.35); }
+.feat-line {
+  display: block;
+  width: 32px;
+  height: 1px;
+  background: rgba(37,99,235,0.4);
+  flex-shrink: 0;
+}
 .feat-title {
-  font-family: 'Syne', sans-serif; font-weight: 800;
-  font-size: clamp(28px, 4.5vw, 48px); color: #F1F5FF;
-  line-height: 1.1; margin-bottom: 12px;
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: clamp(26px, 4vw, 42px);
+  color: #F1F5FF;
+  line-height: 1.1;
+  margin-bottom: 10px;
 }
 .feat-sub {
-  font-family: 'DM Sans', sans-serif; font-weight: 300;
-  font-size: 17px; color: #4E6D92;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  font-size: 16px;
+  color: #4E6D92;
 }
 .feat-grid {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  align-items: start;
 }
-.feat-col { display: flex; flex-direction: column; }
-.feat-col-top {
-  display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px;
+.feat-col {
+  display: flex;
+  flex-direction: column;
 }
-.feat-pill {
-  font-family: 'JetBrains Mono', monospace; font-size: 10px;
-  letter-spacing: 0.12em; text-transform: uppercase;
-  padding: 5px 12px; border-radius: 999px;
+.feat-col-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
 }
-.feat-pill--now { background: rgba(37,99,235,0.12); border: 1px solid rgba(37,99,235,0.25); color: #3B82F6; }
-.feat-pill--next { background: rgba(99,102,241,0.1); border: 1px solid rgba(99,102,241,0.22); color: #A5B4FC; }
-.feat-status {
-  font-family: 'JetBrains Mono', monospace; font-size: 9px;
-  letter-spacing: 0.1em; text-transform: uppercase;
-  padding: 4px 10px; border-radius: 999px;
+.feat-stage {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  border-radius: 999px;
 }
-.feat-status--live { background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.3); color: #4ADE80; }
-.feat-status--planned { background: rgba(99,102,241,0.1); border: 1px solid rgba(99,102,241,0.25); color: #818CF8; }
-.feat-pulse { animation: statusPulse 1.5s ease-in-out infinite; display: inline-block; }
-.feat-col-title {
-  font-family: 'Syne', sans-serif; font-weight: 800; font-size: 26px; margin-bottom: 16px;
+.feat-stage--now {
+  background: rgba(37,99,235,0.12);
+  border: 1px solid rgba(37,99,235,0.3);
+  color: #3B82F6;
 }
-.feat-col-title--now { color: #F1F5FF; }
-.feat-col-title--next { color: #C4CFDF; }
-.feat-cards { display: flex; flex-direction: column; gap: 10px; }
-.feat-card {
-  display: flex; align-items: center; gap: 14px;
-  padding: 14px 18px; border-radius: 10px;
-  transition: transform 200ms ease, box-shadow 200ms ease, border-color 200ms ease, background 200ms ease;
+.feat-stage--next {
+  background: rgba(99,102,241,0.1);
+  border: 1px solid rgba(99,102,241,0.25);
+  color: #A5B4FC;
 }
-.feat-card--now {
+.feat-badge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+.feat-badge--live {
+  background: rgba(34,197,94,0.1);
+  border: 1px solid rgba(34,197,94,0.3);
+  color: #4ADE80;
+}
+.feat-badge--planned {
+  background: rgba(99,102,241,0.1);
+  border: 1px solid rgba(99,102,241,0.25);
+  color: #818CF8;
+}
+.feat-dot-pulse {
+  display: inline-block;
+  animation: statusPulse 1.5s ease-in-out infinite;
+}
+.feat-col-h {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 24px;
+  margin-bottom: 14px;
+}
+.feat-col-h--now { color: #F1F5FF; }
+.feat-col-h--next { color: #C4CFDF; }
+.feat-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.feat-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease, background 180ms ease;
+  cursor: default;
+}
+.feat-item--now {
   background: rgba(37,99,235,0.04);
   border: 1px solid rgba(37,99,235,0.12);
   border-left: 2px solid #2563EB;
 }
-.feat-card--now:hover {
+.feat-item--now:hover {
   transform: translateY(-2px);
   background: rgba(37,99,235,0.08);
-  border-color: rgba(37,99,235,0.35);
+  border-color: rgba(37,99,235,0.3);
   border-left-color: #3B82F6;
-  box-shadow: 0 6px 24px rgba(37,99,235,0.12);
+  box-shadow: 0 6px 20px rgba(37,99,235,0.1);
 }
-.feat-card--next {
+.feat-item--next {
   background: rgba(99,102,241,0.02);
   border: 1px solid rgba(99,102,241,0.1);
   border-left: 2px solid rgba(99,102,241,0.3);
-  opacity: 0.8;
+  opacity: 0.78;
 }
-.feat-card--next:hover {
+.feat-item--next:hover {
   opacity: 1;
   transform: translateY(-2px);
-  border-color: rgba(99,102,241,0.25);
-  border-left-color: rgba(129,140,248,0.7);
-  box-shadow: 0 6px 24px rgba(99,102,241,0.08);
+  border-color: rgba(99,102,241,0.22);
+  border-left-color: rgba(129,140,248,0.6);
+  box-shadow: 0 6px 20px rgba(99,102,241,0.07);
 }
-.feat-ico {
-  flex-shrink: 0; width: 22px; height: 22px; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 11px; font-weight: 700;
+.feat-check {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
 }
-.feat-ico--now { background: rgba(37,99,235,0.18); border: 1px solid rgba(59,130,246,0.35); color: #3B82F6; }
-.feat-ico--next { background: rgba(99,102,241,0.08); border: 1px solid rgba(99,102,241,0.2); color: #818CF8; }
-.feat-body { min-width: 0; }
-.feat-name { font-family: 'DM Sans', sans-serif; font-weight: 500; font-size: 14px; color: #F1F5FF; }
-.feat-col--next .feat-name { color: #C4CFDF; }
-.feat-desc { font-family: 'DM Sans', sans-serif; font-weight: 300; font-size: 12px; color: #4E6D92; margin-top: 2px; }
+.feat-check--now {
+  background: rgba(37,99,235,0.18);
+  border: 1px solid rgba(59,130,246,0.4);
+  color: #3B82F6;
+}
+.feat-check--next {
+  background: rgba(99,102,241,0.08);
+  border: 1px solid rgba(99,102,241,0.2);
+  color: #818CF8;
+}
+.feat-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.feat-text strong {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  color: #F1F5FF;
+  line-height: 1.3;
+}
+.feat-col--next .feat-text strong {
+  color: #C4CFDF;
+}
+.feat-text span {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  font-size: 12px;
+  color: #4E6D92;
+  line-height: 1.4;
+}
 .feat-foot {
-  text-align: center; margin-top: 48px;
-  font-family: 'DM Sans', sans-serif; font-weight: 300; font-size: 13px; color: #4E6D92;
+  text-align: center;
+  margin-top: 44px;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  font-size: 13px;
+  color: #4E6D92;
 }
-.feat-foot a { color: #3B82F6; text-decoration: none; margin-left: 4px; }
+.feat-foot a {
+  color: #3B82F6;
+  text-decoration: none;
+  margin-left: 4px;
+}
 .feat-foot a:hover { text-decoration: underline; }
+
 @media (max-width: 860px) {
-  .feat-grid { grid-template-columns: 1fr; gap: 32px; }
-  .feat-section { padding: 130px 16px 80px; }
+  .feat-grid { grid-template-columns: 1fr; gap: 28px; }
+  .feat-wrap { padding: 120px 16px 80px; }
 }
 
 /* Pricing — premium layout */
@@ -1638,7 +1743,7 @@ footer{
       </div>
       <span class="nav-brand-sep" aria-hidden="true"></span>
       <div class="nav-brand-text-stack">
-        <span class="brand-name"><span class="brand-shimmer">XEVORA</span></span>
+        <span class="brand-name">XEVORA</span>
         <a class="nav-xavorn-badge" href="https://xavorn.com" target="_blank" rel="noopener noreferrer"><span class="nav-xavorn-pill">PART OF XAVORN</span></a>
       </div>
     </div>
@@ -1778,49 +1883,47 @@ footer{
 </section>
 
 <section id="features-panel" class="tab-panel">
-<div class="feat-section">
-  <div class="feat-inner">
-    <header class="feat-head">
-      <div class="feat-eyebrow"><span></span>PLATFORM ROADMAP<span></span></div>
-      <h2 class="feat-title">Everything your operation needs.</h2>
-      <p class="feat-sub">Built in stages. Shipped fast. No fluff.</p>
-    </header>
-    <div class="feat-grid">
-      <div class="feat-col feat-col--now">
-        <div class="feat-col-top">
-          <span class="feat-pill feat-pill--now">● STAGE 1–2</span>
-          <span class="feat-status feat-status--live"><span class="feat-pulse">●</span> IN DEVELOPMENT</span>
-        </div>
-        <h3 class="feat-col-title feat-col-title--now">Building Now</h3>
-        <div class="feat-cards" id="feat-now-cards">
-          <div class="feat-card feat-card--now"><div class="feat-ico feat-ico--now">✓</div><div class="feat-body"><div class="feat-name">GPS Clock-In</div><div class="feat-desc">One tap, location stamped, works from any mobile device</div></div></div>
-          <div class="feat-card feat-card--now"><div class="feat-ico feat-ico--now">✓</div><div class="feat-body"><div class="feat-name">Worker Management</div><div class="feat-desc">Add W2 and 1099 workers, invite via email, manage profiles</div></div></div>
-          <div class="feat-card feat-card--now"><div class="feat-ico feat-ico--now">✓</div><div class="feat-body"><div class="feat-name">Time Entry Approval</div><div class="feat-desc">Review, approve or edit hours before payroll</div></div></div>
-          <div class="feat-card feat-card--now"><div class="feat-ico feat-ico--now">✓</div><div class="feat-body"><div class="feat-name">Real-time Dashboard</div><div class="feat-desc">Live view of who's clocked in, hours this week, payroll estimates</div></div></div>
-          <div class="feat-card feat-card--now"><div class="feat-ico feat-ico--now">✓</div><div class="feat-body"><div class="feat-name">Email Notifications</div><div class="feat-desc">Clock-in alerts, approval reminders, payroll confirmations</div></div></div>
-          <div class="feat-card feat-card--now"><div class="feat-ico feat-ico--now">✓</div><div class="feat-body"><div class="feat-name">Billing &amp; Subscriptions</div><div class="feat-desc">Stripe integration, plan management, invoices</div></div></div>
-        </div>
+<div class="feat-wrap">
+  <header class="feat-head">
+    <div class="feat-eyebrow"><span class="feat-line"></span>PLATFORM ROADMAP<span class="feat-line"></span></div>
+    <h2 class="feat-title">Everything your operation needs.</h2>
+    <p class="feat-sub">Built in stages. Shipped fast. No fluff.</p>
+  </header>
+  <div class="feat-grid">
+    <div class="feat-col feat-col--now">
+      <div class="feat-col-meta">
+        <span class="feat-stage feat-stage--now">● STAGE 1–2</span>
+        <span class="feat-badge feat-badge--live"><span class="feat-dot-pulse">●</span> IN DEVELOPMENT</span>
       </div>
-      <div class="feat-col feat-col--next">
-        <div class="feat-col-top">
-          <span class="feat-pill feat-pill--next">● STAGE 3–4</span>
-          <span class="feat-status feat-status--planned">● ON ROADMAP</span>
-        </div>
-        <h3 class="feat-col-title feat-col-title--next">Coming Next</h3>
-        <div class="feat-cards" id="feat-next-cards">
-          <div class="feat-card feat-card--next"><div class="feat-ico feat-ico--next">→</div><div class="feat-body"><div class="feat-name">Check.com Payroll</div><div class="feat-desc">Automated direct deposit for W2 and 1099 workers</div></div></div>
-          <div class="feat-card feat-card--next"><div class="feat-ico feat-ico--next">→</div><div class="feat-body"><div class="feat-name">Pay Stub Generation</div><div class="feat-desc">Auto PDF pay stubs emailed to every worker</div></div></div>
-          <div class="feat-card feat-card--next"><div class="feat-ico feat-ico--next">→</div><div class="feat-body"><div class="feat-name">1099 Auto-Filing</div><div class="feat-desc">Year-end contractor documents generated automatically</div></div></div>
-          <div class="feat-card feat-card--next"><div class="feat-ico feat-ico--next">→</div><div class="feat-body"><div class="feat-name">AI Payroll Assistant</div><div class="feat-desc">Natural language payroll runs and anomaly detection</div></div></div>
-          <div class="feat-card feat-card--next"><div class="feat-ico feat-ico--next">→</div><div class="feat-body"><div class="feat-name">Fynlo Integration</div><div class="feat-desc">Labor costs sync directly to your books</div></div></div>
-          <div class="feat-card feat-card--next"><div class="feat-ico feat-ico--next">→</div><div class="feat-body"><div class="feat-name">Mobile App (PWA)</div><div class="feat-desc">Installable app for workers, works offline</div></div></div>
-          <div class="feat-card feat-card--next"><div class="feat-ico feat-ico--next">→</div><div class="feat-body"><div class="feat-name">QuickBooks Sync</div><div class="feat-desc">Import/export financial data</div></div></div>
-          <div class="feat-card feat-card--next"><div class="feat-ico feat-ico--next">→</div><div class="feat-body"><div class="feat-name">Mileage Tracking</div><div class="feat-desc">Per-mile pay for drivers</div></div></div>
-        </div>
+      <h3 class="feat-col-h feat-col-h--now">Building Now</h3>
+      <div class="feat-list">
+        <div class="feat-item feat-item--now"><div class="feat-check feat-check--now">✓</div><div class="feat-text"><strong>GPS Clock-In</strong><span>One tap, location stamped, works from any mobile device</span></div></div>
+        <div class="feat-item feat-item--now"><div class="feat-check feat-check--now">✓</div><div class="feat-text"><strong>Worker Management</strong><span>Add W2 and 1099 workers, invite via email, manage profiles</span></div></div>
+        <div class="feat-item feat-item--now"><div class="feat-check feat-check--now">✓</div><div class="feat-text"><strong>Time Entry Approval</strong><span>Review, approve or edit hours before payroll</span></div></div>
+        <div class="feat-item feat-item--now"><div class="feat-check feat-check--now">✓</div><div class="feat-text"><strong>Real-time Dashboard</strong><span>Live view of who's clocked in, hours this week, payroll estimates</span></div></div>
+        <div class="feat-item feat-item--now"><div class="feat-check feat-check--now">✓</div><div class="feat-text"><strong>Email Notifications</strong><span>Clock-in alerts, approval reminders, payroll confirmations</span></div></div>
+        <div class="feat-item feat-item--now"><div class="feat-check feat-check--now">✓</div><div class="feat-text"><strong>Billing &amp; Subscriptions</strong><span>Stripe integration, plan management, invoices</span></div></div>
       </div>
     </div>
-    <p class="feat-foot">Feature request? <a href="mailto:hello@xevora.io">hello@xevora.io</a></p>
+    <div class="feat-col feat-col--next">
+      <div class="feat-col-meta">
+        <span class="feat-stage feat-stage--next">● STAGE 3–4</span>
+        <span class="feat-badge feat-badge--planned">● ON ROADMAP</span>
+      </div>
+      <h3 class="feat-col-h feat-col-h--next">Coming Next</h3>
+      <div class="feat-list">
+        <div class="feat-item feat-item--next"><div class="feat-check feat-check--next">→</div><div class="feat-text"><strong>Check.com Payroll</strong><span>Automated direct deposit for W2 and 1099 workers</span></div></div>
+        <div class="feat-item feat-item--next"><div class="feat-check feat-check--next">→</div><div class="feat-text"><strong>Pay Stub Generation</strong><span>Auto PDF pay stubs emailed to every worker</span></div></div>
+        <div class="feat-item feat-item--next"><div class="feat-check feat-check--next">→</div><div class="feat-text"><strong>1099 Auto-Filing</strong><span>Year-end contractor documents generated automatically</span></div></div>
+        <div class="feat-item feat-item--next"><div class="feat-check feat-check--next">→</div><div class="feat-text"><strong>AI Payroll Assistant</strong><span>Natural language payroll runs and anomaly detection</span></div></div>
+        <div class="feat-item feat-item--next"><div class="feat-check feat-check--next">→</div><div class="feat-text"><strong>Fynlo Integration</strong><span>Labor costs sync directly to your books</span></div></div>
+        <div class="feat-item feat-item--next"><div class="feat-check feat-check--next">→</div><div class="feat-text"><strong>Mobile App (PWA)</strong><span>Installable app for workers, works offline</span></div></div>
+        <div class="feat-item feat-item--next"><div class="feat-check feat-check--next">→</div><div class="feat-text"><strong>QuickBooks Sync</strong><span>Import/export financial data</span></div></div>
+        <div class="feat-item feat-item--next"><div class="feat-check feat-check--next">→</div><div class="feat-text"><strong>Mileage Tracking</strong><span>Per-mile pay for drivers</span></div></div>
+      </div>
+    </div>
   </div>
+  <p class="feat-foot">Feature request? <a href="mailto:hello@xevora.io">hello@xevora.io</a></p>
 </div>
 </section>
 
