@@ -33,7 +33,7 @@ if errorlevel 1 (
 
 echo  [4/4] Triggering Vercel builds...
 
-curl -s -X POST "https://api.vercel.com/v1/integrations/deploy/prj_mLIOXYoWLiKpgTkhRBkq0ssuNcLx/KoWTu72Q4X" > nul 2>&1
+curl -s -X POST "https://api.vercel.com/v1/integrations/deploy/prj_mLIOXYoWLiKpgTkhRBkq0ssuNcLx/mpHQYT8m6J" > nul 2>&1
 echo        xevora landing triggered.
 
 curl -s -X POST "https://api.vercel.com/v1/integrations/deploy/prj_mIZvLa0uUKXLVrlmsRl5kphcNBQn/gmIxd6pyBO" > nul 2>&1
