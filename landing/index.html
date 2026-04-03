@@ -1462,21 +1462,31 @@ footer{
   white-space: nowrap;
   display: inline-block;
   position: relative;
+  line-height: 1.15;
+}
+
+.xev-wordmark-base {
   color: #F1F5FF;
 }
 
-.xev-wordmark::after {
-  content: 'XEVORA';
+/* Real element (not ::after): Chrome often fails to animate background-position
+   when background-clip:text is on a pseudo — same technique as hero .hw */
+.xev-wordmark-shimmer {
   position: absolute;
-  inset: 0;
+  left: 0;
+  top: 0;
+  font: inherit;
+  letter-spacing: inherit;
+  white-space: nowrap;
+  pointer-events: none;
   background: linear-gradient(
     105deg,
     transparent 0%,
-    transparent 25%,
+    transparent 22%,
     rgba(147,197,253,0.95) 40%,
     rgba(96,165,250,1) 50%,
     rgba(59,130,246,0.95) 55%,
-    transparent 70%,
+    transparent 72%,
     transparent 100%
   );
   background-size: 280% auto;
@@ -1485,11 +1495,7 @@ footer{
   -webkit-text-fill-color: transparent;
   color: transparent;
   animation: xevShimmer 3.5s linear infinite;
-  pointer-events: none;
-  font-family: 'Syne', sans-serif;
-  font-weight: 800;
-  font-size: 18px;
-  letter-spacing: 0.02em;
+  will-change: background-position;
 }
 
 @keyframes xevShimmer {
@@ -1525,7 +1531,7 @@ footer{
       </div>
       <span class="nav-brand-sep" aria-hidden="true"></span>
       <div class="nav-brand-text-stack">
-        <span class="xev-wordmark" aria-label="XEVORA">XEVORA</span>
+        <span class="xev-wordmark"><span class="xev-wordmark-base">XEVORA</span><span class="xev-wordmark-shimmer" aria-hidden="true">XEVORA</span></span>
         <a class="nav-xavorn-badge" href="https://xavorn.com" target="_blank" rel="noopener noreferrer"><span class="nav-xavorn-pill">PART OF XAVORN</span></a>
       </div>
     </div>
