@@ -127,7 +127,9 @@ export default function DriverProvider({ children }: { children: React.ReactNode
 
     const assignedClients: AssignedClient[] = [];
     for (const row of wcRows ?? []) {
-      const cl = row.clients as {
+      const raw = row.clients as unknown;
+      const cl0 = Array.isArray(raw) ? raw[0] : raw;
+      const cl = cl0 as {
         name: string;
         abbreviation: string;
         gps_enforcement: string;
@@ -135,7 +137,7 @@ export default function DriverProvider({ children }: { children: React.ReactNode
         lat: number | null;
         lng: number | null;
       } | null;
-      if (!cl) continue;
+      if (!cl || typeof cl !== "object") continue;
       assignedClients.push({
         client_id: row.client_id as string,
         name: cl.name,

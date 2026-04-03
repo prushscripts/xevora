@@ -19,6 +19,7 @@ function getTitle(pathname: string) {
   if (pathname.startsWith("/dashboard/workers/new")) return "Add Worker";
   if (pathname.startsWith("/dashboard/workers/")) return "Worker Profile";
   if (pathname.startsWith("/dashboard/workers")) return "Workers";
+  if (pathname.startsWith("/settings")) return "Settings";
   if (pathname.startsWith("/dashboard/settings")) return "Settings";
   if (pathname.startsWith("/dashboard")) return "Dashboard";
   return "Xevora";
@@ -79,7 +80,7 @@ export default function TopBar({ userName }: TopBarProps) {
                   type="button"
                   onClick={() => {
                     setOpen(false);
-                    router.push("/dashboard/settings");
+                    router.push("/settings/clients");
                   }}
                   className="flex w-full cursor-pointer items-center gap-[10px] rounded-lg px-[14px] py-[10px] text-left text-[14px] text-[var(--text)] transition-colors duration-150 ease-in-out hover:bg-[rgba(37,99,235,0.1)] hover:text-[#60A5FA]"
                 >

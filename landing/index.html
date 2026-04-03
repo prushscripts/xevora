@@ -197,28 +197,24 @@ nav{
 }
 
 .site-tab {
-  appearance: none;
-  background: transparent;
-  border: none;
-  outline: none;
-  cursor: pointer;
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  position: relative;
+  padding: 10px 16px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: 11px;
-  font-weight: 400;
+  font-weight: 500;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.35);
-  padding: 9px 18px;
-  border-radius: 6px;
-  transition: color 200ms ease, background 200ms ease;
-  position: relative;
-  text-decoration: none;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: color 150ms ease, background 150ms ease;
   white-space: nowrap;
-  flex-shrink: 0;
   scroll-snap-align: start;
+  color: #4E6D92;
 }
 .site-tab:hover {
-  color: rgba(255,255,255,0.75);
+  color: #94a3b8;
   background: rgba(37,99,235,0.06);
 }
 .site-tab.tab-active {
@@ -307,43 +303,52 @@ button.site-tab:focus,button.site-tab:focus-visible{outline:none}
 }
 .tab-panel{
   opacity:0;
-  transform:translateY(10px);
+  transform:translateX(0);
   transition:none;
   pointer-events:none;
   position:absolute;
-  width:100%;
   top:0;left:0;
   box-sizing:border-box;
 }
 .tab-panel.panel-active{
   opacity:1;
-  transform:translateY(0);
+  transform:translateX(0);
   pointer-events:auto;
   position:relative;
   z-index:1;
 }
-.tab-panel.panel-active.panel-exit{
+.tab-panel.panel-exit-left{
   opacity:0;
-  transform:translateY(-8px);
-  transition:opacity 180ms ease-in,transform 180ms ease-in;
-  pointer-events:none;
+  transform:translateX(-30px);
+  transition:opacity 150ms ease-in,transform 150ms cubic-bezier(0.4,0,0.2,1);
   position:relative;
   z-index:2;
 }
-.tab-panel.panel-enter{
+.tab-panel.panel-exit-right{
   opacity:0;
-  transform:translateY(12px);
+  transform:translateX(30px);
+  transition:opacity 150ms ease-in,transform 150ms cubic-bezier(0.4,0,0.2,1);
+  position:relative;
+  z-index:2;
+}
+.tab-panel.panel-enter-left{
+  opacity:0;
+  transform:translateX(-30px);
+  position:absolute;
+  z-index:6;
+  pointer-events:none;
+}
+.tab-panel.panel-enter-right{
+  opacity:0;
+  transform:translateX(30px);
   position:absolute;
   z-index:6;
   pointer-events:none;
 }
 .tab-panel.panel-enter-active{
   opacity:1;
-  transform:translateY(0);
-  transition:opacity 280ms ease-out,transform 280ms cubic-bezier(0.22,1,0.36,1);
-  position:absolute;
-  z-index:6;
-  pointer-events:none;
+  transform:translateX(0);
+  transition:opacity 200ms ease-out,transform 200ms cubic-bezier(0.4,0,0.2,1);
 }
 /* Inactive panels: collapse height so they don't extend document scroll (invisible "dead" space) */
 .tab-panel:not(.panel-active):not(.panel-exit):not(.panel-enter):not(.panel-enter-active){
@@ -2687,6 +2692,11 @@ function switchTab(newTabId) {
 
   if (!newPanel || currentPanel === newPanel) return;
 
+  const tabOrder = ['overview-panel', 'features-panel', 'why-panel', 'pricing-panel', 'fleetpulse-panel', 'fynlo-panel'];
+  const currentIndex = currentPanel ? tabOrder.indexOf(currentPanel.id) : -1;
+  const newIndex = tabOrder.indexOf(newTabId);
+  const goingForward = newIndex > currentIndex;
+
   allTabBtns.forEach(function (btn) {
     btn.classList.remove('tab-active');
     if (btn.dataset.tab === newTabId) btn.classList.add('tab-active');
@@ -2711,21 +2721,24 @@ function switchTab(newTabId) {
     return;
   }
 
-  currentPanel.classList.add('panel-exit');
+  const exitClass = goingForward ? 'panel-exit-left' : 'panel-exit-right';
+  const enterClass = goingForward ? 'panel-enter-right' : 'panel-enter-left';
+
+  currentPanel.classList.add(exitClass);
 
   setTimeout(function () {
-    currentPanel.classList.remove('panel-active', 'panel-exit');
-    newPanel.classList.add('panel-enter');
+    currentPanel.classList.remove('panel-active', exitClass);
+    newPanel.classList.add(enterClass);
     void newPanel.offsetWidth;
     tabScanline(container);
     newPanel.classList.add('panel-enter-active');
 
     setTimeout(function () {
-      newPanel.classList.remove('panel-enter', 'panel-enter-active');
+      newPanel.classList.remove(enterClass, 'panel-enter-active');
       newPanel.classList.add('panel-active');
       finishReveal();
-    }, 280);
-  }, 180);
+    }, 200);
+  }, 150);
 }
 
 function revealPricingIfInView() {

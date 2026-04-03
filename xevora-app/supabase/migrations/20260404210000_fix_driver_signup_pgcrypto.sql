@@ -1,15 +1,10 @@
--- Driver self-serve: company access code (bcrypt digest) + RPCs to set (staff) and consume (authenticated new user)
+-- Fix: "function gen_salt(unknown) does not exist" when saving driver access code.
+-- On Supabase, pgcrypto's crypt/gen_salt live in schema `extensions`. The RPCs used
+-- SET search_path = public only, so those functions were not visible. Also cast the
+-- algorithm literal to text so the correct overload is chosen.
 
 CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA extensions;
 
-DO $$ BEGIN
-  ALTER TABLE public.companies ADD COLUMN driver_signup_code_digest text;
-EXCEPTION WHEN duplicate_column THEN NULL;
-END $$;
-
-COMMENT ON COLUMN public.companies.driver_signup_code_digest IS 'bcrypt digest for driver self-registration; plaintext never stored';
-
--- Staff: set or clear code for a company (owner, admin, or manager)
 CREATE OR REPLACE FUNCTION public.set_driver_signup_code(p_company_id uuid, p_plaincode text)
 RETURNS jsonb
 LANGUAGE plpgsql
@@ -54,10 +49,6 @@ BEGIN
 END;
 $$;
 
-REVOKE ALL ON FUNCTION public.set_driver_signup_code(uuid, text) FROM PUBLIC;
-GRANT EXECUTE ON FUNCTION public.set_driver_signup_code(uuid, text) TO authenticated;
-
--- Authenticated user links auth account to company as driver (RLS-safe via SECURITY DEFINER)
 CREATE OR REPLACE FUNCTION public.register_driver_with_code(p_full_name text, p_code text)
 RETURNS jsonb
 LANGUAGE plpgsql
@@ -110,9 +101,6 @@ EXCEPTION
 END;
 $$;
 
-REVOKE ALL ON FUNCTION public.register_driver_with_code(text, text) FROM PUBLIC;
-GRANT EXECUTE ON FUNCTION public.register_driver_with_code(text, text) TO authenticated;
-
 CREATE OR REPLACE FUNCTION public.get_driver_signup_status(p_company_id uuid)
 RETURNS jsonb
 LANGUAGE plpgsql
@@ -149,6 +137,12 @@ BEGIN
   RETURN jsonb_build_object('ok', true, 'configured', coalesce(configured, false));
 END;
 $$;
+
+REVOKE ALL ON FUNCTION public.set_driver_signup_code(uuid, text) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION public.set_driver_signup_code(uuid, text) TO authenticated;
+
+REVOKE ALL ON FUNCTION public.register_driver_with_code(text, text) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION public.register_driver_with_code(text, text) TO authenticated;
 
 REVOKE ALL ON FUNCTION public.get_driver_signup_status(uuid) FROM PUBLIC;
 GRANT EXECUTE ON FUNCTION public.get_driver_signup_status(uuid) TO authenticated;

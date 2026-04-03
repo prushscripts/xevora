@@ -254,8 +254,8 @@ export default function DashboardPage() {
   const checklistItems = [
     { label: "Create your account", done: true, href: "/dashboard" },
     { label: "Add your first worker", done: metrics.checklist.hasWorkers, href: "/dashboard/workers/new" },
-    { label: "Set up GPS time tracking", done: metrics.checklist.gpsEnabled, href: "/dashboard/settings" },
-    { label: "Run your first payroll", done: metrics.checklist.hasPayrollRun, href: "/dashboard/settings" },
+    { label: "Set up GPS time tracking", done: metrics.checklist.gpsEnabled, href: "/settings/gps" },
+    { label: "Run your first payroll", done: metrics.checklist.hasPayrollRun, href: "/settings/pay-rules" },
     { label: "Invite your team", done: false, href: "/dashboard/workers" },
   ];
 
@@ -420,7 +420,7 @@ export default function DashboardPage() {
             label: "NEXT PAYROLL",
             value: "—",
             sub: "Set up payroll",
-            href: "/dashboard/settings",
+            href: "/settings/pay-rules",
           },
           {
             icon: ChartBarIcon,

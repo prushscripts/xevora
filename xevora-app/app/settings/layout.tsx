@@ -3,14 +3,16 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-const NAV = [
+type NavItem = { href: string; label: string; external?: boolean };
+
+const NAV: NavItem[] = [
   { href: "/settings/company", label: "Company" },
   { href: "/settings/clients", label: "Clients" },
   { href: "/dashboard/workers", label: "Workers", external: true },
   { href: "/settings/pay-rules", label: "Pay rules" },
   { href: "/settings/gps", label: "GPS" },
   { href: "/settings/billing", label: "Billing" },
-] as const;
+];
 
 export default function SettingsLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -29,11 +31,7 @@ export default function SettingsLayout({ children }: { children: React.ReactNode
                   ? "bg-[#2563EB]/20 text-[#93C5FD] shadow-[0_0_20px_rgba(37,99,235,0.15)]"
                   : "text-[#4E6D92] hover:bg-[#060B14] hover:text-[#F1F5FF]"
               }`;
-              return item.external ? (
-                <Link key={item.href} href={item.href} className={className}>
-                  {item.label}
-                </Link>
-              ) : (
+              return (
                 <Link key={item.href} href={item.href} className={className}>
                   {item.label}
                 </Link>

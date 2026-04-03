@@ -12,9 +12,9 @@ import {
   clockOut,
   getCurrentShift,
   updateShiftMealBreaks,
-  type MealBreak,
   type ShiftRow,
 } from "@/lib/driver";
+import type { MealBreak } from "@/lib/payroll";
 import { checkGeofenceEnforcement } from "@/lib/gps";
 import { createClient } from "@/lib/supabase";
 
@@ -37,7 +37,7 @@ export default function DriverClockPage() {
   const [selectedClientId, setSelectedClientId] = useState<string | null>(null);
   const [geoWarn, setGeoWarn] = useState(false);
 
-  const clients = profile?.assignedClients ?? [];
+  const clients = useMemo(() => profile?.assignedClients ?? [], [profile?.assignedClients]);
 
   useEffect(() => {
     if (!selectedClientId && clients.length) {
