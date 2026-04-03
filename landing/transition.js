@@ -142,7 +142,6 @@ function xevoraTransition(e, destination) {
           clearInterval(burstInterval);
           clearInterval(statusInterval);
 
-          /* Final burst */
           burstParticles();
           burstParticles();
 
@@ -153,15 +152,38 @@ function xevoraTransition(e, destination) {
             statusEl.style.opacity = '1';
           }, 150);
 
-          /* Dramatic exit — scale up and fade */
           setTimeout(function() {
-            center.style.transition = 'transform 400ms cubic-bezier(0.4,0,0.2,1), opacity 400ms ease-in';
-            center.style.transform = 'scale(1.08)';
-            ov.style.transition = 'opacity 400ms ease-in';
-            ov.style.opacity = '0';
+            // Phase 1: center content scales up and glows intensely
+            center.style.transition = 'transform 300ms cubic-bezier(0.4,0,0.2,1), opacity 200ms ease';
+            center.style.transform = 'scale(1.15)';
+            hexWrap.style.transition = 'box-shadow 300ms ease';
+            hexWrap.style.boxShadow = '0 0 0 1px rgba(59,130,246,0.3), 0 0 80px rgba(37,99,235,0.9), 0 0 160px rgba(37,99,235,0.5)';
+
+            // Phase 2: rings collapse inward
             setTimeout(function() {
-              window.location.href = destination;
-            }, 380);
+              ov.querySelectorAll('div[style*="xRing"]').forEach(function(r) {
+                r.style.transition = 'transform 400ms cubic-bezier(0.4,0,0.2,1), opacity 400ms ease';
+                r.style.transform = 'translate(-50%,-50%) scale(0.1)';
+                r.style.opacity = '0';
+              });
+
+              // Phase 3: full overlay implodes to center then hard cuts
+              setTimeout(function() {
+                ov.style.transition = 'transform 350ms cubic-bezier(0.4,0,0.2,1), opacity 350ms ease-in';
+                ov.style.transformOrigin = 'center center';
+                ov.style.transform = 'scale(0.95)';
+                ov.style.opacity = '0';
+
+                // Navigate — overlay stays opaque until browser loads new page
+                setTimeout(function() {
+                  // Inject a black div that persists through navigation
+                  var blocker = document.createElement('div');
+                  blocker.style.cssText = 'position:fixed;inset:0;z-index:9999999;background:#03060D;';
+                  document.body.appendChild(blocker);
+                  window.location.href = destination;
+                }, 320);
+              }, 250);
+            }, 300);
           }, 500);
 
         }, 1350);
