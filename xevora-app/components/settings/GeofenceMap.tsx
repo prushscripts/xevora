@@ -1,52 +1,49 @@
 "use client";
 
-import { MapContainer, TileLayer, Marker, Circle } from "react-leaflet";
-import L from "leaflet";
+import { useEffect } from "react";
+import { Circle, MapContainer, TileLayer, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 
-const defaultIcon = L.icon({
-  iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
-  iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
-  shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41],
-});
-
-L.Marker.prototype.options.icon = defaultIcon;
-
-interface GeofenceMapProps {
-  lat: number;
-  lng: number;
-  radius: number;
+function Recenter({ lat, lng }: { lat: number; lng: number }) {
+  const map = useMap();
+  useEffect(() => {
+    map.setView([lat, lng], Math.max(map.getZoom(), 14));
+  }, [lat, lng, map]);
+  return null;
 }
 
-export default function GeofenceMap({ lat, lng, radius }: GeofenceMapProps) {
-  const position: [number, number] = [lat || 41.4048, lng || -74.3279];
-
+export default function GeofenceMap({
+  lat,
+  lng,
+  radiusMeters,
+  className = "h-52 w-full rounded-xl overflow-hidden border border-[#0f1729]",
+}: {
+  lat: number;
+  lng: number;
+  radiusMeters: number;
+  className?: string;
+}) {
   return (
     <MapContainer
-      center={position}
+      key={`${lat.toFixed(5)}-${lng.toFixed(5)}`}
+      center={[lat, lng]}
       zoom={14}
-      style={{ height: "280px", width: "100%", borderRadius: "12px" }}
+      className={className}
       scrollWheelZoom={false}
+      attributionControl
     >
-      <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-      />
-      <Marker position={position} />
+      <TileLayer attribution="&copy; OpenStreetMap" url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
       <Circle
-        center={position}
-        radius={radius}
+        center={[lat, lng]}
+        radius={radiusMeters}
         pathOptions={{
-          fillColor: "rgba(37, 99, 235, 0.15)",
-          fillOpacity: 1,
           color: "#2563EB",
+          fillColor: "#3B82F6",
+          fillOpacity: 0.12,
           weight: 2,
         }}
       />
+      <Recenter lat={lat} lng={lng} />
     </MapContainer>
   );
 }
