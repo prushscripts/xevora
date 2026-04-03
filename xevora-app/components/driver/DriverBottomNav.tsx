@@ -8,7 +8,7 @@ const tabs = [
   { href: "/driver/clock", label: "Clock", key: "clock" },
   { href: "/driver/timecard", label: "Timecard", key: "timecard" },
   { href: "/driver/pay", label: "Pay", key: "pay" },
-  { href: "/driver/profile", label: "Profile", key: "profile" },
+  { href: "/driver/vault", label: "Vault", key: "vault" },
 ] as const;
 
 function IconHome({ active }: { active: boolean }) {
@@ -67,17 +67,18 @@ function IconPay({ active }: { active: boolean }) {
   );
 }
 
-function IconProfile({ active }: { active: boolean }) {
-  const c = active ? "#3B82F6" : "#4E6D92";
+function IconVault({ active }: { active: boolean }) {
+  const c = active ? "#F59E0B" : "#4E6D92";
   return (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden>
-      <circle cx="12" cy="9" r="3.5" stroke={c} strokeWidth="1.6" />
+      <rect x="5" y="9" width="14" height="11" rx="2" stroke={c} strokeWidth="1.6" />
       <path
-        d="M6 19.5c0-3 2.5-5 6-5s6 2 6 5"
+        d="M8 9V7a4 4 0 0 1 8 0v2"
         stroke={c}
         strokeWidth="1.6"
         strokeLinecap="round"
       />
+      <circle cx="12" cy="14" r="1.5" fill={c} />
     </svg>
   );
 }
@@ -87,7 +88,7 @@ const icons = {
   clock: IconClockTab,
   timecard: IconTimecard,
   pay: IconPay,
-  profile: IconProfile,
+  vault: IconVault,
 } as const;
 
 export default function DriverBottomNav() {
@@ -103,6 +104,7 @@ export default function DriverBottomNav() {
           const active =
             tab.href === "/driver" ? pathname === "/driver" : pathname.startsWith(tab.href);
           const Icon = icons[tab.key];
+          const vault = tab.key === "vault";
           return (
             <Link
               key={tab.href}
@@ -113,10 +115,15 @@ export default function DriverBottomNav() {
                 className="relative flex h-9 w-9 items-center justify-center rounded-xl transition-[box-shadow,background-color]"
                 style={
                   active
-                    ? {
-                        boxShadow: "0 0 20px rgba(59,130,246,0.45), 0 0 2px rgba(59,130,246,0.8)",
-                        backgroundColor: "rgba(59,130,246,0.08)",
-                      }
+                    ? vault
+                      ? {
+                          boxShadow: "0 0 20px rgba(245,158,11,0.45), 0 0 2px rgba(245,158,11,0.8)",
+                          backgroundColor: "rgba(245,158,11,0.1)",
+                        }
+                      : {
+                          boxShadow: "0 0 20px rgba(59,130,246,0.45), 0 0 2px rgba(59,130,246,0.8)",
+                          backgroundColor: "rgba(59,130,246,0.08)",
+                        }
                     : undefined
                 }
               >
@@ -124,7 +131,7 @@ export default function DriverBottomNav() {
               </span>
               <span
                 className={`max-w-full truncate px-0.5 text-[10px] font-medium tracking-wide ${
-                  active ? "text-[#3B82F6]" : "text-[#4E6D92]"
+                  active ? (vault ? "text-[#F59E0B]" : "text-[#3B82F6]") : "text-[#4E6D92]"
                 }`}
               >
                 {tab.label}

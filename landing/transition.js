@@ -62,14 +62,25 @@ function xevoraTransition(e, destination) {
   var barWrap = document.createElement('div');
   barWrap.style.cssText = 'width:220px;height:3px;background:rgba(37,99,235,0.1);border-radius:999px;position:relative;overflow:visible;';
 
+  /* scaleX animates on the compositor; width % transitions often stall on desktop Chrome/Edge */
   var barFill = document.createElement('div');
-  barFill.style.cssText = 'height:100%;width:0%;background:linear-gradient(90deg,rgba(37,99,235,0.5),#3B82F6,#93C5FD);border-radius:999px;position:relative;transition:width 1300ms cubic-bezier(0.4,0,0.15,1);';
+  barFill.style.cssText =
+    'height:100%;width:100%;transform-origin:left center;transform:scaleX(0);' +
+    'background:linear-gradient(90deg,rgba(37,99,235,0.5),#3B82F6,#93C5FD);' +
+    'border-radius:999px;position:relative;will-change:transform;' +
+    'transition:transform 1300ms cubic-bezier(0.4,0,0.15,1);';
 
   var spark = document.createElement('div');
-  spark.style.cssText = 'position:absolute;right:-4px;top:50%;transform:translateY(-50%);width:10px;height:10px;border-radius:50%;background:#fff;box-shadow:0 0 6px 3px rgba(96,165,250,1),0 0 14px 6px rgba(37,99,235,0.8),0 0 28px 10px rgba(37,99,235,0.4);opacity:0;transition:opacity 200ms ease;animation:xSparkPulse 0.8s ease-in-out infinite;';
+  spark.style.cssText =
+    'position:absolute;right:0;top:50%;transform:translate3d(50%,-50%,0);' +
+    'width:10px;height:10px;border-radius:50%;background:#fff;' +
+    'box-shadow:0 0 6px 3px rgba(96,165,250,1),0 0 14px 6px rgba(37,99,235,0.8),0 0 28px 10px rgba(37,99,235,0.4);' +
+    'opacity:0;transition:opacity 200ms ease;animation:xSparkPulse 0.8s ease-in-out infinite;' +
+    'will-change:transform,box-shadow;';
 
   var particleContainer = document.createElement('div');
-  particleContainer.style.cssText = 'position:absolute;right:-4px;top:50%;transform:translateY(-50%);pointer-events:none;overflow:visible;';
+  particleContainer.style.cssText =
+    'position:absolute;right:0;top:50%;transform:translate3d(50%,-50%,0);pointer-events:none;overflow:visible;width:0;height:0;';
 
   barFill.appendChild(spark);
   barFill.appendChild(particleContainer);
@@ -90,16 +101,55 @@ function xevoraTransition(e, destination) {
 
   function burstParticles(count) {
     for (var i = 0; i < (count || 8); i++) {
-      (function(idx) {
+      (function (idx) {
         var p = document.createElement('div');
         var angle = (idx / (count || 8)) * Math.PI * 2 + Math.random() * 0.5;
         var dist = 14 + Math.random() * 24;
         var px = Math.cos(angle) * dist;
         var py = Math.sin(angle) * dist;
         var size = 2 + Math.random() * 3;
-        p.style.cssText = 'position:absolute;width:'+size+'px;height:'+size+'px;border-radius:50%;background:rgba('+(Math.random()>0.5?'96,165,250':'147,197,253')+','+(0.6+Math.random()*0.4)+');--px:'+px+'px;--py:'+py+'px;animation:xParticle '+(500+Math.random()*300)+'ms ease-out forwards;animation-delay:'+(Math.random()*80)+'ms;top:0;left:0;';
+        var dur = 500 + Math.random() * 300;
+        var delay = Math.random() * 80;
+        var col = Math.random() > 0.5 ? '96,165,250' : '147,197,253';
+        var op = 0.6 + Math.random() * 0.4;
+        p.style.cssText =
+          'position:absolute;width:' +
+          size +
+          'px;height:' +
+          size +
+          'px;border-radius:50%;background:rgba(' +
+          col +
+          ',' +
+          op +
+          ');top:0;left:0;';
         particleContainer.appendChild(p);
-        setTimeout(function() { if (p.parentNode) p.parentNode.removeChild(p); }, 900);
+
+        if (typeof p.animate === 'function') {
+          var anim = p.animate(
+            [
+              { transform: 'translate(0,0) scale(1)', opacity: 1 },
+              { transform: 'translate(' + px + 'px,' + py + 'px) scale(0)', opacity: 0 },
+            ],
+            { duration: dur, easing: 'ease-out', delay: delay, fill: 'forwards' },
+          );
+          anim.onfinish = function () {
+            if (p.parentNode) p.parentNode.removeChild(p);
+          };
+        } else {
+          p.style.cssText +=
+            '--px:' +
+            px +
+            'px;--py:' +
+            py +
+            'px;animation:xParticle ' +
+            dur +
+            'ms ease-out forwards;animation-delay:' +
+            delay +
+            'ms;';
+          setTimeout(function () {
+            if (p.parentNode) p.parentNode.removeChild(p);
+          }, dur + delay + 50);
+        }
       })(i);
     }
   }
@@ -114,9 +164,16 @@ function xevoraTransition(e, destination) {
 
       setTimeout(function() {
         spark.style.opacity = '1';
-        barFill.style.width = '100%';
+        void barFill.offsetHeight;
+        requestAnimationFrame(function () {
+          requestAnimationFrame(function () {
+            barFill.style.transform = 'scaleX(1)';
+          });
+        });
 
-        var burstInterval = setInterval(function() { burstParticles(8); }, 320);
+        var burstInterval = setInterval(function () {
+          burstParticles(8);
+        }, 320);
 
         var statuses = ['INITIALIZING...', 'AUTHENTICATING...', 'LOADING WORKSPACE...'];
         var si = 0;

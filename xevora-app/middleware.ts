@@ -32,8 +32,16 @@ export async function middleware(request: NextRequest) {
   }
 
   const isJoinDriver = path.startsWith("/auth/join-driver");
-  const isAuthPage =
-    path.startsWith("/auth/login") || path.startsWith("/auth/signup");
+  const isAuthPage = path.startsWith("/auth/login") || path.startsWith("/auth/signup");
+  const needsAuth =
+    path.startsWith("/dashboard") ||
+    path.startsWith("/driver") ||
+    path.startsWith("/settings") ||
+    path.startsWith("/onboarding");
+
+  if (!user && needsAuth) {
+    return NextResponse.redirect(new URL("/auth/login", request.url));
+  }
 
   if (user && isJoinDriver) {
     const { data: worker } = await supabase
@@ -68,44 +76,60 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL(dest, request.url));
   }
 
-  const needsStaff = path.startsWith("/dashboard");
-  const needsDriver = path.startsWith("/driver");
-
-  if (!user && (needsStaff || needsDriver)) {
-    return NextResponse.redirect(new URL("/auth/login", request.url));
+  if (!user) {
+    return response;
   }
 
-  if (user && (needsStaff || needsDriver)) {
-    const { data: worker } = await supabase
-      .from("workers")
-      .select("role")
-      .eq("user_id", user.id)
-      .maybeSingle();
+  const { data: worker } = await supabase
+    .from("workers")
+    .select("role")
+    .eq("user_id", user.id)
+    .maybeSingle();
 
-    const isDriver = worker?.role === "driver";
+  const { data: ownedCompany } = await supabase
+    .from("companies")
+    .select("id")
+    .eq("owner_id", user.id)
+    .maybeSingle();
 
-    if (needsStaff) {
-      if (isDriver) {
-        return NextResponse.redirect(new URL("/driver", request.url));
-      }
-      const pendingDriver =
-        !worker &&
-        user.user_metadata &&
-        typeof user.user_metadata === "object" &&
-        user.user_metadata !== null &&
-        (user.user_metadata as Record<string, unknown>).registration_intent === "driver";
-      if (pendingDriver) {
-        return NextResponse.redirect(new URL("/auth/join-driver", request.url));
-      }
-      return response;
-    }
+  const isOwner = !!ownedCompany;
+  const isDriver = worker?.role === "driver";
+  const isStaff = worker?.role === "admin" || worker?.role === "manager";
+  const isAdminRole = worker?.role === "admin";
+  const pendingDriver =
+    !worker &&
+    user.user_metadata &&
+    typeof user.user_metadata === "object" &&
+    user.user_metadata !== null &&
+    (user.user_metadata as Record<string, unknown>).registration_intent === "driver";
 
-    if (needsDriver) {
-      if (isDriver) {
-        return response;
-      }
+  const canAccessSettings = isOwner || isAdminRole;
+
+  if (path.startsWith("/settings")) {
+    if (!canAccessSettings) {
       return NextResponse.redirect(new URL("/dashboard", request.url));
     }
+    return response;
+  }
+
+  if (path.startsWith("/dashboard")) {
+    if (isDriver) {
+      return NextResponse.redirect(new URL("/driver", request.url));
+    }
+    if (pendingDriver) {
+      return NextResponse.redirect(new URL("/auth/join-driver", request.url));
+    }
+    if (!worker && !isOwner && !path.startsWith("/dashboard/onboarding")) {
+      return NextResponse.redirect(new URL("/onboarding", request.url));
+    }
+    return response;
+  }
+
+  if (path.startsWith("/driver")) {
+    if (isDriver) {
+      return response;
+    }
+    return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
   return response;
@@ -116,6 +140,8 @@ export const config = {
     "/dashboard/:path*",
     "/driver",
     "/driver/:path*",
+    "/settings/:path*",
+    "/onboarding",
     "/auth/login",
     "/auth/signup",
     "/auth/join-driver",

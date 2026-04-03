@@ -116,7 +116,7 @@ export default function DriverHomePage() {
       <header className="flex items-start justify-between gap-3">
         <div>
           <p className="text-sm text-[#4E6D92]">{greetingLabel()},</p>
-          <h1 className="font-[family-name:var(--font-syne)] text-2xl font-extrabold tracking-tight text-[#F1F5FF]">
+          <h1 className="font-sans text-2xl font-extrabold tracking-tight text-[#F1F5FF]">
             {displayName}
           </h1>
         </div>
@@ -227,7 +227,7 @@ export default function DriverHomePage() {
 
       <section>
         <div className="mb-3 flex items-center justify-between">
-          <h2 className="font-[family-name:var(--font-syne)] text-sm font-extrabold uppercase tracking-wider text-[#4E6D92]">
+          <h2 className="font-sans text-sm font-extrabold uppercase tracking-wider text-[#4E6D92]">
             Recent shifts
           </h2>
           <Link href="/driver/timecard" className="text-xs font-medium text-[#3B82F6]">

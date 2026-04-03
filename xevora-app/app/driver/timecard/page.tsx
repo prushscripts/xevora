@@ -99,7 +99,7 @@ export default function DriverTimecardPage() {
       className="space-y-5"
     >
       <header>
-        <h1 className="font-[family-name:var(--font-syne)] text-xl font-extrabold text-[#F1F5FF]">Timecard</h1>
+        <h1 className="font-sans text-xl font-extrabold text-[#F1F5FF]">Timecard</h1>
         <p className="mt-1 text-xs text-[#4E6D92]">Pay period</p>
         {listLoading ? (
           <div className="mt-3 h-11 animate-pulse rounded-xl bg-[#060B14]" />

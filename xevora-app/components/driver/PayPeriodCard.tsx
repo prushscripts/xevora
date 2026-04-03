@@ -39,7 +39,7 @@ export default function PayPeriodCard({
       <div className="relative flex flex-col gap-4">
         <div className="flex items-start justify-between gap-3">
           <div>
-            <p className="font-[family-name:var(--font-syne)] text-lg font-extrabold text-[#F1F5FF]">{title}</p>
+            <p className="font-sans text-lg font-extrabold text-[#F1F5FF]">{title}</p>
             {subtitle ? <p className="mt-1 text-xs text-[#4E6D92]">{subtitle}</p> : null}
           </div>
           <span

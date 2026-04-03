@@ -156,7 +156,7 @@ export default function JoinDriverPage() {
       </Link>
 
       <div className="mx-auto w-full max-w-[420px] rounded-[20px] border border-[rgba(37,99,235,0.15)] bg-[rgba(6,11,20,0.85)] p-8 shadow-[0_24px_64px_rgba(0,0,0,0.4)] backdrop-blur-[20px]">
-        <h1 className="font-[family-name:var(--font-syne)] text-2xl font-extrabold tracking-tight">Join your fleet</h1>
+        <h1 className="font-sans text-2xl font-extrabold tracking-tight">Join your fleet</h1>
         <p className="mt-2 text-sm leading-relaxed text-[var(--muted)]">
           Drivers use the access code from their company (e.g. from dispatch). Fleet admins and owners sign up from the main login page — no code needed.
         </p>

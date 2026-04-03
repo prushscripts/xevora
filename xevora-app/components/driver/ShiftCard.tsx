@@ -52,7 +52,7 @@ export default function ShiftCard({
     >
       <div className="flex items-start justify-between gap-3 py-4 pr-4">
         <div>
-          <p className="font-[family-name:var(--font-syne)] text-sm font-extrabold tracking-wide text-[#F1F5FF]">
+          <p className="font-sans text-sm font-extrabold tracking-wide text-[#F1F5FF]">
             {formatDayLabel(shift.clock_in)}
           </p>
           <p className="mt-1 font-jb text-xs text-[#4E6D92]">

@@ -153,7 +153,7 @@ export default function SettingsPage() {
 
   return (
     <div className="p-6 lg:p-10">
-      <h1 className="font-[family-name:var(--font-syne)] text-2xl font-extrabold text-[var(--text)]">Settings</h1>
+      <h1 className="font-sans text-2xl font-extrabold text-[var(--text)]">Settings</h1>
       <p className="mt-1 text-sm text-[var(--muted)]">Company and driver self-registration</p>
 
       <section className="mt-10 max-w-xl rounded-2xl border border-[rgba(37,99,235,0.15)] bg-[rgba(6,11,20,0.6)] p-6">

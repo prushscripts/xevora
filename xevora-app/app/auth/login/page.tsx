@@ -337,7 +337,7 @@ function BrandPanel() {
               <text
                 x="0"
                 y="19"
-                fontFamily="Syne, sans-serif"
+                fontFamily="Plus Jakarta Sans, sans-serif"
                 fontWeight="800"
                 fontSize="19"
                 letterSpacing="1"
@@ -738,7 +738,7 @@ export default function LoginPage() {
           display: "inline-flex",
           alignItems: "center",
           gap: "8px",
-          fontFamily: "'DM Sans', sans-serif",
+          fontFamily: "'Plus Jakarta Sans', sans-serif",
           fontSize: "13px",
           fontWeight: 400,
           color: "#4E6D92",

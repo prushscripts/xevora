@@ -121,7 +121,7 @@ export default function DriverPayPage() {
       transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
       className="space-y-6"
     >
-      <h1 className="font-[family-name:var(--font-syne)] text-xl font-extrabold text-[#F1F5FF]">Pay</h1>
+      <h1 className="font-sans text-xl font-extrabold text-[#F1F5FF]">Pay</h1>
 
       {loading ? (
         <div className="h-64 animate-pulse rounded-2xl bg-[#060B14]" />

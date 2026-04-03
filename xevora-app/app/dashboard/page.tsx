@@ -344,7 +344,7 @@ export default function DashboardPage() {
                 </span>
                 <h3
                   className="mt-1 text-[15px] font-medium leading-[1.3] tracking-[0.2px] text-[#F1F5FF]"
-                  style={{ fontFamily: "DM Sans, sans-serif" }}
+                  style={{ fontFamily: "Plus Jakarta Sans, sans-serif" }}
                 >
                   {card.title}
                 </h3>

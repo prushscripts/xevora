@@ -64,13 +64,13 @@ export default function DriverProfilePage() {
       transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
       className="space-y-8 pb-4"
     >
-      <h1 className="font-[family-name:var(--font-syne)] text-xl font-extrabold text-[#F1F5FF]">Profile</h1>
+      <h1 className="font-sans text-xl font-extrabold text-[#F1F5FF]">Profile</h1>
 
       <section className="rounded-2xl border border-[#0f1729] bg-[#060B14] p-6 text-center shadow-[inset_0_0_0_1px_rgba(37,99,235,0.06)]">
         <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-[#2563EB] to-[#1d4ed8] text-2xl font-extrabold text-white shadow-[0_0_32px_rgba(37,99,235,0.35)]">
           {initials(name)}
         </div>
-        <h2 className="font-[family-name:var(--font-syne)] mt-5 text-2xl font-extrabold text-[#F1F5FF]">{name}</h2>
+        <h2 className="font-sans mt-5 text-2xl font-extrabold text-[#F1F5FF]">{name}</h2>
         <span className="mt-3 inline-block rounded-full border border-[#3B82F6]/40 bg-[#3B82F6]/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-[#93C5FD]">
           Driver
         </span>

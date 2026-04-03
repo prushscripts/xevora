@@ -17,7 +17,7 @@ const desktopNav = [
   { label: "Time Tracking", href: "/dashboard/time", icon: ClockIcon },
   { label: "Payroll", href: "/dashboard/payroll", icon: CurrencyDollarIcon },
   { label: "Reports", href: "/dashboard/reports", icon: ChartBarIcon },
-  { label: "Settings", href: "/dashboard/settings", icon: Cog6ToothIcon },
+  { label: "Settings", href: "/settings/clients", icon: Cog6ToothIcon },
 ];
 
 const mobileNav = [
@@ -25,7 +25,7 @@ const mobileNav = [
   { label: "Workers", href: "/dashboard/workers", icon: UserGroupIcon },
   { label: "Time", href: "/dashboard/time", icon: ClockIcon },
   { label: "Payroll", href: "/dashboard/payroll", icon: CurrencyDollarIcon },
-  { label: "More", href: "/dashboard/settings", icon: Cog6ToothIcon },
+  { label: "More", href: "/settings/clients", icon: Cog6ToothIcon },
 ];
 
 function LogoMark() {
