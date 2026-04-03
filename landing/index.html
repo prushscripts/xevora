@@ -992,7 +992,39 @@ p.sub{
   padding-top: 80px;
   writing-mode: vertical-lr;
 }
-.why-competitors { display: flex; flex-direction: column; gap: 16px; }
+.why-competitors {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.why-comp-sub {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  font-size: 11px;
+  color: #3B82F6;
+  margin-bottom: 12px;
+  line-height: 1.4;
+}
+.why-comp-source {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 0.08em;
+  color: rgba(37,99,235,0.3);
+  margin-top: 12px;
+  text-transform: uppercase;
+}
+.why-disclaimer {
+  text-align: center;
+  margin-top: 40px;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  font-size: 11px;
+  color: #243550;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.6;
+}
 .why-comp-card {
   background: rgba(6,11,20,0.6);
   border: 1px solid rgba(37,99,235,0.08);
@@ -1023,7 +1055,7 @@ p.sub{
     color: #1E3048;
     text-align: center;
   }
-  .why-competitors { flex-direction: row; gap: 12px; }
+  .why-competitors { flex-direction: column; gap: 12px; }
   .why-comp-card { flex: 1; min-width: 0; }
   .why-comp-name { font-size: 12px; }
   .why-comp-list li { font-size: 11px; }
@@ -1790,7 +1822,7 @@ footer{
     <header class="why-head">
       <p class="why-eyebrow">WHY XEVORA</p>
       <h2 class="why-title">Built different.<br>For the people who build things.</h2>
-      <p class="why-sub">Other platforms were built for offices. Xevora was built for the field.</p>
+      <p class="why-sub">Other platforms were built for offices, restaurants, and retail. Xevora was built exclusively for drivers, field crews, and trades.</p>
     </header>
 
     <div class="why-cards">
@@ -1800,13 +1832,13 @@ footer{
           <div class="why-card-status"><span class="why-status-dot"></span>Your platform</div>
         </div>
         <ul class="why-list">
-          <li class="why-item why-item--good"><span class="why-check">✓</span><div><strong>Mobile-first</strong><span>GPS clock-in from any phone, no app install needed</span></div></li>
-          <li class="why-item why-item--good"><span class="why-check">✓</span><div><strong>GPS Clock-In native</strong><span>Location stamped on every punch</span></div></li>
-          <li class="why-item why-item--good"><span class="why-check">✓</span><div><strong>W2 + 1099 together</strong><span>Both worker types on one platform</span></div></li>
-          <li class="why-item why-item--good"><span class="why-check">✓</span><div><strong>Starts at $49/mo</strong><span>No hidden fees, no per-user pricing surprises</span></div></li>
-          <li class="why-item why-item--good"><span class="why-check">✓</span><div><strong>20-minute setup</strong><span>First worker clocked in same day</span></div></li>
-          <li class="why-item why-item--good"><span class="why-check">✓</span><div><strong>AI built-in</strong><span>Payroll anomaly detection, natural language runs</span></div></li>
-          <li class="why-item why-item--good"><span class="why-check">✓</span><div><strong>Built for field workers</strong><span>Drivers, crews, trades — not office teams</span></div></li>
+          <li class="why-item why-item--good"><span class="why-check">✓</span><div><strong>Mobile-first, GPS-native</strong><span>Location-stamped clock-in from any phone — built for workers who are never at a desk</span></div></li>
+          <li class="why-item why-item--good"><span class="why-check">✓</span><div><strong>W2 + 1099 on one platform</strong><span>Manage employees and contractors together — most competitors force you to choose</span></div></li>
+          <li class="why-item why-item--good"><span class="why-check">✓</span><div><strong>Flat pricing from $49/mo</strong><span>One price for your whole team — no per-employee fees, no per-location charges, no surprises</span></div></li>
+          <li class="why-item why-item--good"><span class="why-check">✓</span><div><strong>Setup in under 20 minutes</strong><span>First worker clocked in same day — no sales calls, no implementation consultants required</span></div></li>
+          <li class="why-item why-item--good"><span class="why-check">✓</span><div><strong>Payroll built-in, not an add-on</strong><span>Time tracking and payroll are one system — no exports, no integrations needed</span></div></li>
+          <li class="why-item why-item--good"><span class="why-check">✓</span><div><strong>AI anomaly detection</strong><span>Automatically flags unusual hours, missed punches, and payroll discrepancies before they become problems</span></div></li>
+          <li class="why-item why-item--good"><span class="why-check">✓</span><div><strong>Built for multi-site field ops</strong><span>Designed for workers who move between job sites — not tied to a single physical address</span></div></li>
         </ul>
       </div>
 
@@ -1814,30 +1846,49 @@ footer{
 
       <div class="why-competitors">
         <div class="why-comp-card">
-          <div class="why-comp-name">ADP</div>
+          <div class="why-comp-name">ADP RUN</div>
+          <div class="why-comp-sub">Quote-based pricing, starting ~$79/mo + $4/employee</div>
           <ul class="why-comp-list">
-            <li><span class="why-x">✗</span>Desktop-first</li>
-            <li><span class="why-x">✗</span>No GPS clock-in</li>
-            <li><span class="why-x">✗</span>Complex 1099 setup</li>
-            <li><span class="why-x">✗</span>$150+/mo</li>
-            <li><span class="why-x">✗</span>Days to set up</li>
-            <li><span class="why-x">✗</span>AI add-on only</li>
-            <li><span class="why-x">✗</span>Enterprise focus</li>
+            <li><span class="why-x">✗</span>Pricing requires a sales call — no transparent online rates</li>
+            <li><span class="why-x">✗</span>GPS time tracking sold as a paid add-on, not included</li>
+            <li><span class="why-x">✗</span>Built for office-based HR teams, not field operators</li>
+            <li><span class="why-x">✗</span>Implementation takes days with dedicated onboarding</li>
+            <li><span class="why-x">✗</span>Per-employee fees scale costs as your crew grows</li>
+            <li><span class="why-x">✗</span>Complex setup with potential annual contract lock-in</li>
           </ul>
+          <div class="why-comp-source">Source: tech.co, comparisun.com — Jan 2026</div>
         </div>
         <div class="why-comp-card">
           <div class="why-comp-name">Homebase</div>
+          <div class="why-comp-sub">From $24.95/mo per location + $39/mo payroll add-on</div>
           <ul class="why-comp-list">
-            <li><span class="why-x">✗</span>Restaurant/retail</li>
-            <li><span class="why-x">✗</span>Basic only</li>
-            <li><span class="why-x">✗</span>W2 only</li>
-            <li><span class="why-x">✗</span>$99+/mo</li>
-            <li><span class="why-x">✗</span>Hours to set up</li>
-            <li><span class="why-x">✗</span>Limited AI</li>
-            <li><span class="why-x">✗</span>Not field-ready</li>
+            <li><span class="why-x">✗</span>Priced per location — 5 job sites = 5x your monthly bill</li>
+            <li><span class="why-x">✗</span>Payroll is a separate paid add-on ($39/mo base + $6/employee)</li>
+            <li><span class="why-x">✗</span>GPS shows location only at clock-in, not throughout the shift</li>
+            <li><span class="why-x">✗</span>Built for restaurants and retail — not field crews or drivers</li>
+            <li><span class="why-x">✗</span>No native 1099 contractor payroll support</li>
+            <li><span class="why-x">✗</span>Geofencing limited to preset distances, no custom boundaries</li>
           </ul>
+          <div class="why-comp-source">Source: connecteam.com, turnozo.com — Feb 2026</div>
+        </div>
+        <div class="why-comp-card">
+          <div class="why-comp-name">Gusto</div>
+          <div class="why-comp-sub">From $40/mo base + $6/employee/mo</div>
+          <ul class="why-comp-list">
+            <li><span class="why-x">✗</span>No native GPS time tracking — requires third-party integration</li>
+            <li><span class="why-x">✗</span>Designed for salaried office employees, not hourly field workers</li>
+            <li><span class="why-x">✗</span>Time tracking requires separate Gusto Time add-on</li>
+            <li><span class="why-x">✗</span>Per-employee pricing becomes expensive for larger crews</li>
+            <li><span class="why-x">✗</span>No mileage tracking or field-specific features</li>
+            <li><span class="why-x">✗</span>Limited support for multi-site or mobile workforce management</li>
+          </ul>
+          <div class="why-comp-source">Source: gusto.com pricing page — 2026</div>
         </div>
       </div>
+    </div>
+
+    <div class="why-disclaimer">
+      Competitor pricing and features based on publicly available information as of early 2026. Pricing subject to change. Xevora is not affiliated with ADP, Homebase, or Gusto.
     </div>
   </div>
 </div>
