@@ -121,11 +121,12 @@ nav{
   position:relative;width:28px;height:28px;border-radius:8px;
   display:flex;align-items:center;justify-content:center;
   flex-shrink:0;
-  box-shadow:0 0 12px rgba(37,99,235,0.25),0 0 0 1px rgba(59,130,246,0.15);
+  box-shadow:0 0 0 1px rgba(59,130,246,0.15),0 0 20px rgba(37,99,235,0.3),0 0 40px rgba(37,99,235,0.12);
   transition:box-shadow 250ms ease;
+  z-index:1;
 }
 .nav-brand-group:hover .logo-ring{
-  box-shadow:0 0 18px rgba(37,99,235,0.4),0 0 0 1px rgba(59,130,246,0.25);
+  box-shadow:0 0 0 1px rgba(59,130,246,0.25),0 0 28px rgba(37,99,235,0.45),0 0 52px rgba(37,99,235,0.18);
 }
 .logo-ring::before,.logo-ring::after{
   content:'';position:absolute;inset:-5px;border-radius:50%;
@@ -1471,6 +1472,25 @@ footer{
 
 .xev-svg-wordmark { display: inline-block; vertical-align: middle; overflow: visible; }
 
+.logo-ring-outer{
+  position:absolute;
+  width:52px;height:52px;border-radius:50%;
+  border:1px solid rgba(37,99,235,0.2);
+  animation:rpulse 2.8s ease-out infinite;
+  pointer-events:none;
+  left:calc(50% - 26px);top:calc(50% - 26px);
+  z-index:0;
+}
+.logo-ring-outer2{
+  position:absolute;
+  width:68px;height:68px;border-radius:50%;
+  border:1px solid rgba(37,99,235,0.1);
+  animation:rpulse 2.8s ease-out infinite 0.9s;
+  pointer-events:none;
+  left:calc(50% - 34px);top:calc(50% - 34px);
+  z-index:0;
+}
+
 </style>
 </head>
 <body>
@@ -1483,7 +1503,10 @@ footer{
 <nav>
   <div class="nav-brand-wrap">
     <div class="nav-brand-group">
-      <div class="logo-ring">
+      <div style="position:relative;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <div class="logo-ring-outer"></div>
+        <div class="logo-ring-outer2"></div>
+        <div class="logo-ring">
         <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
           <polygon points="50,6 89,28 89,72 50,94 11,72 11,28" fill="#0B1422" stroke="rgba(37,99,235,0.5)" stroke-width="1.5"/>
           <polygon points="50,21 76,36 76,64 50,79 24,64 24,36" fill="none" stroke="rgba(37,99,235,0.13)" stroke-width="1"/>
@@ -1496,6 +1519,7 @@ footer{
           <circle cx="11" cy="72" r="1.8" fill="rgba(37,99,235,.5)"/>
           <circle cx="11" cy="28" r="1.8" fill="rgba(37,99,235,.5)"/>
         </svg>
+        </div>
       </div>
       <span class="nav-brand-sep" aria-hidden="true"></span>
       <div class="nav-brand-text-stack">
