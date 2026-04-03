@@ -83,6 +83,19 @@ for ($i = 0; $i -lt $uniqueOrdered.Count; $i++) {
   try {
     $r = Invoke-WebRequest -Uri $line -Method Post -UseBasicParsing -TimeoutSec 120
     Write-Host "       OK (HTTP $($r.StatusCode))"
+    if ($r.Content -and $r.Content.Trim().Length -gt 0) {
+      try {
+        $j = $r.Content | ConvertFrom-Json
+        if ($null -ne $j.job) {
+          Write-Host "       Vercel queued job: $($j.job.id)  state=$($j.job.state)"
+        }
+        if ($null -ne $j.deployment) {
+          Write-Host "       deployment id: $($j.deployment.id)"
+        }
+      } catch {
+        Write-Host "       Response: $($r.Content.Substring(0, [Math]::Min(160, $r.Content.Length)))..."
+      }
+    }
   } catch {
     $msg = $_.Exception.Message
     $resp = $_.Exception.Response

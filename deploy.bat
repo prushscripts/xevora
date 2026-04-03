@@ -143,7 +143,13 @@ if errorlevel 1 (
 
 echo.
 echo ========================================
-echo   Done. Open Vercel: both xevora and xevora-app should show a new deployment.
+echo   Done. Hooks returned 201 = Vercel accepted the trigger.
+echo.
+echo   Where to look ^(each hook only affects ONE project^):
+echo     1^) Vercel - open project xevora -^> Deployments ^(not xevora-app^)
+echo     2^) Vercel - open project xevora-app -^> Deployments
+echo   Use All Environments; wait 30-90s; hard-refresh the page.
+echo   If a row says Skipped / Canceled, open it - check Ignored Build Step in project Settings.
 echo ========================================
 echo.
 pause
