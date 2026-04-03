@@ -8,9 +8,10 @@ echo   Xevora - Deploy
 echo ========================================
 echo   Directory: %CD%
 echo   Targets BOTH Vercel projects: xevora ^(marketing^) + xevora-app ^(app^).
-echo   1^) Stages changes, stamps landing\ + xevora-app\ ^(git sees both roots^).
+echo   1^) Stages changes, stamps landing\ + xevora-app\.
 echo   2^) Commits and pushes origin main.
-echo   3^) If a hooks file exists ^(see vercel-deploy-hooks.TEMPLATE.txt^), POSTs each URL.
+echo   3^) REQUIRED: POSTs 2 Deploy Hook URLs ^(xevora + xevora-app^) so BOTH Vercel projects build.
+echo      ^(File: vercel-deploy-hooks.example.txt or .vercel-deploy-hooks.txt — see TEMPLATE^)
 echo ========================================
 echo.
 
@@ -48,7 +49,7 @@ if not errorlevel 1 (
   pause
   exit /b 1
 )
-echo       OK — changes detected.
+echo       OK - changes detected.
 echo.
 
 echo       Building commit message from changed paths...
@@ -103,20 +104,21 @@ echo       Latest commit ^(local^):
 git log -1 --oneline
 echo.
 
-echo [5/5] Vercel Deploy Hooks ^(optional - forces xevora + xevora-app builds^)...
-powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0deploy-invoke-hooks.ps1" -RepoRoot "%CD%"
+echo [5/5] Triggering BOTH Vercel builds ^(Deploy Hooks — required^)...
+powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0deploy-invoke-hooks.ps1" -RepoRoot "%CD%" -RequireBoth
 if errorlevel 1 (
   echo.
-  echo WARNING: A deploy hook failed ^(git push already succeeded^). Fix your hooks file or Vercel.
+  echo ERROR: Hook step failed ^(see PowerShell output above^).
+  echo Git push may have succeeded; xevora.io or app may be stale until you fix hooks.
+  echo Need 2 lines: hook from Vercel project xevora, then hook from xevora-app.
   echo.
+  pause
+  exit /b 1
 )
 
 echo.
 echo ========================================
-echo   Done. Confirm in Vercel:
-echo   - Project xevora ^(marketing / landing root^)
-echo   - Project xevora-app
-echo   With hooks configured, both should show a new deployment now.
+echo   Done. Open Vercel: both xevora and xevora-app should show a new deployment.
 echo ========================================
 echo.
 pause

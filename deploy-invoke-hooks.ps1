@@ -1,6 +1,7 @@
 param(
   [Parameter(Mandatory = $true)]
-  [string] $RepoRoot
+  [string] $RepoRoot,
+  [switch] $RequireBoth
 )
 $ErrorActionPreference = 'Stop'
 $root = [System.IO.Path]::GetFullPath($RepoRoot.TrimEnd('\', '/'))
@@ -24,11 +25,10 @@ if (-not $p) {
   Write-Host '       Hooks file not found. Looked for:'
   foreach ($c in $candidates) { Write-Host "         - $c" }
   Write-Host ''
-  Write-Host '       Add your Vercel hook URLs to ONE of these (repo root, next to deploy.bat):'
-  Write-Host '         vercel-deploy-hooks.example.txt   (recommended; gitignored)'
-  Write-Host '         .vercel-deploy-hooks.txt'
-  Write-Host '         vercel-deploy-hooks.txt'
-  Write-Host '       See vercel-deploy-hooks.TEMPLATE.txt for instructions.'
+  Write-Host '       Copy vercel-deploy-hooks.TEMPLATE.txt to vercel-deploy-hooks.example.txt'
+  Write-Host '       and paste TWO Deploy Hook URLs (xevora, then xevora-app).'
+  if ($RequireBoth) { exit 2 }
+  Write-Host '       (Optional mode: continuing without hooks.)'
   exit 0
 }
 
@@ -46,7 +46,8 @@ foreach ($raw in (Get-Content -LiteralPath $p)) {
 }
 
 if ($rawLines.Count -eq 0) {
-  Write-Host '       No hook URLs found (add uncommented https:// lines).'
+  Write-Host '       ERROR: No uncommented https:// lines in hooks file.'
+  if ($RequireBoth) { exit 3 }
   exit 0
 }
 
@@ -63,10 +64,11 @@ foreach ($u in $rawLines) {
 
 if ($uniqueOrdered.Count -lt 2) {
   Write-Host ''
-  Write-Host '       WARNING: Only one deploy hook URL. You need TWO different URLs:'
-  Write-Host '         1) Vercel project **xevora**  -> Settings -> Git -> Deploy Hooks -> copy URL'
-  Write-Host '         2) Vercel project **xevora-app** -> same (must be a different URL / different prj_ id)'
-  Write-Host '       Put one URL per line in this file. Saving the same hook twice will not build the app.'
+  Write-Host '       ERROR: deploy.bat requires TWO different Deploy Hook URLs so BOTH projects build:'
+  Write-Host '         Line 1: xevora     (marketing / xevora.io)  -> Vercel project xevora'
+  Write-Host '         Line 2: xevora-app (app / app.xevora.io)   -> Vercel project xevora-app'
+  Write-Host '       Git push alone often only triggers one project; hooks fix that.'
+  if ($RequireBoth) { exit 4 }
   Write-Host ''
 }
 
@@ -100,7 +102,6 @@ for ($i = 0; $i -lt $uniqueOrdered.Count; $i++) {
 
 if ($failures.Count -gt 0) {
   Write-Host ''
-  Write-Host '       One or more hooks failed. Check the failing URL in Vercel (Revoke + create new hook if needed).'
-  Write-Host '       The xevora-app line must be copied from the **xevora-app** project, not xevora.'
+  Write-Host '       One or more hooks failed. Check the URL in Vercel (Revoke + create new hook if needed).'
   exit 1
 }
