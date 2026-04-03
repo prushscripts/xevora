@@ -83,6 +83,8 @@ nav{
   max-width:100vw;
   overflow:visible;
   clip-path:none;
+  -webkit-text-fill-color:unset;
+  color:unset;
 }
 
 .nav-brand-wrap{display:flex;flex-direction:column;align-items:flex-start;flex-shrink:0;min-width:0}
@@ -1490,9 +1492,9 @@ footer{
     #F1F5FF 100%
   );
   background-size: 200% auto;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
   animation: xevFinalShimmer 3s linear infinite;
   will-change: background-position;
 }
@@ -1503,13 +1505,13 @@ footer{
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .xev-final { animation: none; background-position: 0% center; -webkit-text-fill-color: #F1F5FF; }
+  .xev-final { animation: none; background-position: 0% center; -webkit-text-fill-color: #F1F5FF !important; }
 }
 
 .logo-ring-outer{
   position:absolute;
   width:52px;height:52px;border-radius:50%;
-  border:1px solid rgba(37,99,235,0.2);
+  border:1px solid rgba(37,99,235,0.35);
   animation:rpulse 2.8s ease-out infinite;
   pointer-events:none;
   left:calc(50% - 26px);top:calc(50% - 26px);
@@ -1518,7 +1520,7 @@ footer{
 .logo-ring-outer2{
   position:absolute;
   width:68px;height:68px;border-radius:50%;
-  border:1px solid rgba(37,99,235,0.1);
+  border:1px solid rgba(37,99,235,0.18);
   animation:rpulse 2.8s ease-out infinite 0.9s;
   pointer-events:none;
   left:calc(50% - 34px);top:calc(50% - 34px);
@@ -2270,7 +2272,7 @@ const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').match
   function mkb(){beams=[];for(let i=0;i<10;i++)beams.push({x:Math.random()*W,y:Math.random()*H-100,vy:.1+Math.random()*.3,len:80+Math.random()*220,a:.02+Math.random()*.08,w:.2+Math.random()*.8})}
   function frame(){
     cx += (tx-cx)*0.042; cy += (ty-cy)*0.042;
-    ctx.clearRect(0,0,W,H); ctx.fillStyle='#03060D'; ctx.fillRect(0,0,W,H);
+    ctx.clearRect(0,0,W,H);
     const gx=W*.45+cx, gy=H*.3+cy;
     const g=ctx.createRadialGradient(gx,gy,0,gx,gy,W*.5);
     g.addColorStop(0,'rgba(37,99,235,.1)');g.addColorStop(.5,'rgba(37,99,235,.03)');g.addColorStop(1,'rgba(37,99,235,0)');
