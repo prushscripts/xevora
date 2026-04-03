@@ -1,4 +1,5 @@
 @echo off
+del "%~dp0deploy-log.txt" 2>nul
 title Xevora Deploy
 color 0A
 
@@ -52,7 +53,7 @@ echo  [4/4] Triggering Vercel deployments...
 :: Get it from: Vercel Dashboard → xevora project → Settings → Git → Deploy Hooks → Create Hook
 echo  Testing Vercel connection...
 
-curl -s -X POST "https://api.vercel.com/v1/integrations/deploy/prj_mLIOXYoWLiKpgTkhRBkq0ssuNcLx/ZXx54tCMjL" -H "Content-Type: application/json" -d "{}"
+curl -v -X POST "https://api.vercel.com/v1/integrations/deploy/prj_mLIOXYoWLiKpgTkhRBkq0ssuNcLx/ZXx54tCMjL" -H "Content-Type: application/json" -d "{}" >> "%~dp0deploy-log.txt" 2>&1
 if errorlevel 1 (
   echo  [WARN] Could not trigger xevora landing deploy hook. Check URL.
 ) else (
@@ -61,7 +62,7 @@ if errorlevel 1 (
 
 :: Trigger xevora-app deploy via Vercel deploy hook  
 :: Replace the URL below with your actual Vercel deploy hook for the "xevora-app" project
-curl -s -X POST "https://api.vercel.com/v1/integrations/deploy/prj_mIZvLa0uUKXLVrlmsRl5kphcNBQn/tZJBOjAO0v" -H "Content-Type: application/json" -d "{}"
+curl -v -X POST "https://api.vercel.com/v1/integrations/deploy/prj_mIZvLa0uUKXLVrlmsRl5kphcNBQn/tZJBOjAO0v" -H "Content-Type: application/json" -d "{}" >> "%~dp0deploy-log.txt" 2>&1
 if errorlevel 1 (
   echo  [WARN] Could not trigger xevora-app deploy hook. Check URL.
 ) else (
@@ -75,5 +76,8 @@ echo   Check: https://vercel.com/prushscripts
 echo  ================================================
 echo.
 
+echo.
+echo Log saved to deploy-log.txt
+notepad "%~dp0deploy-log.txt"
 pause
 exit /b 0
