@@ -2284,6 +2284,15 @@ const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').match
 
 /* Canvas + cinematic parallax */
 (function(){
+  var prefersReducedData = navigator.connection && (navigator.connection.saveData || navigator.connection.effectiveType === '2g' || navigator.connection.effectiveType === 'slow-2g');
+  var isLowEnd = navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 2;
+
+  if (prefersReducedData || isLowEnd) {
+    var c = document.getElementById('c');
+    if (c) c.style.display = 'none';
+    return;
+  }
+
   const cv=document.getElementById('c'),ctx=cv.getContext('2d');
   let W,H,dots,beams,t=0;
   let tx=0,ty=0,cx=0,cy=0;
