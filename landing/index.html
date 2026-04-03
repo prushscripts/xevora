@@ -1470,7 +1470,12 @@ footer{
   .phase-wrap{padding:110px 16px 60px;}
 }
 
-.xev-svg-wordmark { display: inline-block; vertical-align: middle; overflow: visible; }
+#xev-canvas-wordmark {
+  display: inline-block;
+  vertical-align: middle;
+  width: auto;
+  image-rendering: crisp-edges;
+}
 
 .logo-ring-outer{
   position:absolute;
@@ -1523,35 +1528,7 @@ footer{
       </div>
       <span class="nav-brand-sep" aria-hidden="true"></span>
       <div class="nav-brand-text-stack">
-        <svg class="xev-svg-wordmark" viewBox="0 0 120 24" height="22" aria-label="XEVORA">
-          <defs>
-            <linearGradient id="xev-shimmer-grad" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stop-color="#F1F5FF" stop-opacity="1"/>
-              <stop offset="35%" stop-color="#F1F5FF" stop-opacity="1"/>
-              <stop offset="45%" stop-color="#93C5FD" stop-opacity="1"/>
-              <stop offset="50%" stop-color="#60A5FA" stop-opacity="1"/>
-              <stop offset="55%" stop-color="#93C5FD" stop-opacity="1"/>
-              <stop offset="65%" stop-color="#F1F5FF" stop-opacity="1"/>
-              <stop offset="100%" stop-color="#F1F5FF" stop-opacity="1"/>
-              <animateTransform
-                attributeName="gradientTransform"
-                type="translate"
-                from="-1.5 0"
-                to="1.5 0"
-                dur="3.5s"
-                repeatCount="indefinite"
-              />
-            </linearGradient>
-          </defs>
-          <text
-            x="0" y="19"
-            font-family="Syne, sans-serif"
-            font-weight="800"
-            font-size="19"
-            letter-spacing="1"
-            fill="url(#xev-shimmer-grad)"
-          >XEVORA</text>
-        </svg>
+        <canvas id="xev-canvas-wordmark" height="26" aria-label="XEVORA"></canvas>
         <a class="nav-xavorn-badge" href="https://xavorn.com" target="_blank" rel="noopener noreferrer"><span class="nav-xavorn-pill">PART OF XAVORN</span></a>
       </div>
     </div>
@@ -2638,6 +2615,67 @@ window.addEventListener('scroll',()=>{
   });
   btnA.addEventListener('click', function () {
     setAnnual(true);
+  });
+})();
+
+(function() {
+  var canvas = document.getElementById('xev-canvas-wordmark');
+  if (!canvas) return;
+  var dpr = window.devicePixelRatio || 1;
+  var h = 26;
+  var fontSize = 18;
+  var font = '800 ' + fontSize + 'px Syne, sans-serif';
+
+  function setup() {
+    var ctx = canvas.getContext('2d');
+    ctx.font = font;
+    var textW = ctx.measureText('XEVORA').width + 4;
+    canvas.width = Math.ceil(textW * dpr);
+    canvas.height = Math.ceil(h * dpr);
+    canvas.style.width = Math.ceil(textW) + 'px';
+    canvas.style.height = h + 'px';
+    ctx.scale(dpr, dpr);
+    return { ctx: ctx, textW: textW };
+  }
+
+  var s = setup();
+  var ctx = s.ctx;
+  var textW = s.textW;
+  var shimX = -textW;
+  var lastTime = 0;
+  var speed = textW * 2.2;
+
+  function draw(ts) {
+    var dt = lastTime ? Math.min((ts - lastTime) / 1000, 0.05) : 0;
+    lastTime = ts;
+    shimX += speed * dt;
+    if (shimX > textW * 1.5) shimX = -textW * 0.8;
+
+    ctx.clearRect(0, 0, textW + 4, h);
+    ctx.font = font;
+    ctx.letterSpacing = '0.02em';
+
+    var grad = ctx.createLinearGradient(0, 0, textW, 0);
+    var p = shimX / textW;
+    grad.addColorStop(0, '#F1F5FF');
+    grad.addColorStop(Math.max(0, Math.min(1, p - 0.15)), '#F1F5FF');
+    grad.addColorStop(Math.max(0, Math.min(1, p)), '#93C5FD');
+    grad.addColorStop(Math.max(0, Math.min(1, p + 0.05)), '#60A5FA');
+    grad.addColorStop(Math.max(0, Math.min(1, p + 0.1)), '#93C5FD');
+    grad.addColorStop(Math.max(0, Math.min(1, p + 0.25)), '#F1F5FF');
+    grad.addColorStop(1, '#F1F5FF');
+
+    ctx.fillStyle = grad;
+    ctx.fillText('XEVORA', 0, 20);
+    requestAnimationFrame(draw);
+  }
+
+  document.fonts.ready.then(function() {
+    var s2 = setup();
+    ctx = s2.ctx;
+    textW = s2.textW;
+    shimX = -textW;
+    requestAnimationFrame(draw);
   });
 })();
 </script>
