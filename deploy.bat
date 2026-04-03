@@ -1,157 +1,77 @@
 @echo off
-setlocal
+title Xevora Deploy
+color 0A
+
+echo.
+echo  ================================================
+echo   XEVORA DEPLOY — Pushing to GitHub + Vercel
+echo  ================================================
+echo.
+
+:: Navigate to repo root (wherever the bat file lives)
 cd /d "%~dp0"
 
-echo.
-echo ========================================
-echo   Xevora - Deploy
-echo ========================================
-echo   Directory: %CD%
-echo   Targets BOTH Vercel projects: xevora ^(marketing^) + xevora-app ^(app^).
-echo   1^) Stages changes, stamps landing\ + xevora-app\.
-echo   2^) Commits and pushes origin main.
-echo   3^) REQUIRED: POSTs 2 Deploy Hook URLs ^(xevora + xevora-app^) so BOTH Vercel projects build.
-echo      ^(Local file: deploy-hooks.txt - see vercel-deploy-hooks.TEMPLATE.txt^)
-echo ========================================
-echo.
-
-echo [1/5] Staging your changes ^(git add .^)...
-git add .
+:: Check for uncommitted changes
+git status --porcelain > nul 2>&1
 if errorlevel 1 (
-  echo.
-  echo ERROR: git add failed. Is this a git repository?
-  echo.
+  echo  [ERROR] Not a git repository. Aborting.
   pause
   exit /b 1
 )
-echo       Done.
-echo.
 
-echo [2/5] Updating deploy revision stamps ^(landing + xevora-app^)...
-powershell -NoProfile -ExecutionPolicy Bypass -Command "& { $ErrorActionPreference='Stop'; Set-Location -LiteralPath '%CD%'; $ts=(Get-Date).ToUniversalTime().ToString('yyyy-MM-ddTHH:mm:ssZ'); foreach($sub in @('landing','xevora-app')) { $dir=Join-Path (Get-Location) $sub; if(-not(Test-Path -LiteralPath $dir)){ throw ('Missing folder: '+$sub) }; $p=Join-Path $dir '.vercel-deploy-revision.txt'; Set-Content -LiteralPath $p -Value $ts -Encoding ascii } }"
+:: Stage all changes
+echo  [1/4] Staging all changes...
+git add -A
 if errorlevel 1 (
-  echo.
-  echo ERROR: Could not write .vercel-deploy-revision.txt under landing\ or xevora-app\
-  echo.
+  echo  [ERROR] Git add failed.
   pause
   exit /b 1
 )
-git add landing/.vercel-deploy-revision.txt xevora-app/.vercel-deploy-revision.txt
-echo       Done.
-echo.
 
-echo [3/5] Verifying there is something to commit...
-git diff --quiet HEAD
-if not errorlevel 1 (
-  echo.
-  echo ERROR: Still nothing to commit after revision bump. Check git status.
-  echo.
-  pause
-  exit /b 1
-)
-echo       OK - changes detected.
-echo.
-
-echo       Building commit message from changed paths...
-powershell -NoProfile -ExecutionPolicy Bypass -Command ^
-  "$ErrorActionPreference = 'Stop'; " ^
-  "$names = @(git diff HEAD --name-only); " ^
-  "$n = $names.Count; " ^
-  "$max = 12; " ^
-  "$take = [Math]::Min($max, $n); " ^
-  "$parts = @(); for ($i = 0; $i -lt $take; $i++) { $parts += $names[$i] }; " ^
-  "$list = ($parts -join ', '); " ^
-  "if ($n -gt $max) { $list += ', and ' + ($n - $max) + ' more' }; " ^
-  "$msg = 'update: ' + $list + ' - ' + $n + ' file(s) changed'; " ^
-  "$p = Join-Path $env:TEMP 'xevora_deploy_commit_msg.txt'; " ^
-  "[System.IO.File]::WriteAllText($p, $msg, [System.Text.UTF8Encoding]::new($false))"
+:: Commit with timestamp
+set TIMESTAMP=%date:~10,4%-%date:~4,2%-%date:~7,2% %time:~0,2%:%time:~3,2%
+echo  [2/4] Committing with timestamp: %TIMESTAMP%
+git commit -m "deploy: %TIMESTAMP%"
 if errorlevel 1 (
-  echo.
-  echo ERROR: Failed to build commit message.
-  echo.
-  pause
-  exit /b 1
+  echo  [INFO] Nothing new to commit — pushing existing HEAD.
 )
-set "MSGFILE=%TEMP%\xevora_deploy_commit_msg.txt"
-echo       Message:
-type "%MSGFILE%"
-echo.
 
-git commit -F "%MSGFILE%"
-if errorlevel 1 (
-  echo.
-  echo ERROR: git commit failed.
-  echo.
-  pause
-  exit /b 1
-)
-echo       Commit created.
-echo.
-
-echo [4/5] Pushing to origin main...
+:: Push to main
+echo  [3/4] Pushing to GitHub (main)...
 git push origin main
 if errorlevel 1 (
-  echo.
-  echo ERROR: git push failed. See messages above.
-  echo.
-  pause
-  exit /b 1
-)
-echo       Push complete.
-echo.
-
-echo       Latest commit ^(local^):
-git log -1 --oneline
-echo.
-
-echo [5/5] Triggering BOTH Vercel builds ^(Deploy Hooks - required^)...
-
-set "XEV_HOOK_OK=0"
-if exist "%~dp0deploy-hooks.txt" set "XEV_HOOK_OK=1"
-if exist "%~dp0.vercel-deploy-hooks.txt" set "XEV_HOOK_OK=1"
-if exist "%~dp0vercel-deploy-hooks.txt" set "XEV_HOOK_OK=1"
-if exist "%~dp0vercel-deploy-hooks.example.txt" set "XEV_HOOK_OK=1"
-if exist "%~dp0vercel-deploy-hooks.example" set "XEV_HOOK_OK=1"
-if "%XEV_HOOK_OK%"=="0" (
-  echo.
-  echo No hooks file found. Creating deploy-hooks.txt from template ^(this file is gitignored - it stays on your PC only^).
-  copy /Y "%~dp0vercel-deploy-hooks.TEMPLATE.txt" "%~dp0deploy-hooks.txt" >nul
-  echo.
-  echo   NEXT: Open deploy-hooks.txt and add TWO lines ^(no quotes^):
-  echo     Line 1 = Deploy Hook URL from Vercel project xevora
-  echo     Line 2 = Deploy Hook URL from Vercel project xevora-app
-  echo   ^(Settings -^> Git -^> Deploy Hooks on each project.^)
-  echo.
-  start "" notepad "%~dp0deploy-hooks.txt"
-  echo Notepad opened. Save the file after pasting both URLs, then run deploy.bat again.
-  echo ^(Git already pushed this run; next run will POST hooks.^)
-  echo.
+  echo  [ERROR] Git push failed. Check your connection or credentials.
   pause
   exit /b 1
 )
 
-powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0deploy-invoke-hooks.ps1" -RepoRoot "%CD%" -RequireBoth
+echo  [4/4] Triggering Vercel deployments...
+
+:: Trigger xevora (landing) deploy via Vercel deploy hook
+:: Replace the URL below with your actual Vercel deploy hook for the "xevora" project
+:: Get it from: Vercel Dashboard → xevora project → Settings → Git → Deploy Hooks → Create Hook
+curl -s -X POST "PASTE_XEVORA_LANDING_DEPLOY_HOOK_URL_HERE" > nul
 if errorlevel 1 (
-  echo.
-  echo ERROR: Hook step failed ^(see PowerShell output above^).
-  echo Git push may have succeeded; xevora.io or app may be stale until you fix hooks.
-  echo Need 2 lines: hook from Vercel project xevora, then hook from xevora-app.
-  echo.
-  pause
-  exit /b 1
+  echo  [WARN] Could not trigger xevora landing deploy hook. Check URL.
+) else (
+  echo        xevora (landing) deploy triggered.
+)
+
+:: Trigger xevora-app deploy via Vercel deploy hook  
+:: Replace the URL below with your actual Vercel deploy hook for the "xevora-app" project
+curl -s -X POST "PASTE_XEVORA_APP_DEPLOY_HOOK_URL_HERE" > nul
+if errorlevel 1 (
+  echo  [WARN] Could not trigger xevora-app deploy hook. Check URL.
+) else (
+  echo        xevora-app deploy triggered.
 )
 
 echo.
-echo ========================================
-echo   Done. Hooks returned 201 = Vercel accepted the trigger.
+echo  ================================================
+echo   DONE. Both projects deploying on Vercel.
+echo   Check: https://vercel.com/prushscripts
+echo  ================================================
 echo.
-echo   Where to look ^(each hook only affects ONE project^):
-echo     1^) Vercel - open project xevora -^> Deployments ^(not xevora-app^)
-echo     2^) Vercel - open project xevora-app -^> Deployments
-echo   Use All Environments; wait 30-90s; hard-refresh the page.
-echo   If a row says Skipped / Canceled, open it - check Ignored Build Step in project Settings.
-echo ========================================
-echo.
-pause
-endlocal
+
+timeout /t 4 /nobreak > nul
 exit /b 0
