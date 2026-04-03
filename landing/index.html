@@ -183,7 +183,7 @@ nav{
 /* TAB BAR */
 .site-tabs {
   position: fixed;
-  top: 62px;
+  top: 68px;
   left: 0;
   right: 0;
   z-index: 46;
@@ -207,7 +207,7 @@ nav{
   justify-content: center;
   gap: 2px;
   position: relative;
-  padding: 4px 12px;
+  padding: 6px 12px;
   min-width: min-content;
   width: 100%;
 }
@@ -1197,7 +1197,7 @@ footer{
   .nav-badge{display:none}
   .site-tabs{
     position:fixed;
-    top:62px;
+    top:68px;
     left:0;
     right:0;
     z-index:46;
@@ -1213,7 +1213,7 @@ footer{
   .site-tab{padding:8px 12px;font-size:10px;letter-spacing:0.06em}
   .site-tabs-fade{
     position:fixed;
-    top:62px;
+    top:68px;
     right:0;
     width:32px;
     height:42px;
@@ -1471,15 +1471,39 @@ footer{
   .phase-wrap{padding:110px 16px 60px;}
 }
 
-#xev-canvas-wordmark {
+.xev-final {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 18px;
+  letter-spacing: 0.02em;
+  color: #F1F5FF;
+  white-space: nowrap;
   display: inline-block;
-  vertical-align: middle;
-  position: static;
-  width: auto !important;
-  height: 26px;
-  max-width: 320px;
-  pointer-events: none;
-  image-rendering: crisp-edges;
+  background: linear-gradient(
+    90deg,
+    #F1F5FF 0%,
+    #F1F5FF 20%,
+    #93C5FD 35%,
+    #60A5FA 50%,
+    #93C5FD 65%,
+    #F1F5FF 80%,
+    #F1F5FF 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: xevFinalShimmer 3s linear infinite;
+  will-change: background-position;
+}
+
+@keyframes xevFinalShimmer {
+  0% { background-position: 100% center; }
+  100% { background-position: -100% center; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .xev-final { animation: none; background-position: 0% center; -webkit-text-fill-color: #F1F5FF; }
 }
 
 .logo-ring-outer{
@@ -1533,7 +1557,7 @@ footer{
       </div>
       <span class="nav-brand-sep" aria-hidden="true"></span>
       <div class="nav-brand-text-stack">
-        <canvas id="xev-canvas-wordmark" height="26" aria-label="XEVORA"></canvas>
+        <span class="xev-final">XEVORA</span>
         <a class="nav-xavorn-badge" href="https://xavorn.com" target="_blank" rel="noopener noreferrer"><span class="nav-xavorn-pill">PART OF XAVORN</span></a>
       </div>
     </div>
@@ -2621,61 +2645,6 @@ window.addEventListener('scroll',()=>{
   btnA.addEventListener('click', function () {
     setAnnual(true);
   });
-})();
-
-(function() {
-  var canvas = document.getElementById('xev-canvas-wordmark');
-  if (!canvas) return;
-  var dpr = Math.min(window.devicePixelRatio || 1, 2);
-  var h = 26;
-  var fontSize = 18;
-
-  function draw() {
-    var ctx = canvas.getContext('2d');
-    ctx.font = '800 ' + fontSize + 'px Syne, sans-serif';
-    var textW = ctx.measureText('XEVORA').width;
-
-    canvas.width = Math.ceil(textW * dpr);
-    canvas.height = Math.ceil(h * dpr);
-    canvas.style.width = Math.ceil(textW) + 'px';
-    canvas.style.height = h + 'px';
-    ctx.scale(dpr, dpr);
-
-    var shimX = -textW;
-    var speed = textW * 0.9;
-    var last = 0;
-
-    function frame(ts) {
-      var dt = last ? Math.min((ts - last) / 1000, 0.05) : 0.016;
-      last = ts;
-      shimX += speed * dt;
-      if (shimX > textW * 1.8) shimX = -textW * 0.5;
-
-      ctx.clearRect(0, 0, textW, h);
-      ctx.font = '800 ' + fontSize + 'px Syne, sans-serif';
-
-      var p = shimX / textW;
-      var g = ctx.createLinearGradient(0, 0, textW, 0);
-      g.addColorStop(0, '#F1F5FF');
-      g.addColorStop(Math.max(0, Math.min(0.99, p - 0.15)), '#F1F5FF');
-      g.addColorStop(Math.max(0, Math.min(0.99, p)), '#93C5FD');
-      g.addColorStop(Math.max(0, Math.min(0.99, p + 0.06)), '#60A5FA');
-      g.addColorStop(Math.max(0, Math.min(0.99, p + 0.12)), '#F1F5FF');
-      g.addColorStop(1, '#F1F5FF');
-
-      ctx.fillStyle = g;
-      ctx.fillText('XEVORA', 0, 20);
-      requestAnimationFrame(frame);
-    }
-
-    requestAnimationFrame(frame);
-  }
-
-  if (document.fonts && document.fonts.ready) {
-    document.fonts.ready.then(draw);
-  } else {
-    setTimeout(draw, 300);
-  }
 })();
 </script>
 </body>
