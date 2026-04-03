@@ -75,5 +75,5 @@ echo   Check: https://vercel.com/prushscripts
 echo  ================================================
 echo.
 
-timeout /t 4 /nobreak > nul
+pause
 exit /b 0
