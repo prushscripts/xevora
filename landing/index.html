@@ -1558,18 +1558,27 @@ footer{
   z-index:0;
 }
 
-.tab-panel { min-height: unset !important; }
-.tab-panels-root { min-height: unset !important; }
-.phase-wrap, .why2-wrap, .pricing-premium-section, .fp-showcase, .fyn-showcase, .content-panel {
+html, body { height: auto !important; overflow-x: hidden; }
+
+.tab-panels-root {
   min-height: unset !important;
-  padding-bottom: 60px !important;
+  height: auto !important;
+  padding-bottom: 0 !important;
 }
 
-@media (max-width: 768px) {
-  .phase-wrap, .why2-wrap, .pricing-premium-section, .fp-showcase, .fyn-showcase {
-    padding-bottom: 80px !important;
-  }
+.tab-panel {
+  min-height: unset !important;
+  height: auto !important;
 }
+
+.phase-wrap { min-height: unset !important; padding-bottom: 100px; }
+.why2-wrap { min-height: unset !important; padding-bottom: 100px; }
+.pricing-premium-section { min-height: unset !important; padding-bottom: 100px; }
+.fp-showcase { min-height: unset !important; padding-bottom: 120px; }
+.fyn-showcase { min-height: unset !important; padding-bottom: 120px; }
+.content-panel { min-height: unset !important; padding-bottom: 100px; }
+
+footer { position: relative !important; margin-top: 0 !important; }
 
 @media (max-width: 768px) {
   .why2-wrap { padding: 100px 14px 80px; }
@@ -2792,6 +2801,27 @@ window.addEventListener('resize', setVH);
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initBackTop);
   else initBackTop();
+})();
+
+(function() {
+  function fixPanelHeights() {
+    var panels = document.querySelectorAll('.tab-panel.panel-active');
+    panels.forEach(function(p) {
+      p.style.minHeight = 'unset';
+      p.style.height = 'auto';
+    });
+    var root = document.getElementById('tab-panels-root');
+    if (root) { root.style.minHeight = 'unset'; root.style.height = 'auto'; }
+  }
+  fixPanelHeights();
+  var orig = window.switchTab;
+  if (typeof switchTab === 'function') {
+    var _orig = switchTab;
+    window.switchTab = function(id) {
+      _orig(id);
+      setTimeout(fixPanelHeights, 350);
+    };
+  }
 })();
 </script>
 <button id="back-top" aria-label="Back to top" onclick="window.scrollTo({top:0,behavior:'smooth'})">
