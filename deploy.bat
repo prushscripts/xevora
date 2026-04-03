@@ -7,13 +7,13 @@ echo ========================================
 echo   Xevora — Deploy
 echo ========================================
 echo   Directory: %CD%
-echo   Pushes origin main — Vercel builds projects linked to this repo.
-echo   Tip: xevora.io landing lives under landing\ — use the Vercel project
-echo   whose Root Directory is "landing", not only "xevora-app".
+echo   Stages all changes, updates revision stamps in landing\ AND xevora-app\
+echo   ^(so Vercel rebuilds BOTH projects when each uses that root on main^).
+echo   Then commits and pushes origin main.
 echo ========================================
 echo.
 
-echo [1/4] Staging all changes ^(git add .^)...
+echo [1/4] Staging your changes ^(git add .^)...
 git add .
 if errorlevel 1 (
   echo.
@@ -25,34 +25,30 @@ if errorlevel 1 (
 echo       Done.
 echo.
 
-echo [2/4] Detecting changes ^(git diff HEAD --name-only^)...
-git diff --quiet HEAD
-if errorlevel 1 goto :HAVE_CHANGES
-
-echo.
-echo No local changes vs last commit — bumping landing\.vercel-deploy-revision.txt
-echo so Git has a new commit and Vercel can start a fresh build ^(landing root^).
-echo.
-powershell -NoProfile -ExecutionPolicy Bypass -Command ^
-  "$ErrorActionPreference='Stop'; $d=Join-Path '%CD%' 'landing'; if(-not(Test-Path $d)){ throw 'landing folder missing' }; $ts=(Get-Date).ToUniversalTime().ToString('yyyy-MM-ddTHH:mm:ssZ'); $p=Join-Path $d '.vercel-deploy-revision.txt'; Set-Content -LiteralPath $p -Value $ts -Encoding ascii"
+echo [2/4] Updating deploy revision stamps ^(landing + xevora-app^)...
+powershell -NoProfile -ExecutionPolicy Bypass -Command "& { $ErrorActionPreference='Stop'; Set-Location -LiteralPath '%CD%'; $ts=(Get-Date).ToUniversalTime().ToString('yyyy-MM-ddTHH:mm:ssZ'); foreach($sub in @('landing','xevora-app')) { $dir=Join-Path (Get-Location) $sub; if(-not(Test-Path -LiteralPath $dir)){ throw ('Missing folder: '+$sub) }; $p=Join-Path $dir '.vercel-deploy-revision.txt'; Set-Content -LiteralPath $p -Value $ts -Encoding ascii } }"
 if errorlevel 1 (
   echo.
-  echo ERROR: Could not write landing\.vercel-deploy-revision.txt
+  echo ERROR: Could not write .vercel-deploy-revision.txt under landing\ or xevora-app\
   echo.
   pause
   exit /b 1
 )
-git add landing/.vercel-deploy-revision.txt
+git add landing/.vercel-deploy-revision.txt xevora-app/.vercel-deploy-revision.txt
+echo       Done.
+echo.
+
+echo [3/4] Verifying there is something to commit...
 git diff --quiet HEAD
-if errorlevel 1 goto :HAVE_CHANGES
-
+if not errorlevel 1 (
+  echo.
+  echo ERROR: Still nothing to commit after revision bump. Check git status.
+  echo.
+  pause
+  exit /b 1
+)
+echo       OK — changes detected.
 echo.
-echo ERROR: Bump did not produce a diff — check git status.
-echo.
-pause
-exit /b 1
-
-:HAVE_CHANGES
 
 echo       Building commit message from changed paths...
 powershell -NoProfile -ExecutionPolicy Bypass -Command ^
@@ -79,7 +75,6 @@ echo       Message:
 type "%MSGFILE%"
 echo.
 
-echo [3/4] Committing with auto-generated message...
 git commit -F "%MSGFILE%"
 if errorlevel 1 (
   echo.
@@ -103,8 +98,15 @@ if errorlevel 1 (
 echo       Push complete.
 echo.
 
+echo       Latest commit ^(local^):
+git log -1 --oneline
+echo.
+
 echo ========================================
-echo ✅ Xevora deployed — Vercel is building now
+echo   Done — check Vercel for BOTH projects:
+echo   - Root landing     ^(xevora.io marketing^)
+echo   - Root xevora-app  ^(app.xevora.io^)
+echo   Each should show this commit or newer.
 echo ========================================
 echo.
 pause
