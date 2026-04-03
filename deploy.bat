@@ -50,7 +50,9 @@ echo  [4/4] Triggering Vercel deployments...
 :: Trigger xevora (landing) deploy via Vercel deploy hook
 :: Replace the URL below with your actual Vercel deploy hook for the "xevora" project
 :: Get it from: Vercel Dashboard → xevora project → Settings → Git → Deploy Hooks → Create Hook
-curl -s -X POST "https://api.vercel.com/v1/integrations/deploy/prj_mLIOXYoWLiKpgTkhRBkq0ssuNcLx/ZXx54tCMjL" > nul
+echo  Testing Vercel connection...
+
+curl -s -X POST "https://api.vercel.com/v1/integrations/deploy/prj_mLIOXYoWLiKpgTkhRBkq0ssuNcLx/ZXx54tCMjL" -H "Content-Type: application/json" -d "{}"
 if errorlevel 1 (
   echo  [WARN] Could not trigger xevora landing deploy hook. Check URL.
 ) else (
@@ -59,7 +61,7 @@ if errorlevel 1 (
 
 :: Trigger xevora-app deploy via Vercel deploy hook  
 :: Replace the URL below with your actual Vercel deploy hook for the "xevora-app" project
-curl -s -X POST "https://api.vercel.com/v1/integrations/deploy/prj_mIZvLa0uUKXLVrlmsRl5kphcNBQn/tZJBOjAO0v" > nul
+curl -s -X POST "https://api.vercel.com/v1/integrations/deploy/prj_mIZvLa0uUKXLVrlmsRl5kphcNBQn/tZJBOjAO0v" -H "Content-Type: application/json" -d "{}"
 if errorlevel 1 (
   echo  [WARN] Could not trigger xevora-app deploy hook. Check URL.
 ) else (
