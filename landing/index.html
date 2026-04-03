@@ -1464,8 +1464,6 @@ footer{
 .why2-disclaimer{text-align:center;margin-top:16px;font-family:'DM Sans',sans-serif;font-size:10px;color:#1E3048;}
 @media(max-width:900px){
   .why2-pillars{grid-template-columns:repeat(3,1fr);}
-  .why2-comp-head,.why2-comp-row{grid-template-columns:1fr 1fr;}
-  .why2-comp-head .why2-comp-col:nth-child(n+4),.why2-comp-row .why2-comp-cell:nth-child(n+4){display:none;}
   .why2-wrap{padding:100px 16px 60px;}
 }
 
@@ -1581,67 +1579,113 @@ section { min-height: unset !important; }
 
 footer { position: relative !important; margin-top: 0 !important; }
 
-@media (max-width: 768px) {
-  .why2-wrap { padding: 100px 14px 80px; }
-  
-  .why2-pillars { grid-template-columns: repeat(2,1fr) !important; gap: 8px; }
-  
-  .why2-comp-head {
-    display: none !important;
+/* Why Xevora comparison: mobile + tablet — show all brands in a 2x2 grid, readable contrast */
+@media (max-width: 960px) {
+  .why2-wrap { padding: 88px 14px 72px; }
+
+  .why2-pillars { grid-template-columns: repeat(2, 1fr) !important; gap: 10px; }
+
+  .why2-title { font-size: clamp(18px, 5vw, 26px); }
+  .why2-sub { font-size: 13px; color: #8BA4C0; }
+
+  .why2-comp-head { display: none !important; }
+
+  .why2-comp-grid {
+    border-radius: 14px;
+    border-color: rgba(37, 99, 235, 0.18);
+    background: rgba(6, 11, 20, 0.85);
   }
-  
-  .why2-comp-rows { display: flex; flex-direction: column; gap: 0; }
-  
-  .why2-comp-row {
-    grid-template-columns: 1fr !important;
+
+  .why2-comp-rows {
     display: flex;
     flex-direction: column;
-    border-top: 1px solid rgba(37,99,235,0.08);
-    padding: 10px 0;
+    gap: 0;
   }
-  
+
+  .why2-comp-row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: stretch;
+    gap: 8px;
+    padding: 14px 12px;
+    margin: 0;
+    border-top: 1px solid rgba(37, 99, 235, 0.1);
+    background: rgba(3, 6, 13, 0.45);
+  }
+
+  .why2-comp-row:first-child { border-top: none; }
+
   .why2-comp-cell.why2-comp-feature-col {
+    flex: 1 0 100%;
     font-family: 'Syne', sans-serif;
     font-weight: 700;
-    font-size: 12px;
+    font-size: 13px;
     color: #F1F5FF;
-    padding: 0 14px 6px;
-    border-bottom: none;
+    padding: 0 0 10px 0;
+    line-height: 1.3;
   }
-  
-  .why2-comp-cell {
-    padding: 3px 14px;
-    font-size: 11px;
+
+  .why2-comp-row .why2-comp-cell:nth-child(n+4) {
+    display: flex !important;
+  }
+
+  .why2-comp-cell:not(.why2-comp-feature-col) {
+    box-sizing: border-box;
+    flex: 1 1 calc(50% - 4px);
+    min-width: 0;
     display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  
-  .why2-comp-cell::before {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 9px;
-    letter-spacing: 0.08em;
-    color: #2A3F58;
-    flex-shrink: 0;
-    min-width: 70px;
-  }
-  
-  .why2-comp-cell:nth-child(2)::before { content: 'XEVORA'; color: #3B82F6; }
-  .why2-comp-cell:nth-child(3)::before { content: 'ADP RUN'; }
-  .why2-comp-cell:nth-child(4)::before { content: 'HOMEBASE'; }
-  .why2-comp-cell:nth-child(5)::before { content: 'GUSTO'; }
-  
-  .why2-comp-cell.why2-comp-us {
-    background: none;
-  }
-  
-  .why2-comp-grid {
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 6px;
+    padding: 11px 10px;
+    margin: 0;
+    background: rgba(15, 23, 42, 0.75);
+    border: 1px solid rgba(51, 65, 85, 0.45);
     border-radius: 10px;
-    font-size: 11px;
+    font-size: 12px;
+    line-height: 1.4;
   }
-  
-  .why2-title { font-size: clamp(18px, 5vw, 26px); }
-  .why2-sub { font-size: 13px; }
+
+  .why2-comp-cell.why2-comp-us {
+    background: rgba(37, 99, 235, 0.12);
+    border-color: rgba(59, 130, 246, 0.35);
+  }
+
+  .why2-comp-cell:not(.why2-comp-feature-col)::before {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    color: #94A3B8;
+    flex-shrink: 0;
+    min-width: 0;
+  }
+
+  .why2-comp-cell:nth-child(2)::before { content: 'XEVORA'; color: #60A5FA; }
+  .why2-comp-cell:nth-child(3)::before { content: 'ADP RUN'; color: #A8B8CC; }
+  .why2-comp-cell:nth-child(4)::before { content: 'HOMEBASE'; color: #A8B8CC; }
+  .why2-comp-cell:nth-child(5)::before { content: 'GUSTO'; color: #A8B8CC; }
+
+  .why2-comp-row .why2-comp-cell.why2-no { color: #C4D0E0 !important; }
+  .why2-comp-row .why2-comp-cell.why2-yes { color: #4ADE80 !important; }
+  .why2-comp-row .why2-comp-cell.why2-yes-dim { color: #86EFAC !important; opacity: 0.92; }
+  .why2-comp-row .why2-comp-cell.why2-partial { color: #FCD34D !important; }
+
+  .why2-disclaimer {
+    margin-top: 20px;
+    font-size: 11px;
+    line-height: 1.45;
+    color: #64748B;
+    padding: 0 10px;
+  }
+}
+
+@media (max-width: 400px) {
+  .why2-comp-row .why2-comp-cell:not(.why2-comp-feature-col) {
+    flex: 1 1 100%;
+  }
 }
 
 @keyframes navHexPulse {
