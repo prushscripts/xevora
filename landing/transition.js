@@ -132,6 +132,12 @@ function xevoraTransition(e, destination) {
   const barWrap = document.createElement('div'); barWrap.id = 'xev-bar-wrap';
   const barFill = document.createElement('div'); barFill.id = 'xev-bar-fill';
   barWrap.appendChild(barFill);
+  var spark = document.createElement('div');
+  spark.id = 'xev-spark';
+  spark.style.cssText = 'position:absolute;right:0;top:50%;transform:translateY(-50%);width:6px;height:6px;border-radius:50%;background:#fff;box-shadow:0 0 8px 4px rgba(59,130,246,0.9),0 0 16px 8px rgba(37,99,235,0.5);opacity:0;transition:opacity 100ms ease;pointer-events:none;';
+  barWrap.style.position = 'relative';
+  barWrap.style.overflow = 'visible';
+  barWrap.appendChild(spark);
 
   center.appendChild(hexwrap);
   center.appendChild(wordmark);
@@ -157,7 +163,12 @@ function xevoraTransition(e, destination) {
       wordmark.classList.add('xev-in');
       status.classList.add('xev-in');
     }, 50);
-    setTimeout(() => { barFill.style.width = '100%'; }, 200);
+    setTimeout(() => {
+      barFill.style.width = '100%';
+      spark.style.opacity = '1';
+      spark.style.transition = 'right 1400ms cubic-bezier(0.4,0,0.2,1), opacity 100ms ease';
+      setTimeout(function () { spark.style.right = '0'; }, 10);
+    }, 200);
   });
 
   // Status cycling
@@ -173,16 +184,10 @@ function xevoraTransition(e, destination) {
   }, 500);
 
   // Navigate after bar completes
-  setTimeout(() => {
+  setTimeout(function () {
     clearInterval(statusInterval);
-    status.style.opacity = '0';
-    setTimeout(() => {
-      status.textContent = 'READY.';
-      status.style.color = '#4ADE80';
-      status.style.opacity = '1';
-    }, 150);
-    setTimeout(() => {
-      window.location.href = destination;
-    }, 400);
+    overlay.style.transition = 'opacity 400ms ease-in';
+    overlay.style.opacity = '0';
+    setTimeout(function () { window.location.href = destination; }, 380);
   }, 1600);
 }

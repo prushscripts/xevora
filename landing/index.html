@@ -92,6 +92,7 @@ nav{
 .nav-brand-wrap{display:flex;flex-direction:column;align-items:flex-start;flex-shrink:0;min-width:0}
 .nav-brand-group{
   display:flex;align-items:center;flex-shrink:0;
+  overflow:visible;
 }
 .nav-brand-sep{
   flex-shrink:0;width:1px;height:28px;margin:0 12px;
@@ -1484,35 +1485,6 @@ footer{
   .phase-wrap{padding:110px 16px 60px;}
 }
 
-#xnav {
-  font-family: 'Syne', sans-serif;
-  font-weight: 800;
-  font-size: 18px;
-  letter-spacing: 0.02em;
-  white-space: nowrap;
-  display: inline-block;
-  background: linear-gradient(
-    90deg,
-    #F1F5FF 0%,
-    #F1F5FF 30%,
-    #93C5FD 42%,
-    #ffffff 50%,
-    #93C5FD 58%,
-    #F1F5FF 70%,
-    #F1F5FF 100%
-  );
-  background-size: 300% auto;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
-  animation: xnavShimmer 2.5s linear infinite;
-}
-@keyframes xnavShimmer {
-  0%   { background-position: 100% center; }
-  100% { background-position: -200% center; }
-}
-
 #back-top{
   position:fixed;bottom:28px;right:28px;z-index:200;
   width:44px;height:44px;border-radius:50%;
@@ -1579,7 +1551,32 @@ footer{
       </div>
       <span class="nav-brand-sep" aria-hidden="true"></span>
       <div class="nav-brand-text-stack">
-        <span id="xnav">XEVORA</span>
+        <svg style="display:inline-block;vertical-align:middle;overflow:visible;" viewBox="0 0 118 22" height="20" aria-label="XEVORA">
+          <defs>
+            <linearGradient id="xnav-g" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#F1F5FF" stop-opacity="1"/>
+              <stop offset="35%" stop-color="#F1F5FF" stop-opacity="1"/>
+              <stop offset="45%" stop-color="#93C5FD" stop-opacity="1"/>
+              <stop offset="50%" stop-color="#60A5FA" stop-opacity="1"/>
+              <stop offset="55%" stop-color="#93C5FD" stop-opacity="1"/>
+              <stop offset="65%" stop-color="#F1F5FF" stop-opacity="1"/>
+              <stop offset="100%" stop-color="#F1F5FF" stop-opacity="1"/>
+              <animateTransform
+                attributeName="gradientTransform"
+                type="translate"
+                from="-1.5 0"
+                to="1.5 0"
+                dur="3.5s"
+                repeatCount="indefinite"/>
+            </linearGradient>
+          </defs>
+          <text x="0" y="17"
+            font-family="Syne, sans-serif"
+            font-weight="800"
+            font-size="17"
+            letter-spacing="1"
+            fill="url(#xnav-g)">XEVORA</text>
+        </svg>
         <a class="nav-xavorn-badge" href="https://xavorn.com" target="_blank" rel="noopener noreferrer"><span class="nav-xavorn-pill">PART OF XAVORN</span></a>
       </div>
     </div>
