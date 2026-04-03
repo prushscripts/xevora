@@ -9,6 +9,7 @@ import {
 import type { CSSProperties } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import HexLogo from "@/components/auth/HexLogo";
 import LoginTransition from "@/components/auth/LoginTransition";
@@ -466,6 +467,7 @@ function PremiumAuthButton({
 }
 
 export default function LoginPage() {
+  const router = useRouter();
   const supabase = useMemo(() => createClient(), []);
   const [isFlipped, setIsFlipped] = useState(false);
 
@@ -498,6 +500,26 @@ export default function LoginPage() {
 
     if (signInError) {
       setLoginError(mapLoginError(signInError.message));
+      setLoginLoading(false);
+      return;
+    }
+
+    const {
+      data: { user: signedInUser },
+    } = await supabase.auth.getUser();
+    let workerRow: { id: string } | null = null;
+    if (signedInUser) {
+      const { data } = await supabase.from("workers").select("id").eq("user_id", signedInUser.id).maybeSingle();
+      workerRow = data;
+    }
+    const intent =
+      signedInUser?.user_metadata &&
+      typeof signedInUser.user_metadata === "object" &&
+      (signedInUser.user_metadata as Record<string, unknown>).registration_intent === "driver";
+
+    if (signedInUser && !workerRow && intent) {
+      router.push("/auth/join-driver");
+      router.refresh();
       setLoginLoading(false);
       return;
     }
@@ -614,6 +636,12 @@ export default function LoginPage() {
           Sign up
         </button>
       </p>
+      <p className="mt-3 text-center text-[12px] leading-normal text-[var(--muted)]">
+        Driver with a company code?{" "}
+        <Link href="/auth/join-driver" className="text-[var(--blue-bright)] hover:underline">
+          Join your fleet
+        </Link>
+      </p>
       <p className="mt-6 text-center text-xs text-[#2A3848]">🔒 256-bit SSL encrypted</p>
     </>
   );
@@ -633,7 +661,11 @@ export default function LoginPage() {
     <>
       <h2 className="text-center text-[28px] font-extrabold leading-snug md:text-left md:text-[26px]">Create Account</h2>
       <p className="mt-1.5 text-center text-[14px] font-light leading-snug text-[var(--muted)] md:text-left">
-        Start your free beta access
+        For fleet owners and admins starting a workspace. Drivers: use{" "}
+        <Link href="/auth/join-driver" className="text-[var(--blue-bright)] hover:underline">
+          join with company code
+        </Link>
+        .
       </p>
       <div className="my-7 h-px w-full min-w-0 bg-[rgba(37,99,235,0.1)]" />
       <form onSubmit={onSignupSubmit} className="w-full min-w-0 space-y-4">

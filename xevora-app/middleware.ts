@@ -31,7 +31,32 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/auth/login", request.url));
   }
 
-  const isAuthPage = path.startsWith("/auth/login") || path.startsWith("/auth/signup");
+  const isJoinDriver = path.startsWith("/auth/join-driver");
+  const isAuthPage =
+    path.startsWith("/auth/login") || path.startsWith("/auth/signup");
+
+  if (user && isJoinDriver) {
+    const { data: worker } = await supabase
+      .from("workers")
+      .select("role")
+      .eq("user_id", user.id)
+      .maybeSingle();
+    if (worker?.role === "driver") {
+      return NextResponse.redirect(new URL("/driver", request.url));
+    }
+    if (worker) {
+      return NextResponse.redirect(new URL("/dashboard", request.url));
+    }
+    const { data: owned } = await supabase
+      .from("companies")
+      .select("id")
+      .eq("owner_id", user.id)
+      .maybeSingle();
+    if (owned) {
+      return NextResponse.redirect(new URL("/dashboard", request.url));
+    }
+    return response;
+  }
 
   if (user && isAuthPage) {
     const { data: worker } = await supabase
@@ -63,6 +88,15 @@ export async function middleware(request: NextRequest) {
       if (isDriver) {
         return NextResponse.redirect(new URL("/driver", request.url));
       }
+      const pendingDriver =
+        !worker &&
+        user.user_metadata &&
+        typeof user.user_metadata === "object" &&
+        user.user_metadata !== null &&
+        (user.user_metadata as Record<string, unknown>).registration_intent === "driver";
+      if (pendingDriver) {
+        return NextResponse.redirect(new URL("/auth/join-driver", request.url));
+      }
       return response;
     }
 
@@ -78,5 +112,13 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/driver", "/driver/:path*", "/auth/login", "/auth/signup", "/login"],
+  matcher: [
+    "/dashboard/:path*",
+    "/driver",
+    "/driver/:path*",
+    "/auth/login",
+    "/auth/signup",
+    "/auth/join-driver",
+    "/login",
+  ],
 };
