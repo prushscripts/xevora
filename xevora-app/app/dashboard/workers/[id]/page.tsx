@@ -70,8 +70,11 @@ export default function WorkerDetailPage({ params }: { params: Promise<{ id: str
 
     const cmap: Record<string, { id: string; abbreviation: string }> = {};
     for (const row of wcl ?? []) {
-      const cl = row.clients as { id: string; abbreviation: string } | null;
-      if (cl?.id) cmap[cl.id] = { id: cl.id, abbreviation: cl.abbreviation };
+      const raw = row.clients as unknown;
+      const cl = Array.isArray(raw)
+        ? (raw[0] as { id?: string; abbreviation?: string } | undefined)
+        : (raw as { id?: string; abbreviation?: string } | null);
+      if (cl?.id) cmap[cl.id] = { id: cl.id, abbreviation: String(cl.abbreviation ?? "") };
     }
     setClientsMap(cmap);
 

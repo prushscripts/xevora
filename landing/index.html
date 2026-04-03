@@ -919,8 +919,8 @@ p.sub{
   font-size:10px;font-weight:400;letter-spacing:0.3em;color:#2563EB;text-transform:uppercase;
 }
 .pricing-premium-title{
-  font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:clamp(28px,4vw,42px);
-  color:#F1F5FF;line-height:1.1;margin:16px 0 28px;
+  font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:clamp(32px,5vw,48px);
+  color:#F1F5FF;line-height:1.1;margin:16px 0 12px;
 }
 .pricing-toggle-wrap{display:flex;justify-content:center;padding:0 16px}
 .pricing-toggle{
@@ -946,56 +946,52 @@ p.sub{
   white-space:nowrap;
 }
 .pricing-toggle-btn.is-active{color:#F1F5FF}
-.pricing-all-grid {
-  display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-  gap: 12px;
-  align-items: start;
-  margin-top: 24px;
-  width: 100%;
-  max-width: 100%;
-  overflow: visible;
+.pricing-toggle-btn .annual-badge{
+  position:absolute;top:-18px;right:8px;
+  background:#10B981;color:#fff;
+  font-family:'JetBrains Mono',monospace;
+  font-size:7px;letter-spacing:0.1em;
+  padding:3px 8px;border-radius:999px;
+  white-space:nowrap;font-weight:600;
 }
-.pricing-all-grid > [data-group="XEVORA STANDALONE"]:first-child::before {
-  content: 'XEVORA STANDALONE';
-  position: absolute;
-  top: -22px;
-  left: 0;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 8px;
-  letter-spacing: 0.25em;
-  color: #4E6D92;
-  white-space: nowrap;
+.pricing-premium-sub{
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:16px;font-weight:400;color:#4E6D92;
+  line-height:1.6;margin-top:12px;
 }
-.pricing-all-grid > [data-group="XAVORN BUNDLES"]:nth-child(4)::before {
-  content: 'XAVORN BUNDLES';
-  position: absolute;
-  top: -22px;
-  left: 0;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 8px;
-  letter-spacing: 0.25em;
-  color: #818CF8;
-  white-space: nowrap;
+.pricing-all-grid{
+  display:flex;flex-direction:column;gap:32px;
+  margin-top:48px;width:100%;max-width:1200px;
+  margin-left:auto;margin-right:auto;
 }
-/* Negative margin widened the grid past 100%; with body overflow-x:hidden the row looked shifted right with cards clipped */
-.pricing-all-grid > [data-group="XAVORN BUNDLES"]:nth-child(4) {
-  border-left: 1px solid rgba(99,102,241,0.2);
-  padding-left: 1.25rem;
-  margin-left: 0;
+.pricing-row-1{
+  display:grid;grid-template-columns:1fr 1.4fr 1fr;
+  gap:20px;align-items:stretch;
 }
-@media (max-width: 1200px) {
-  .pricing-all-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.pricing-row-2-label{
+  text-align:center;margin-bottom:16px;
 }
-@media (max-width: 700px) {
-  .pricing-all-grid { grid-template-columns: minmax(0, 1fr); }
+.pricing-row-2-label h3{
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;letter-spacing:0.25em;
+  color:#4E6D92;text-transform:uppercase;
+  margin:0 0 6px 0;
 }
-.pbn-title { font-size: 15px !important; }
-.pbn-price { font-size: 26px !important; }
-.pbn-features li { font-size: 11px !important; }
-.pbn-save { font-size: 8px !important; }
-.pbn-tag { font-size: 10px !important; }
-.pricing-card-price { font-size: 36px !important; letter-spacing: -1px !important; }
+.pricing-row-2-label p{
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:13px;color:#4E6D92;margin:0;
+}
+.pricing-row-2{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:20px;align-items:stretch;
+}
+@media(max-width:1024px){
+  .pricing-row-1{grid-template-columns:1fr;gap:20px}
+  .pricing-row-2{grid-template-columns:1fr;gap:20px}
+  .pricing-card--growth{transform:none!important}
+}
+.pricing-card-price{font-size:42px!important;letter-spacing:-1.5px!important}
+.pricing-card--growth .pricing-card-price{font-size:56px!important}
 .pricing-card{
   position:relative;display:flex;flex-direction:column;
   border-radius:16px;padding:36px 32px;min-height:0;
@@ -1008,28 +1004,32 @@ p.sub{
 .pricing-premium-section.pricing-reduced .pricing-card{
   opacity:1;transform:none;animation:none;
 }
-.pricing-all-grid .pricing-card:nth-child(1){animation-delay:0ms}
-.pricing-all-grid .pricing-card:nth-child(2){animation-delay:80ms}
-.pricing-all-grid .pricing-card:nth-child(3){animation-delay:160ms}
+.pricing-row-1 .pricing-card:nth-child(1){animation-delay:0ms}
+.pricing-row-1 .pricing-card:nth-child(2){animation-delay:80ms}
+.pricing-row-1 .pricing-card:nth-child(3){animation-delay:160ms}
+.pricing-row-2 .pbn-card:nth-child(1){animation-delay:0ms}
+.pricing-row-2 .pbn-card:nth-child(2){animation-delay:80ms}
+.pricing-row-2 .pbn-card:nth-child(3){animation-delay:160ms}
 .pricing-card--starter,.pricing-card--pro{
-  background:#060B14;border:1px solid rgba(37,99,235,0.12);
-  border-left:2px solid rgba(37,99,235,0.2);
+  background:#0A1628;border:1px solid rgba(255,255,255,0.06);
+  padding:28px;
 }
 .pricing-card--starter:hover,.pricing-card--pro:hover{
-  transform:translateY(-8px) scale(1.02);
-  border-color:rgba(37,99,235,0.35);
-  box-shadow:0 20px 60px rgba(37,99,235,0.08);
+  transform:translateY(-4px);
+  border-color:rgba(37,99,235,0.25);
+  box-shadow:0 16px 48px rgba(37,99,235,0.08);
 }
 .pricing-card--growth{
-  background:linear-gradient(145deg,#0D1F3C 0%,#060B14 60%,#0A1220 100%);
-  border:1px solid rgba(59,130,246,0.5);
-  border-left:2px solid #3B82F6;
-  box-shadow:0 0 0 1px rgba(59,130,246,0.08),0 24px 80px rgba(37,99,235,0.2),inset 0 1px 0 rgba(59,130,246,0.15);
+  background:linear-gradient(135deg,#0D1F45 0%,#0A1628 60%,#060B14 100%);
+  border:1.5px solid #2563EB;
+  box-shadow:0 0 24px rgba(37,99,235,0.3),inset 0 1px 0 rgba(59,130,246,0.1);
+  padding:36px;
+  transform:translateY(-12px);
 }
 .pricing-card--growth:hover{
-  transform:translateY(-8px) scale(1.02);
-  box-shadow:0 32px 100px rgba(37,99,235,0.35),0 0 0 1px rgba(59,130,246,0.15),inset 0 1px 0 rgba(59,130,246,0.2);
-  border-color:rgba(59,130,246,0.7);
+  transform:translateY(-16px);
+  box-shadow:0 0 32px rgba(37,99,235,0.45),inset 0 1px 0 rgba(59,130,246,0.15);
+  border-color:#3B82F6;
 }
 .pricing-card-badge{
   position:absolute;top:-14px;left:50%;transform:translateX(-50%);
@@ -1041,31 +1041,34 @@ p.sub{
   white-space:nowrap;
 }
 .pricing-card-plan{
-  font-family:'Plus Jakarta Sans',sans-serif;font-weight:500;font-size:11px;
-  color:#4E6D92;text-transform:uppercase;letter-spacing:0.15em;
+  font-family:'JetBrains Mono',monospace;font-weight:400;font-size:11px;
+  color:#4E6D92;text-transform:uppercase;letter-spacing:0.2em;
 }
 .pricing-card--growth .pricing-card-plan{
-  color:#60A5FA;
+  color:#3B82F6;
 }
 .pricing-card-price{
-  font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:52px;line-height:1.05;
-  color:#F1F5FF;margin-top:12px;letter-spacing:-2px;
+  font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:42px;line-height:1.05;
+  color:#F1F5FF;margin-top:12px;letter-spacing:-1.5px;
 }
 .pricing-card-price small{
-  font-family:'Plus Jakarta Sans',sans-serif;font-weight:300;font-size:16px;color:#4E6D92;
+  font-family:'Plus Jakarta Sans',sans-serif;font-weight:300;font-size:18px;color:#4E6D92;
   margin-left:4px;
 }
 .pricing-card-divider{
-  height:1px;background:rgba(37,99,235,0.10);margin:24px 0;border:none;
+  height:1px;background:rgba(255,255,255,0.06);margin:20px 0;border:none;
 }
-.pricing-card-features{list-style:none;display:flex;flex-direction:column;gap:0;margin:0;padding:0;flex:1}
+.pricing-card-features{list-style:none;display:flex;flex-direction:column;gap:12px;margin:0;padding:0;flex:1}
 .pricing-card-features li{
-  display:flex;align-items:flex-start;gap:8px;
+  display:flex;align-items:flex-start;gap:10px;
   font-family:'Plus Jakarta Sans',sans-serif;font-weight:400;font-size:14px;color:#F1F5FF;
-  line-height:1.8;
+  line-height:1.5;
+}
+.pricing-card--growth .pricing-card-features li{
+  font-size:15px;
 }
 .pricing-card-features .pc-check{
-  flex-shrink:0;width:16px;height:16px;margin-top:4px;color:#3B82F6;
+  flex-shrink:0;width:16px;height:16px;margin-top:2px;color:#3B82F6;
   font-size:14px;line-height:1;font-weight:700;
 }
 .pricing-card-cta{
@@ -1075,38 +1078,116 @@ p.sub{
   cursor:pointer;border:1px solid transparent;
 }
 .pricing-card-cta--outline{
-  background:transparent;border-color:rgba(37,99,235,0.3);color:#3B82F6;
+  background:transparent;border-color:#2563EB;color:#3B82F6;
 }
-.pricing-card-cta--outline:hover{background:rgba(37,99,235,0.1)}
+.pricing-card-cta--outline:hover{background:#2563EB;color:#fff}
 .pricing-card-cta--solid{
   background:#2563EB;border-color:#2563EB;color:#fff;
+  box-shadow:0 0 16px rgba(37,99,235,0.3);
 }
-.pricing-card-cta--solid:hover{background:#1D4ED8;border-color:#1D4ED8}
+.pricing-card-cta--solid:hover{
+  background:#3B82F6;border-color:#3B82F6;
+  box-shadow:0 0 24px rgba(37,99,235,0.5);
+}
 .pricing-premium-note{
   text-align:center;margin-top:40px;
-  font-family:'Plus Jakarta Sans',sans-serif;font-weight:300;font-size:13px;color:#4E6D92;
+  font-family:'Plus Jakarta Sans',sans-serif;font-weight:300;font-size:12px;color:#4E6D92;
 }
-.pbn-card { background: #060B14; border: 1px solid rgba(37,99,235,0.12); border-radius: 16px; padding: 28px; display: flex; flex-direction: column; gap: 14px; position: relative; transition: transform 300ms cubic-bezier(0.34,1.56,0.64,1), box-shadow 300ms ease, border-color 300ms ease; }
-.pbn-card:hover { transform: translateY(-6px); border-color: rgba(37,99,235,0.3); box-shadow: 0 16px 48px rgba(37,99,235,0.1); }
-.pbn-card--featured { background: linear-gradient(145deg,#0D1F3C 0%,#060B14 60%,#0A1220 100%); border-color: rgba(59,130,246,0.4); box-shadow: 0 0 0 1px rgba(59,130,246,0.08), 0 20px 60px rgba(37,99,235,0.15); }
-.pbn-card--featured:hover { border-color: rgba(59,130,246,0.65); box-shadow: 0 24px 80px rgba(37,99,235,0.28); transform: translateY(-8px); }
-.pbn-featured-badge { position: absolute; top: -14px; left: 50%; transform: translateX(-50%); background: linear-gradient(90deg,#1D4ED8,#3B82F6); color: #fff; font-family: 'JetBrains Mono', monospace; font-size: 8px; letter-spacing: 0.2em; padding: 5px 16px; border-radius: 999px; white-space: nowrap; box-shadow: 0 4px 16px rgba(37,99,235,0.5); }
-.pbn-top { display: flex; flex-direction: column; gap: 6px; }
-.pbn-pills { display: flex; flex-wrap: wrap; gap: 6px; }
-.pbn-pill { font-family: 'JetBrains Mono', monospace; font-size: 8px; letter-spacing: 0.1em; text-transform: uppercase; padding: 3px 9px; border-radius: 999px; }
-.pbn-pill--xev { background: rgba(37,99,235,0.12); color: #3B82F6; border: 1px solid rgba(37,99,235,0.2); }
-.pbn-pill--fyn { background: rgba(34,197,94,0.08); color: #4ADE80; border: 1px solid rgba(34,197,94,0.2); }
-.pbn-pill--fp { background: rgba(168,85,247,0.08); color: #C084FC; border: 1px solid rgba(168,85,247,0.2); }
-.pbn-tag { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 11px; color: #4E6D92; }
-.pbn-title { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 22px; color: #F1F5FF; }
-.pbn-price { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 38px; color: #F1F5FF; line-height: 1; }
-.pbn-price small { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; font-weight: 300; color: #4E6D92; }
-.pbn-fp-note { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 11px; font-weight: 300; color: #4E6D92; }
-.pbn-save { font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.1em; color: #4ADE80; text-transform: uppercase; }
-.pbn-features { list-style: none; display: flex; flex-direction: column; gap: 7px; flex: 1; margin: 0; padding: 0; }
-.pbn-features li { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 13px; color: #C4CFDF; display: flex; align-items: flex-start; gap: 8px; }
-.pbn-cta { display: block; width: 100%; box-sizing: border-box; text-align: center; padding: 13px; border-radius: 10px; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; font-weight: 500; text-decoration: none; background: transparent; border: 1px solid rgba(37,99,235,0.3); color: #3B82F6; transition: all 200ms ease; margin-top: auto; }
-.pbn-cta:hover { background: rgba(37,99,235,0.1); }
+.pbn-card{
+  background:#060B14;border:1px solid rgba(255,255,255,0.08);
+  border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:14px;
+  position:relative;
+  transition:transform 300ms cubic-bezier(0.34,1.56,0.64,1),box-shadow 300ms ease,border-color 300ms ease;
+  opacity:0;transform:translateY(12px);
+}
+.pricing-premium-section.pricing-inview .pbn-card{
+  animation:pricingFadeUp 400ms ease-out forwards;
+}
+.pbn-card:hover{
+  transform:translateY(-4px);
+  border-color:rgba(255,255,255,0.12);
+  box-shadow:0 12px 40px rgba(0,0,0,0.3);
+}
+.pbn-card--full{
+  border:1.5px solid rgba(124,58,237,0.4);
+}
+.pbn-card--full:hover{
+  border-color:rgba(124,58,237,0.6);
+  box-shadow:0 16px 48px rgba(124,58,237,0.2);
+}
+.pbn-featured-badge{
+  position:absolute;top:-14px;left:50%;transform:translateX(-50%);
+  background:#7C3AED;color:#fff;
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;letter-spacing:0.15em;text-transform:uppercase;
+  padding:5px 16px;border-radius:999px;white-space:nowrap;
+  box-shadow:0 4px 16px rgba(124,58,237,0.4);font-weight:700;
+}
+.pbn-top{display:flex;flex-direction:column;gap:8px}
+.pbn-pills{display:flex;flex-wrap:wrap;gap:6px}
+.pbn-pill{
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;letter-spacing:0.1em;text-transform:uppercase;
+  padding:4px 10px;border-radius:999px;font-weight:500;
+}
+.pbn-pill--xev{background:rgba(37,99,235,0.1);color:#2563EB;border:1px solid rgba(37,99,235,0.3)}
+.pbn-pill--fyn{background:rgba(16,185,129,0.1);color:#10B981;border:1px solid rgba(16,185,129,0.3)}
+.pbn-pill--fp{background:rgba(124,58,237,0.1);color:#7C3AED;border:1px solid rgba(124,58,237,0.3)}
+.pbn-tag{
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:13px;color:#4E6D92;font-style:italic;
+}
+.pbn-title{
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-weight:700;font-size:20px;color:#F1F5FF;
+}
+.pbn-price{
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-weight:800;font-size:36px;color:#F1F5FF;
+  line-height:1;letter-spacing:-1px;
+}
+.pbn-price small{
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:14px;font-weight:300;color:#4E6D92;
+}
+.pbn-fp-note{
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:11px;font-weight:300;color:#4E6D92;
+}
+.pbn-save{
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:11px;color:#10B981;font-weight:500;
+}
+.pbn-features{
+  list-style:none;display:flex;flex-direction:column;
+  gap:8px;flex:1;margin:0;padding:0;
+}
+.pbn-features li{
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:13px;color:#8BA4C0;
+  display:flex;align-items:flex-start;gap:8px;line-height:1.5;
+}
+.pbn-features li::before{
+  content:'✓';color:#10B981;font-weight:700;
+  flex-shrink:0;margin-top:1px;
+}
+.pbn-cta{
+  display:block;width:100%;box-sizing:border-box;
+  text-align:center;padding:13px;border-radius:10px;
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:14px;font-weight:500;text-decoration:none;
+  background:transparent;border:1px solid #2563EB;
+  color:#3B82F6;transition:all 200ms ease;margin-top:auto;
+}
+.pbn-cta:hover{background:#2563EB;color:#fff}
+.pbn-cta--solid{
+  background:#7C3AED;border-color:#7C3AED;color:#fff;
+  box-shadow:0 0 16px rgba(124,58,237,0.3);
+}
+.pbn-cta--solid:hover{
+  background:#8B5CF6;border-color:#8B5CF6;
+  box-shadow:0 0 24px rgba(124,58,237,0.5);
+}
 .pbn-cta--solid { background: #2563EB; border-color: #2563EB; color: #fff; }
 .pbn-cta--solid:hover { background: #1D4ED8; }
 /* PREMIUM MICRO-INTERACTIONS */
@@ -2130,18 +2211,23 @@ footer { position: relative !important; margin-top: 0 !important; }
   <div class="pricing-premium-section">
     <div class="pricing-premium-inner">
 <header class="pricing-premium-head">
-  <p class="pricing-premium-eyebrow">SIMPLE PRICING</p>
+  <p class="pricing-premium-eyebrow">PRICING</p>
   <h2 class="pricing-premium-title">One price. No surprises.</h2>
+  <p class="pricing-premium-sub">Start free during beta. Lock in early pricing before launch.</p>
   <div class="pricing-toggle-wrap">
     <div class="pricing-toggle" id="pricing-billing-toggle" role="group" aria-label="Billing period">
       <span class="pricing-toggle-thumb" aria-hidden="true"></span>
       <button type="button" class="pricing-toggle-btn is-active" id="pricing-btn-monthly" data-billing="monthly" aria-pressed="true">Monthly</button>
-      <button type="button" class="pricing-toggle-btn" id="pricing-btn-annual" data-billing="annual" aria-pressed="false">Annual (20% off)</button>
+      <button type="button" class="pricing-toggle-btn" id="pricing-btn-annual" data-billing="annual" aria-pressed="false">
+        Annual
+        <span class="annual-badge">20% OFF</span>
+      </button>
     </div>
   </div>
 </header>
 
 <div class="pricing-all-grid">
+  <div class="pricing-row-1">
   <article class="pricing-card pricing-card--starter" data-group="XEVORA STANDALONE">
     <div class="pricing-card-plan">Starter</div>
     <div class="pricing-card-price" data-monthly="49" data-annual="39">$49<small>/mo</small></div>
@@ -2184,8 +2270,15 @@ footer { position: relative !important; margin-top: 0 !important; }
     </ul>
     <a class="pricing-card-cta pricing-card-cta--outline" href="https://app.xevora.io/auth/login">Join Waitlist</a>
   </article>
+  </div>
 
-  <article class="pbn-card pbn-card--ops" data-group="XAVORN BUNDLES">
+  <div class="pricing-row-2-label">
+    <h3>XAVORN BUNDLES</h3>
+    <p>Combine products. Save more.</p>
+  </div>
+
+  <div class="pricing-row-2">
+  <article class="pbn-card pbn-card--ops">
     <div class="pbn-top">
       <div class="pbn-pills">
         <span class="pbn-pill pbn-pill--xev">XEVORA</span>
@@ -2195,18 +2288,18 @@ footer { position: relative !important; margin-top: 0 !important; }
     </div>
     <div class="pbn-title">Ops + Books</div>
     <div class="pbn-price">$129<small>/mo</small></div>
-    <div class="pbn-save">Save $19/mo vs separate plans</div>
+    <div class="pbn-save">SAVE $19/mo vs separate</div>
     <ul class="pbn-features">
-      <li>✓ Full Xevora Growth plan</li>
-      <li>✓ Fynlo invoicing + bookkeeping</li>
-      <li>✓ Automatic payroll → books sync</li>
-      <li>✓ Unified Xavorn dashboard</li>
-      <li>✓ Single login, one support team</li>
+      <li>Full Xevora Growth</li>
+      <li>Fynlo invoicing + bookkeeping</li>
+      <li>Automatic payroll→books sync</li>
+      <li>Unified Xavorn dashboard</li>
+      <li>Single login, one support team</li>
     </ul>
     <a class="pbn-cta" href="https://app.xevora.io/auth/login">Join Waitlist</a>
   </article>
 
-  <article class="pbn-card pbn-card--fleet" data-group="XAVORN BUNDLES">
+  <article class="pbn-card pbn-card--fleet">
     <div class="pbn-top">
       <div class="pbn-pills">
         <span class="pbn-pill pbn-pill--xev">XEVORA</span>
@@ -2216,18 +2309,18 @@ footer { position: relative !important; margin-top: 0 !important; }
     </div>
     <div class="pbn-title">Workforce + Fleet</div>
     <div class="pbn-price">$139<small>/mo</small><span class="pbn-fp-note"> + $6/vehicle</span></div>
-    <div class="pbn-save">Save $10/mo vs separate plans</div>
+    <div class="pbn-save">SAVE $10/mo vs separate</div>
     <ul class="pbn-features">
-      <li>✓ Full Xevora Growth plan</li>
-      <li>✓ FleetPulse Professional plan</li>
-      <li>✓ Worker-to-vehicle assignment sync</li>
-      <li>✓ Mileage tracking tied to payroll</li>
-      <li>✓ Single login, one support team</li>
+      <li>Full Xevora Growth</li>
+      <li>FleetPulse Professional</li>
+      <li>Worker-to-vehicle assignment sync</li>
+      <li>Mileage tracking tied to payroll</li>
+      <li>Single login, one support team</li>
     </ul>
     <a class="pbn-cta" href="https://app.xevora.io/auth/login">Join Waitlist</a>
   </article>
 
-  <article class="pbn-card pbn-card--full pbn-card--featured" data-group="XAVORN BUNDLES">
+  <article class="pbn-card pbn-card--full">
     <div class="pbn-featured-badge">THE FULL SUITE</div>
     <div class="pbn-top">
       <div class="pbn-pills">
@@ -2239,17 +2332,18 @@ footer { position: relative !important; margin-top: 0 !important; }
     </div>
     <div class="pbn-title">The Full Operation</div>
     <div class="pbn-price">$199<small>/mo</small><span class="pbn-fp-note"> + $6/vehicle</span></div>
-    <div class="pbn-save">Save $48/mo vs separate plans</div>
+    <div class="pbn-save">SAVE $48/mo vs separate</div>
     <ul class="pbn-features">
-      <li>✓ Full Xevora Pro plan</li>
-      <li>✓ Fynlo invoicing + bookkeeping</li>
-      <li>✓ FleetPulse Professional plan</li>
-      <li>✓ Everything synced — workers, fleet, books</li>
-      <li>✓ One login, one dashboard, one team</li>
-      <li>✓ Dedicated Xavorn account manager</li>
+      <li>Full Xevora Pro</li>
+      <li>Fynlo invoicing + bookkeeping</li>
+      <li>FleetPulse Professional</li>
+      <li>Everything synced — workers, fleet, books</li>
+      <li>One login, one dashboard, one team</li>
+      <li>Dedicated Xavorn account manager</li>
     </ul>
     <a class="pbn-cta pbn-cta--solid" href="https://app.xevora.io/auth/login">Join Waitlist</a>
   </article>
+  </div>
 </div>
 
 <p class="pricing-premium-note">No credit card required during beta · All bundle pricing subject to change at launch</p>

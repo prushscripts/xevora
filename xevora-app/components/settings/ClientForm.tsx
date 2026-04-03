@@ -153,13 +153,13 @@ export default function ClientForm({ open, companyId, client, onClose, onSaved }
 
   return (
     <div className="fixed inset-0 z-50 flex justify-end bg-black/60 backdrop-blur-sm">
-      <div
-        className="absolute inset-0"
-        role="presentation"
+      <button
+        type="button"
+        aria-label="Close panel"
+        className="absolute inset-0 cursor-default border-0 bg-transparent p-0"
         onClick={onClose}
-        onKeyDown={(e) => e.key === "Escape" && onClose()}
       />
-      <aside className="relative z-10 flex h-full w-full max-w-md flex-col border-l border-[#0f1729] bg-[#060B14] shadow-2xl">
+      <aside className="relative z-20 flex h-full w-full max-w-md flex-col border-l border-[#0f1729] bg-[#060B14] shadow-2xl">
         <div className="flex items-center justify-between border-b border-[#0f1729] px-5 py-4">
           <h2 className="text-lg font-extrabold text-[#F1F5FF]">{client ? "Edit client" : "Add client"}</h2>
           <button

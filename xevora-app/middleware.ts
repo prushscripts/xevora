@@ -140,6 +140,7 @@ export const config = {
     "/dashboard/:path*",
     "/driver",
     "/driver/:path*",
+    "/settings",
     "/settings/:path*",
     "/onboarding",
     "/auth/login",

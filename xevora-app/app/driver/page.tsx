@@ -3,9 +3,11 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
+import ClientChip from "@/components/driver/ClientChip";
 import ShiftTimer from "@/components/driver/ShiftTimer";
 import { useDriverProfile } from "@/components/driver/DriverProvider";
 import {
+  activeMealBreak,
   getCurrentShift,
   getPayPeriodSummary,
   resolvePayPeriodForSummary,
@@ -31,6 +33,7 @@ export default function DriverHomePage() {
   const [recent, setRecent] = useState<ShiftRow[]>([]);
   const [summaryHours, setSummaryHours] = useState(0);
   const [summaryPay, setSummaryPay] = useState(0);
+  const [summaryRange, setSummaryRange] = useState<string | null>(null);
   const [summaryLoading, setSummaryLoading] = useState(true);
 
   const loadShift = useCallback(async () => {
@@ -47,7 +50,7 @@ export default function DriverHomePage() {
     const supabase = createClient();
     const { data, error } = await supabase
       .from("shifts")
-      .select("*")
+      .select("*, clients:client_id (abbreviation)")
       .eq("worker_id", profile.id)
       .order("clock_in", { ascending: false })
       .limit(3);
@@ -64,15 +67,30 @@ export default function DriverHomePage() {
     if (!periodId) {
       setSummaryHours(0);
       setSummaryPay(0);
+      setSummaryRange(null);
       setSummaryLoading(false);
       return;
     }
-    const rate = profile.hourly_rate ?? 0;
-    const { summary } = await getPayPeriodSummary(supabase, profile.id, rate, periodId);
+    const { data: period } = await supabase
+      .from("pay_periods")
+      .select("start_date, end_date")
+      .eq("id", periodId)
+      .maybeSingle();
+    if (period) {
+      setSummaryRange(`${period.start_date as string} – ${period.end_date as string}`);
+    } else {
+      setSummaryRange(null);
+    }
+    const rate = profile.hourly_rate ?? profile.pay_rate ?? 0;
+    const { summary } = await getPayPeriodSummary(supabase, profile.id, rate, periodId, {
+      otWeeklyThreshold: profile.company.ot_weekly_threshold,
+      workerPay: profile.workerPay,
+      billingRates: profile.primaryRates ?? { billing_rate: rate, ot_billing_rate: rate * 1.5 },
+    });
     setSummaryHours(summary.totalHours);
     setSummaryPay(summary.estimatedGross);
     setSummaryLoading(false);
-  }, [profile?.id, profile?.company_id, profile?.hourly_rate]);
+  }, [profile]);
 
   useEffect(() => {
     void loadShift();
@@ -87,6 +105,10 @@ export default function DriverHomePage() {
   }, [loadSummary]);
 
   const displayName = profile?.full_name?.trim() || "Driver";
+  const firstName = displayName.split(/\s+/)[0] ?? displayName;
+  const primaryClient =
+    profile?.assignedClients.find((c) => c.is_primary) ?? profile?.assignedClients[0] ?? null;
+  const meal = shift ? activeMealBreak(shift.meal_breaks) : null;
 
   if (profileLoading) {
     return (
@@ -116,16 +138,12 @@ export default function DriverHomePage() {
       <header className="flex items-start justify-between gap-3">
         <div>
           <p className="text-sm text-[#4E6D92]">{greetingLabel()},</p>
-          <h1 className="font-sans text-2xl font-extrabold tracking-tight text-[#F1F5FF]">
-            {displayName}
-          </h1>
+          <h1 className="font-sans text-2xl font-extrabold tracking-tight text-[#F1F5FF]">{firstName}</h1>
         </div>
-        {profile.truck_label ? (
+        {primaryClient ? (
+          <ClientChip abbreviation={primaryClient.abbreviation} pulse />
+        ) : profile.truck_label ? (
           <div className="flex items-center gap-2 rounded-full border border-[#0f1729] bg-[#060B14] px-3 py-1.5">
-            <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#3B82F6] opacity-40" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-[#3B82F6]" />
-            </span>
             <span className="font-jb text-xs font-medium uppercase tracking-wider text-[#F1F5FF]">
               {profile.truck_label}
             </span>
@@ -143,6 +161,27 @@ export default function DriverHomePage() {
         <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#4E6D92]">Shift status</p>
         {shiftLoading ? (
           <div className="mt-4 h-10 w-40 animate-pulse rounded bg-[#03060D]" />
+        ) : shift && meal ? (
+          <div className="mt-4 space-y-4">
+            <div className="flex items-center gap-3">
+              <span className="relative flex h-3 w-3">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-amber-400 opacity-50" />
+                <span className="relative inline-flex h-3 w-3 rounded-full bg-amber-400" />
+              </span>
+              <div>
+                <p className="font-jb text-3xl tabular-nums tracking-tight text-amber-100">
+                  <ShiftTimer startedAtIso={meal.start} />
+                </p>
+                <p className="text-xs text-amber-200/80">On meal break</p>
+              </div>
+            </div>
+            <Link
+              href="/driver/clock"
+              className="flex w-full items-center justify-center rounded-xl border border-emerald-500/40 bg-emerald-500/10 py-3 text-sm font-semibold text-emerald-200 transition hover:bg-emerald-500/20"
+            >
+              End meal
+            </Link>
+          </div>
         ) : shift ? (
           <div className="mt-4 space-y-4">
             <div className="flex items-center gap-3">
@@ -195,14 +234,19 @@ export default function DriverHomePage() {
         {summaryLoading ? (
           <div className="mt-3 h-16 animate-pulse rounded-lg bg-[#03060D]" />
         ) : (
-          <div className="mt-3 flex items-end justify-between gap-4">
-            <div>
-              <p className="font-jb text-2xl tabular-nums text-[#F1F5FF]">{summaryHours.toFixed(2)}h</p>
-              <p className="text-xs text-[#4E6D92]">Total hours</p>
-            </div>
-            <div className="text-right">
-              <p className="font-jb text-xl tabular-nums text-[#3B82F6]">${summaryPay.toFixed(2)}</p>
-              <p className="text-xs text-[#4E6D92]">Est. pay</p>
+          <div className="mt-3 space-y-3">
+            {summaryRange ? (
+              <p className="text-[11px] font-medium text-[#4E6D92]">{summaryRange}</p>
+            ) : null}
+            <div className="flex items-end justify-between gap-4">
+              <div>
+                <p className="font-jb text-2xl tabular-nums text-[#F1F5FF]">{summaryHours.toFixed(2)}h</p>
+                <p className="text-xs text-[#4E6D92]">Total hours</p>
+              </div>
+              <div className="text-right">
+                <p className="font-jb text-xl tabular-nums text-[#3B82F6]">${summaryPay.toFixed(2)}</p>
+                <p className="text-xs text-[#4E6D92]">Est. gross pay</p>
+              </div>
             </div>
           </div>
         )}
@@ -211,8 +255,8 @@ export default function DriverHomePage() {
       <div className="grid grid-cols-3 gap-2">
         {[
           { href: "/driver/timecard", label: "Timecard" },
-          { href: "/driver/pay", label: "Pay history" },
-          { href: "/driver/profile", label: "My truck" },
+          { href: "/driver/pay", label: "Pay" },
+          { href: "/driver/vault", label: "Vault" },
         ].map((a, i) => (
           <motion.div key={a.href} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.12 + i * 0.04 }}>
             <Link
@@ -240,30 +284,40 @@ export default function DriverHomePage() {
               No shifts yet
             </p>
           ) : (
-            recent.map((s) => (
-              <div
-                key={s.id}
-                className="flex items-center justify-between rounded-xl border border-[#0f1729] bg-[#060B14] px-4 py-3"
-              >
-                <div>
-                  <p className="text-sm text-[#F1F5FF]">{formatShortDate(s.clock_in)}</p>
-                  <p className="font-jb text-xs text-[#4E6D92]">
-                    {s.total_hours != null ? `${Number(s.total_hours).toFixed(2)}h` : "—"}
-                  </p>
-                </div>
-                <span
-                  className={`rounded-full border px-2.5 py-0.5 text-[10px] font-semibold uppercase ${
-                    s.status === "completed"
-                      ? "border-emerald-500/35 bg-emerald-500/10 text-emerald-300"
-                      : s.status === "active"
-                        ? "border-[#3B82F6]/40 bg-[#3B82F6]/10 text-[#93C5FD]"
-                        : "border-amber-500/35 bg-amber-500/10 text-amber-200"
-                  }`}
+            recent.map((s) => {
+              const abbr = (s as ShiftRow & { clients?: { abbreviation: string } | null }).clients?.abbreviation;
+              return (
+                <div
+                  key={s.id}
+                  className="flex items-center justify-between gap-2 rounded-xl border border-[#0f1729] bg-[#060B14] px-4 py-3"
                 >
-                  {s.status}
-                </span>
-              </div>
-            ))
+                  <div className="min-w-0">
+                    <p className="text-sm text-[#F1F5FF]">{formatShortDate(s.clock_in)}</p>
+                    <p className="font-jb text-xs text-[#4E6D92]">
+                      {s.total_hours != null ? `${Number(s.total_hours).toFixed(2)}h` : "—"}
+                    </p>
+                  </div>
+                  <div className="flex shrink-0 items-center gap-2">
+                    {abbr ? (
+                      <span className="rounded-full border border-[#2563EB]/30 bg-[#2563EB]/10 px-2 py-0.5 font-jb text-[10px] uppercase text-[#93C5FD]">
+                        {abbr}
+                      </span>
+                    ) : null}
+                    <span
+                      className={`rounded-full border px-2.5 py-0.5 text-[10px] font-semibold uppercase ${
+                        s.status === "completed" || s.status === "approved"
+                          ? "border-emerald-500/35 bg-emerald-500/10 text-emerald-300"
+                          : s.status === "active"
+                            ? "border-[#3B82F6]/40 bg-[#3B82F6]/10 text-[#93C5FD]"
+                            : "border-amber-500/35 bg-amber-500/10 text-amber-200"
+                      }`}
+                    >
+                      {s.status}
+                    </span>
+                  </div>
+                </div>
+              );
+            })
           )}
         </div>
       </section>
