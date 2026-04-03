@@ -978,10 +978,11 @@ p.sub{
   color: #818CF8;
   white-space: nowrap;
 }
+/* Negative margin widened the grid past 100%; with body overflow-x:hidden the row looked shifted right with cards clipped */
 .pricing-all-grid > [data-group="XAVORN BUNDLES"]:nth-child(4) {
   border-left: 1px solid rgba(99,102,241,0.2);
-  padding-left: calc(12px + 12px);
-  margin-left: -12px;
+  padding-left: 1.25rem;
+  margin-left: 0;
 }
 @media (max-width: 1200px) {
   .pricing-all-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
@@ -1561,9 +1562,9 @@ html, body { height: auto !important; overflow-x: hidden; }
 
 section { min-height: unset !important; }
 
+/* Do not set height:auto with IDs here — it beats the inactive-panel collapse rule and leaves huge scroll dead space */
 #overview-panel, #features-panel, #why-panel, #pricing-panel, #fleetpulse-panel, #fynlo-panel {
   min-height: unset !important;
-  height: auto !important;
 }
 
 .feat-wrap, .phase-wrap, .why2-wrap, .pricing-premium-section, .fp-showcase, .fyn-showcase, .content-panel {
@@ -1664,7 +1665,7 @@ footer { position: relative !important; margin-top: 0 !important; }
   pointer-events:none;
   box-sizing:border-box;
   transform:translate(-50%,-50%) scale(0.85);
-  animation:navHexPulse 2.6s ease-out infinite;
+  animation:navHexPulse 2.6s ease-out infinite !important;
   opacity:0.85;
 }
 .nav-hex-pulse--1{
@@ -2406,7 +2407,7 @@ footer { position: relative !important; margin-top: 0 !important; }
   </div>
 </footer>
 
-<script src="transition.js"></script>
+<script src="transition.js?v=20260402"></script>
 <script>
 (function () {
   function bindSignInTransitions() {
