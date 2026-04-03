@@ -7,6 +7,9 @@ echo ========================================
 echo   Xevora — Deploy
 echo ========================================
 echo   Directory: %CD%
+echo   Pushes origin main — Vercel builds projects linked to this repo.
+echo   Tip: xevora.io landing lives under landing\ — use the Vercel project
+echo   whose Root Directory is "landing", not only "xevora-app".
 echo ========================================
 echo.
 
@@ -27,10 +30,27 @@ git diff --quiet HEAD
 if errorlevel 1 goto :HAVE_CHANGES
 
 echo.
-echo ⚠️ Nothing to deploy — no changes detected
+echo No local changes vs last commit — bumping landing\.vercel-deploy-revision.txt
+echo so Git has a new commit and Vercel can start a fresh build ^(landing root^).
+echo.
+powershell -NoProfile -ExecutionPolicy Bypass -Command ^
+  "$ErrorActionPreference='Stop'; $d=Join-Path '%CD%' 'landing'; if(-not(Test-Path $d)){ throw 'landing folder missing' }; $ts=(Get-Date).ToUniversalTime().ToString('yyyy-MM-ddTHH:mm:ssZ'); $p=Join-Path $d '.vercel-deploy-revision.txt'; Set-Content -LiteralPath $p -Value $ts -Encoding ascii"
+if errorlevel 1 (
+  echo.
+  echo ERROR: Could not write landing\.vercel-deploy-revision.txt
+  echo.
+  pause
+  exit /b 1
+)
+git add landing/.vercel-deploy-revision.txt
+git diff --quiet HEAD
+if errorlevel 1 goto :HAVE_CHANGES
+
+echo.
+echo ERROR: Bump did not produce a diff — check git status.
 echo.
 pause
-exit /b 0
+exit /b 1
 
 :HAVE_CHANGES
 
