@@ -2621,62 +2621,56 @@ window.addEventListener('scroll',()=>{
 (function() {
   var canvas = document.getElementById('xev-canvas-wordmark');
   if (!canvas) return;
-  var dpr = window.devicePixelRatio || 1;
+  var dpr = Math.min(window.devicePixelRatio || 1, 2);
   var h = 26;
   var fontSize = 18;
-  var font = '800 ' + fontSize + 'px Syne, sans-serif';
 
-  function setup() {
+  function draw() {
     var ctx = canvas.getContext('2d');
-    ctx.font = font;
-    var textW = ctx.measureText('XEVORA').width + 4;
+    ctx.font = '800 ' + fontSize + 'px Syne, sans-serif';
+    var textW = ctx.measureText('XEVORA').width;
+
     canvas.width = Math.ceil(textW * dpr);
     canvas.height = Math.ceil(h * dpr);
     canvas.style.width = Math.ceil(textW) + 'px';
     canvas.style.height = h + 'px';
     ctx.scale(dpr, dpr);
-    return { ctx: ctx, textW: textW };
+
+    var shimX = -textW;
+    var speed = textW * 0.9;
+    var last = 0;
+
+    function frame(ts) {
+      var dt = last ? Math.min((ts - last) / 1000, 0.05) : 0.016;
+      last = ts;
+      shimX += speed * dt;
+      if (shimX > textW * 1.8) shimX = -textW * 0.5;
+
+      ctx.clearRect(0, 0, textW, h);
+      ctx.font = '800 ' + fontSize + 'px Syne, sans-serif';
+
+      var p = shimX / textW;
+      var g = ctx.createLinearGradient(0, 0, textW, 0);
+      g.addColorStop(0, '#F1F5FF');
+      g.addColorStop(Math.max(0, Math.min(0.99, p - 0.15)), '#F1F5FF');
+      g.addColorStop(Math.max(0, Math.min(0.99, p)), '#93C5FD');
+      g.addColorStop(Math.max(0, Math.min(0.99, p + 0.06)), '#60A5FA');
+      g.addColorStop(Math.max(0, Math.min(0.99, p + 0.12)), '#F1F5FF');
+      g.addColorStop(1, '#F1F5FF');
+
+      ctx.fillStyle = g;
+      ctx.fillText('XEVORA', 0, 20);
+      requestAnimationFrame(frame);
+    }
+
+    requestAnimationFrame(frame);
   }
 
-  var s = setup();
-  var ctx = s.ctx;
-  var textW = s.textW;
-  var shimX = -textW;
-  var lastTime = 0;
-  var speed = textW * 2.2;
-
-  function draw(ts) {
-    var dt = lastTime ? Math.min((ts - lastTime) / 1000, 0.05) : 0;
-    lastTime = ts;
-    shimX += speed * dt;
-    if (shimX > textW * 1.5) shimX = -textW * 0.8;
-
-    ctx.clearRect(0, 0, textW + 4, h);
-    ctx.font = font;
-    ctx.letterSpacing = '0.02em';
-
-    var grad = ctx.createLinearGradient(0, 0, textW, 0);
-    var p = shimX / textW;
-    grad.addColorStop(0, '#F1F5FF');
-    grad.addColorStop(Math.max(0, Math.min(1, p - 0.15)), '#F1F5FF');
-    grad.addColorStop(Math.max(0, Math.min(1, p)), '#93C5FD');
-    grad.addColorStop(Math.max(0, Math.min(1, p + 0.05)), '#60A5FA');
-    grad.addColorStop(Math.max(0, Math.min(1, p + 0.1)), '#93C5FD');
-    grad.addColorStop(Math.max(0, Math.min(1, p + 0.25)), '#F1F5FF');
-    grad.addColorStop(1, '#F1F5FF');
-
-    ctx.fillStyle = grad;
-    ctx.fillText('XEVORA', 0, 20);
-    requestAnimationFrame(draw);
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(draw);
+  } else {
+    setTimeout(draw, 300);
   }
-
-  document.fonts.ready.then(function() {
-    var s2 = setup();
-    ctx = s2.ctx;
-    textW = s2.textW;
-    shimX = -textW;
-    requestAnimationFrame(draw);
-  });
 })();
 </script>
 </body>
