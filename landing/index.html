@@ -48,6 +48,7 @@
 html{
   width:100%;
   -webkit-text-size-adjust:100%;
+  overflow-x:clip;
 }
 body{
   width:100%;
@@ -55,8 +56,8 @@ body{
   background:var(--bg);
   color:var(--text);
   font-family:'DM Sans',sans-serif;
-  /* Prevent diagonal/horizontal scroll */
   position:relative;
+  overflow-x:clip;
 }
 
 canvas{
@@ -1191,15 +1192,24 @@ footer{
 
   /* Nav */
   nav{padding:14px 16px}
-  .site-tabs{top:56px}
-  .tab-bar{padding:0 8px;justify-content:flex-start}
+  .site-tabs{
+    top:56px;
+    overflow-x:auto;
+    overflow-y:visible;
+  }
+  .tab-bar{
+    padding:0 8px;
+    justify-content:flex-start;
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+  }
   .site-tab{padding:8px 12px;font-size:10px;letter-spacing:0.06em}
   .site-tabs-fade{
     position:fixed;
     top:56px;
     right:0;
-    width:40px;
-    height:44px;
+    width:32px;
+    height:42px;
     z-index:47;
     background:linear-gradient(to right,transparent,rgba(3,6,13,0.95));
     pointer-events:none;
@@ -1470,14 +1480,16 @@ footer{
   position: absolute;
   top: -10%;
   left: -120%;
-  width: 60%;
+  width: 80%;
   height: 120%;
   background: linear-gradient(
     105deg,
     transparent 0%,
-    rgba(255,255,255,0.08) 40%,
-    rgba(147,197,253,0.55) 50%,
-    rgba(255,255,255,0.08) 60%,
+    rgba(147,197,253,0.15) 35%,
+    rgba(147,197,253,0.7) 48%,
+    rgba(255,255,255,0.5) 50%,
+    rgba(147,197,253,0.7) 52%,
+    rgba(147,197,253,0.15) 65%,
     transparent 100%
   );
   transform: skewX(-15deg);
