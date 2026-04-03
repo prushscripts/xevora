@@ -15,31 +15,42 @@ function xevoraTransition(e, destination) {
     }
     #xev-scan {
       position: absolute; left: 0; right: 0; height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(37,99,235,0.35), rgba(96,165,250,0.7), rgba(37,99,235,0.35), transparent);
+      background: linear-gradient(90deg, transparent, rgba(37,99,235,0.09), rgba(96,165,250,0.18), rgba(37,99,235,0.09), transparent);
       animation: xScan 2.2s linear infinite; pointer-events: none; z-index: 2;
     }
     #xev-corner-tl, #xev-corner-tr, #xev-corner-bl, #xev-corner-br {
       position: absolute; width: 20px; height: 20px; pointer-events: none; z-index: 3;
-      opacity: 0; transition: opacity 300ms ease 200ms;
+      opacity: 0; transition: opacity 300ms ease 300ms;
     }
-    #xev-corner-tl { top: 24px; left: 24px; border-top: 1.5px solid rgba(37,99,235,0.5); border-left: 1.5px solid rgba(37,99,235,0.5); }
-    #xev-corner-tr { top: 24px; right: 24px; border-top: 1.5px solid rgba(37,99,235,0.5); border-right: 1.5px solid rgba(37,99,235,0.5); }
-    #xev-corner-bl { bottom: 24px; left: 24px; border-bottom: 1.5px solid rgba(37,99,235,0.5); border-left: 1.5px solid rgba(37,99,235,0.5); }
-    #xev-corner-br { bottom: 24px; right: 24px; border-bottom: 1.5px solid rgba(37,99,235,0.5); border-right: 1.5px solid rgba(37,99,235,0.5); }
+    #xev-corner-tl { top: 32px; left: 32px; border-top: 1.5px solid rgba(37,99,235,0.4); border-left: 1.5px solid rgba(37,99,235,0.4); }
+    #xev-corner-tr { top: 32px; right: 32px; border-top: 1.5px solid rgba(37,99,235,0.4); border-right: 1.5px solid rgba(37,99,235,0.4); }
+    #xev-corner-bl { bottom: 32px; left: 32px; border-bottom: 1.5px solid rgba(37,99,235,0.4); border-left: 1.5px solid rgba(37,99,235,0.4); }
+    #xev-corner-br { bottom: 32px; right: 32px; border-bottom: 1.5px solid rgba(37,99,235,0.4); border-right: 1.5px solid rgba(37,99,235,0.4); }
     #xev-glow {
       position: absolute; width: 420px; height: 420px; border-radius: 50%;
       background: radial-gradient(circle, rgba(37,99,235,0.16) 0%, rgba(37,99,235,0.05) 40%, transparent 68%);
       animation: xGlow 2.6s ease-in-out infinite; pointer-events: none;
     }
     #xev-ring1 {
-      position: absolute; width: 300px; height: 300px; border-radius: 50%;
+      position: absolute; top: 50%; left: 50%; width: 300px; height: 300px; border-radius: 50%;
       border: 1px solid rgba(37,99,235,0.22);
       animation: xRing 3s cubic-bezier(0.16,1,0.3,1) infinite; pointer-events: none;
     }
     #xev-ring2 {
-      position: absolute; width: 220px; height: 220px; border-radius: 50%;
+      position: absolute; top: 50%; left: 50%; width: 220px; height: 220px; border-radius: 50%;
       border: 1px solid rgba(96,165,250,0.14);
       animation: xRing 4.2s cubic-bezier(0.16,1,0.3,1) infinite reverse; pointer-events: none;
+    }
+    #xev-ring3 {
+      position: absolute; top: 50%; left: 50%; width: 160px; height: 160px; border-radius: 50%;
+      border: 1px solid rgba(37,99,235,0.08);
+      animation: xRing 6s cubic-bezier(0.16,1,0.3,1) infinite 1s; pointer-events: none;
+    }
+    #xev-grid {
+      position: absolute; top: 50%; left: 50%; width: 500px; height: 500px; border-radius: 50%;
+      transform: translate(-50%, -50%);
+      background: repeating-conic-gradient(rgba(37,99,235,0.03) 0deg, transparent 1deg, transparent 30deg, rgba(37,99,235,0.03) 31deg);
+      animation: xevGlow 4s ease-in-out infinite; pointer-events: none; z-index: 1;
     }
     #xev-center {
       position: relative; z-index: 10;
@@ -58,7 +69,7 @@ function xevoraTransition(e, destination) {
     }
     #xev-wordmark {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 11px; letter-spacing: 0.4em;
+      font-size: 13px; letter-spacing: 0.5em;
       color: #F1F5FF; margin-bottom: 6px;
       opacity: 0; transition: opacity 300ms ease 500ms;
     }
@@ -76,7 +87,7 @@ function xevoraTransition(e, destination) {
     }
     #xev-bar-fill {
       height: 100%; width: 0%; background: #3B82F6;
-      box-shadow: 0 0 8px rgba(59,130,246,0.8);
+      box-shadow: 0 0 12px rgba(59,130,246,1), 0 0 24px rgba(37,99,235,0.6);
       border-radius: 999px;
       transition: width 1300ms cubic-bezier(0.16,1,0.3,1);
     }
@@ -91,9 +102,13 @@ function xevoraTransition(e, destination) {
       50%      { opacity: 1;   transform: scale(1.1); }
     }
     @keyframes xRing {
-      0%   { transform: scale(0.9);  opacity: 0.7; }
-      50%  { transform: scale(1.08); opacity: 0.15; }
-      100% { transform: scale(0.9);  opacity: 0.7; }
+      0%   { transform: translate(-50%, -50%) scale(0.9);  opacity: 0.7; }
+      50%  { transform: translate(-50%, -50%) scale(1.08); opacity: 0.15; }
+      100% { transform: translate(-50%, -50%) scale(0.9);  opacity: 0.7; }
+    }
+    @keyframes xevGlow {
+      0%, 100% { opacity: 0.45; }
+      50%      { opacity: 0.85; }
     }
   `;
   document.head.appendChild(style);
@@ -105,6 +120,8 @@ function xevoraTransition(e, destination) {
   const glow = document.createElement('div'); glow.id = 'xev-glow';
   const ring1 = document.createElement('div'); ring1.id = 'xev-ring1';
   const ring2 = document.createElement('div'); ring2.id = 'xev-ring2';
+  const ring3 = document.createElement('div'); ring3.id = 'xev-ring3';
+  const xevGrid = document.createElement('div'); xevGrid.id = 'xev-grid';
 
   const center = document.createElement('div'); center.id = 'xev-center';
   const hexwrap = document.createElement('div'); hexwrap.id = 'xev-hexwrap';
@@ -126,6 +143,8 @@ function xevoraTransition(e, destination) {
   overlay.appendChild(glow);
   overlay.appendChild(ring1);
   overlay.appendChild(ring2);
+  overlay.appendChild(ring3);
+  overlay.appendChild(xevGrid);
   overlay.appendChild(center);
   document.body.appendChild(overlay);
 
