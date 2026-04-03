@@ -1,7 +1,4 @@
-Replace the entire contents of deploy.bat with exactly this:
-
 @echo off
-del "%~dp0deploy-log.txt" 2>nul
 title Xevora Deploy
 color 0A
 echo.
@@ -36,10 +33,10 @@ if errorlevel 1 (
 
 echo  [4/4] Triggering Vercel builds...
 
-curl -s -X POST "https://api.vercel.com/v1/integrations/deploy/prj_mLIOXYoWLiKpgTkhRBkq0ssuNcLx/KoWTu72Q4X" >> "%~dp0deploy-log.txt" 2>&1
+curl -s -X POST "https://api.vercel.com/v1/integrations/deploy/prj_mLIOXYoWLiKpgTkhRBkq0ssuNcLx/KoWTu72Q4X" > nul 2>&1
 echo        xevora landing triggered.
 
-curl -s -X POST "https://api.vercel.com/v1/integrations/deploy/prj_mIZvLa0uUKXLVrlmsRl5kphcNBQn/tZJBOjAO0v" >> "%~dp0deploy-log.txt" 2>&1
+curl -s -X POST "https://api.vercel.com/v1/integrations/deploy/prj_mIZvLa0uUKXLVrlmsRl5kphcNBQn/gmIxd6pyBO" > nul 2>&1
 echo        xevora-app triggered.
 
 echo.
@@ -47,8 +44,5 @@ echo  ================================================
 echo   DONE. Check vercel.com/prushscripts
 echo  ================================================
 echo.
-notepad "%~dp0deploy-log.txt"
 pause
 exit /b 0
-
-Save, commit, push to main.
