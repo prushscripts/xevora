@@ -7,6 +7,7 @@ $ErrorActionPreference = 'Stop'
 $root = [System.IO.Path]::GetFullPath($RepoRoot.TrimEnd('\', '/'))
 
 $candidates = @(
+  (Join-Path $root 'deploy-hooks.txt'),
   (Join-Path $root '.vercel-deploy-hooks.txt'),
   (Join-Path $root 'vercel-deploy-hooks.txt'),
   (Join-Path $root 'vercel-deploy-hooks.example.txt'),
@@ -25,8 +26,8 @@ if (-not $p) {
   Write-Host '       Hooks file not found. Looked for:'
   foreach ($c in $candidates) { Write-Host "         - $c" }
   Write-Host ''
-  Write-Host '       Copy vercel-deploy-hooks.TEMPLATE.txt to vercel-deploy-hooks.example.txt'
-  Write-Host '       and paste TWO Deploy Hook URLs (xevora, then xevora-app).'
+  Write-Host '       deploy.bat should have created deploy-hooks.txt. If not, copy'
+  Write-Host '       vercel-deploy-hooks.TEMPLATE.txt to deploy-hooks.txt and add two https:// lines.'
   if ($RequireBoth) { exit 2 }
   Write-Host '       (Optional mode: continuing without hooks.)'
   exit 0

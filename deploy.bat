@@ -11,7 +11,7 @@ echo   Targets BOTH Vercel projects: xevora ^(marketing^) + xevora-app ^(app^).
 echo   1^) Stages changes, stamps landing\ + xevora-app\.
 echo   2^) Commits and pushes origin main.
 echo   3^) REQUIRED: POSTs 2 Deploy Hook URLs ^(xevora + xevora-app^) so BOTH Vercel projects build.
-echo      ^(File: vercel-deploy-hooks.example.txt or .vercel-deploy-hooks.txt — see TEMPLATE^)
+echo      ^(Local file: deploy-hooks.txt - see vercel-deploy-hooks.TEMPLATE.txt^)
 echo ========================================
 echo.
 
@@ -104,7 +104,32 @@ echo       Latest commit ^(local^):
 git log -1 --oneline
 echo.
 
-echo [5/5] Triggering BOTH Vercel builds ^(Deploy Hooks — required^)...
+echo [5/5] Triggering BOTH Vercel builds ^(Deploy Hooks - required^)...
+
+set "XEV_HOOK_OK=0"
+if exist "%~dp0deploy-hooks.txt" set "XEV_HOOK_OK=1"
+if exist "%~dp0.vercel-deploy-hooks.txt" set "XEV_HOOK_OK=1"
+if exist "%~dp0vercel-deploy-hooks.txt" set "XEV_HOOK_OK=1"
+if exist "%~dp0vercel-deploy-hooks.example.txt" set "XEV_HOOK_OK=1"
+if exist "%~dp0vercel-deploy-hooks.example" set "XEV_HOOK_OK=1"
+if "%XEV_HOOK_OK%"=="0" (
+  echo.
+  echo No hooks file found. Creating deploy-hooks.txt from template ^(this file is gitignored - it stays on your PC only^).
+  copy /Y "%~dp0vercel-deploy-hooks.TEMPLATE.txt" "%~dp0deploy-hooks.txt" >nul
+  echo.
+  echo   NEXT: Open deploy-hooks.txt and add TWO lines ^(no quotes^):
+  echo     Line 1 = Deploy Hook URL from Vercel project xevora
+  echo     Line 2 = Deploy Hook URL from Vercel project xevora-app
+  echo   ^(Settings -^> Git -^> Deploy Hooks on each project.^)
+  echo.
+  start "" notepad "%~dp0deploy-hooks.txt"
+  echo Notepad opened. Save the file after pasting both URLs, then run deploy.bat again.
+  echo ^(Git already pushed this run; next run will POST hooks.^)
+  echo.
+  pause
+  exit /b 1
+)
+
 powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0deploy-invoke-hooks.ps1" -RepoRoot "%CD%" -RequireBoth
 if errorlevel 1 (
   echo.

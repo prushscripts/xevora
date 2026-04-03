@@ -3,11 +3,13 @@
 # deploy.bat REQUIRES this: without two hook URLs it will FAIL at step 5 (after git push).
 # Git alone often builds only one Vercel project; hooks guarantee BOTH xevora + xevora-app.
 #
-# Put real hook URLs in a LOCAL file only. The deploy script looks for (first match wins):
+# This file is NOT used directly. On first deploy, deploy.bat creates deploy-hooks.txt (gitignored).
+# Put real hook URLs in deploy-hooks.txt (or any name below). First match wins:
+#   deploy-hooks.txt                 <- default; created from this template if missing
 #   .vercel-deploy-hooks.txt
 #   vercel-deploy-hooks.txt
-#   vercel-deploy-hooks.example.txt   <- same name you already use; gitignored
-#   vercel-deploy-hooks.example       <- if Windows hides .txt
+#   vercel-deploy-hooks.example.txt
+#   vercel-deploy-hooks.example
 #
 # Vercel: each project (xevora + xevora-app) -> Settings -> Git -> Deploy Hooks
 # -> Create hook -> Branch: main -> Copy the HTTPS URL.
