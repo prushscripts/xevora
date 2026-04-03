@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{width:1200px;height:630px;background:#03060D;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;font-family:system-ui,-apple-system,sans-serif}
+.grid{position:absolute;inset:0;background-image:linear-gradient(rgba(37,99,235,0.05) 1px,transparent 1px),linear-gradient(90deg,rgba(37,99,235,0.05) 1px,transparent 1px);background-size:48px 48px}
+.glow{position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 50% 50%,rgba(37,99,235,0.14) 0%,transparent 68%);animation:glowPulse 3s ease-in-out infinite}
+.scan{position:absolute;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(34,197,94,0.5),rgba(59,130,246,0.7),rgba(34,197,94,0.5),transparent);animation:scanMove 3.5s linear infinite}
+.top-line{position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(37,99,235,0.9),transparent)}
+.bot-line{position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(37,99,235,0.4),transparent)}
+.ring1{position:absolute;width:420px;height:420px;border-radius:50%;border:1px solid rgba(37,99,235,0.12);top:50%;left:50%;transform:translate(-50%,-50%);animation:ringExpand 4s ease-in-out infinite}
+.ring2{position:absolute;width:300px;height:300px;border-radius:50%;border:1px solid rgba(34,197,94,0.08);top:50%;left:50%;transform:translate(-50%,-50%);animation:ringExpand 4s ease-in-out infinite reverse;animation-delay:2s}
+.c{position:absolute;width:28px;height:28px}
+.tl{top:36px;left:36px;border-top:2px solid rgba(37,99,235,0.55);border-left:2px solid rgba(37,99,235,0.55)}
+.tr{top:36px;right:36px;border-top:2px solid rgba(37,99,235,0.55);border-right:2px solid rgba(37,99,235,0.55)}
+.bl{bottom:36px;left:36px;border-bottom:2px solid rgba(37,99,235,0.55);border-left:2px solid rgba(37,99,235,0.55)}
+.br{bottom:36px;right:36px;border-bottom:2px solid rgba(37,99,235,0.55);border-right:2px solid rgba(37,99,235,0.55)}
+.center{position:relative;z-index:10;display:flex;flex-direction:column;align-items:center;text-align:center}
+.brand{display:flex;align-items:center;gap:22px;margin-bottom:28px}
+.hex-wrap{position:relative;animation:hexPulse 2.5s ease-in-out infinite}
+.hex-glow{position:absolute;inset:-16px;border-radius:50%;background:radial-gradient(circle,rgba(37,99,235,0.22) 0%,transparent 68%);animation:glowPulse 2.5s ease-in-out infinite}
+.wordmark{font-weight:800;font-size:52px;color:#F1F5FF;letter-spacing:0.05em}
+.headline{font-weight:800;font-size:40px;color:#F1F5FF;line-height:1.15;margin-bottom:16px}
+.sub{font-weight:400;font-size:20px;color:#4E6D92;max-width:680px;line-height:1.6;margin-bottom:28px}
+.pill{display:inline-flex;align-items:center;gap:12px;background:rgba(37,99,235,0.12);border:1px solid rgba(37,99,235,0.3);border-radius:999px;padding:12px 28px}
+.live-dot{width:9px;height:9px;border-radius:50%;background:#4ADE80;box-shadow:0 0 10px rgba(74,222,128,0.9);animation:glowPulse 1.5s ease-in-out infinite}
+.pill-text{font-size:16px;letter-spacing:0.12em;color:#60A5FA;text-transform:uppercase;font-family:monospace}
+.xav{position:absolute;bottom:28px;font-family:monospace;font-size:12px;letter-spacing:0.22em;color:rgba(37,99,235,0.35);text-transform:uppercase}
+@keyframes glowPulse{0%,100%{opacity:0.6}50%{opacity:1}}
+@keyframes scanMove{0%{top:-2px;opacity:0}5%{opacity:1}95%{opacity:1}100%{top:100%;opacity:0}}
+@keyframes ringExpand{0%{transform:translate(-50%,-50%) scale(0.88);opacity:0.6}50%{transform:translate(-50%,-50%) scale(1.08);opacity:0.12}100%{transform:translate(-50%,-50%) scale(0.88);opacity:0.6}}
+@keyframes hexPulse{0%,100%{opacity:0.9;transform:scale(1)}50%{opacity:1;transform:scale(1.06)}}
+</style>
+</head>
+<body>
+<div class="grid"></div>
+<div class="glow"></div>
+<div class="scan"></div>
+<div class="top-line"></div>
+<div class="bot-line"></div>
+<div class="ring1"></div>
+<div class="ring2"></div>
+<div class="c tl"></div>
+<div class="c tr"></div>
+<div class="c bl"></div>
+<div class="c br"></div>
+<div class="center">
+  <div class="brand">
+    <div class="hex-wrap">
+      <div class="hex-glow"></div>
+      <svg width="72" height="72" viewBox="0 0 100 100" fill="none">
+        <polygon points="50,6 89,28 89,72 50,94 11,72 11,28" fill="#060B14" stroke="rgba(37,99,235,0.7)" stroke-width="2.5"/>
+        <polygon points="50,18 78,34 78,66 50,82 22,66 22,34" fill="none" stroke="rgba(37,99,235,0.15)" stroke-width="1"/>
+        <path d="M33,25 L43,25 L50,37 L57,25 L67,25 L55,50 L67,75 L57,75 L50,63 L43,75 L33,75 L45,50 Z" fill="#2563EB"/>
+        <polygon points="50,43 57,50 50,57 43,50" fill="#60A5FA"/>
+        <circle cx="50" cy="6" r="3" fill="rgba(37,99,235,0.9)"/>
+        <circle cx="89" cy="28" r="2.5" fill="rgba(37,99,235,0.6)"/>
+        <circle cx="89" cy="72" r="2.5" fill="rgba(37,99,235,0.6)"/>
+        <circle cx="50" cy="94" r="3" fill="rgba(37,99,235,0.9)"/>
+        <circle cx="11" cy="72" r="2.5" fill="rgba(37,99,235,0.6)"/>
+        <circle cx="11" cy="28" r="2.5" fill="rgba(37,99,235,0.6)"/>
+      </svg>
+    </div>
+    <div class="wordmark">XEVORA</div>
+  </div>
+  <div class="headline">GPS Payroll & Time Tracking<br>for Field Teams</div>
+  <div class="sub">Built for drivers, field crews, and trades.<br>Clock in with GPS. Run payroll. Manage your whole team.</div>
+  <div class="pill">
+    <div class="live-dot"></div>
+    <span class="pill-text">Early Access Open · xevora.io</span>
+  </div>
+</div>
+<div class="xav">PART OF XAVORN</div>
+</body>
+</html>
