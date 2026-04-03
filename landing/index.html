@@ -896,155 +896,6 @@ p.sub{
 .fr-stagger.in{opacity:1;transform:translateY(0)}
 #fleetpulse-panel.panel-active .fr-stagger{opacity:1;transform:translateY(0)}
 
-.why-cards {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  gap: 16px;
-  align-items: start;
-  max-width: 100%;
-}
-
-.why-card--xev {
-  background: linear-gradient(145deg, #0A1628 0%, #060B14 100%);
-  border: 1px solid rgba(37,99,235,0.3);
-  border-radius: 14px;
-  padding: 20px;
-  box-shadow: 0 0 40px rgba(37,99,235,0.06);
-}
-
-.why-vs {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: 'Syne', sans-serif;
-  font-weight: 800;
-  font-size: 11px;
-  color: #1E3048;
-  letter-spacing: 0.1em;
-  writing-mode: vertical-lr;
-  padding-top: 60px;
-}
-
-.why-competitors {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.why-comp-card {
-  background: rgba(6,11,20,0.6);
-  border: 1px solid rgba(37,99,235,0.08);
-  border-radius: 10px;
-  padding: 14px 16px;
-}
-
-.why-comp-name {
-  font-family: 'Syne', sans-serif;
-  font-weight: 700;
-  font-size: 12px;
-  color: #4E6D92;
-  margin-bottom: 2px;
-  letter-spacing: 0.05em;
-}
-
-.why-comp-sub {
-  font-family: 'DM Sans', sans-serif;
-  font-weight: 300;
-  font-size: 10px;
-  color: #3B82F6;
-  margin-bottom: 8px;
-  line-height: 1.4;
-}
-
-.why-comp-list {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.why-comp-list li {
-  display: flex;
-  align-items: flex-start;
-  gap: 7px;
-  font-family: 'DM Sans', sans-serif;
-  font-weight: 300;
-  font-size: 11px;
-  color: #4E6D92;
-  line-height: 1.35;
-}
-
-.why-x { color: #2A3F58; font-size: 11px; flex-shrink: 0; margin-top: 1px; }
-
-.why-comp-source {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 7px;
-  letter-spacing: 0.08em;
-  color: rgba(37,99,235,0.25);
-  margin-top: 8px;
-  text-transform: uppercase;
-}
-
-.why-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  padding: 8px 10px;
-  border-radius: 7px;
-}
-
-.why-item strong {
-  font-family: 'DM Sans', sans-serif;
-  font-weight: 500;
-  font-size: 12px;
-  color: #F1F5FF;
-}
-
-.why-item span {
-  font-family: 'DM Sans', sans-serif;
-  font-weight: 300;
-  font-size: 11px;
-  color: #4E6D92;
-  line-height: 1.35;
-}
-
-.why-check { color: #3B82F6; font-weight: 700; font-size: 12px; flex-shrink: 0; margin-top: 2px; }
-
-.why-head { text-align: center; margin-bottom: 20px; }
-.why-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: clamp(20px, 2.8vw, 32px); color: #F1F5FF; line-height: 1.08; margin-bottom: 8px; }
-.why-sub { font-family: 'DM Sans', sans-serif; font-weight: 300; font-size: 14px; color: #4E6D92; max-width: 520px; margin: 0 auto; }
-.why-section { padding: 90px 24px 60px; background: #03060D; min-height: 100vh; box-sizing: border-box; }
-.why-inner { max-width: 1160px; margin: 0 auto; }
-.why-disclaimer { text-align: center; margin-top: 20px; font-family: 'DM Sans', sans-serif; font-weight: 300; font-size: 10px; color: #1E3048; max-width: 600px; margin-left: auto; margin-right: auto; line-height: 1.6; }
-.why-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
-.why-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
-.why-card-badge { font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.15em; padding: 3px 10px; border-radius: 999px; }
-.why-card-badge--xev { background: rgba(37,99,235,0.15); border: 1px solid rgba(37,99,235,0.3); color: #3B82F6; }
-.why-card-status { display: flex; align-items: center; gap: 5px; font-family: 'DM Sans', sans-serif; font-size: 10px; color: #4ADE80; }
-.why-status-dot { width: 5px; height: 5px; border-radius: 50%; background: #4ADE80; box-shadow: 0 0 6px rgba(74,222,128,0.6); animation: blink 1.8s ease-in-out infinite; }
-
-.why-eyebrow {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 10px; letter-spacing: 0.3em; color: #2563EB;
-  text-transform: uppercase; margin-bottom: 16px;
-}
-.why-item div { display: flex; flex-direction: column; gap: 2px; }
-.why-item--good {
-  background: rgba(37,99,235,0.04);
-  border: 1px solid rgba(37,99,235,0.1);
-}
-.why-item--good:hover {
-  background: rgba(37,99,235,0.08);
-  border-color: rgba(37,99,235,0.25);
-  transition: all 200ms ease;
-}
-
-@media (max-width: 900px) {
-  .why-cards { grid-template-columns: 1fr; gap: 16px; }
-  .why-vs { writing-mode: horizontal-tb; padding-top: 0; text-align: center; }
-  .why-competitors { flex-direction: column; }
-}
-
 /* Pricing — premium layout */
 @keyframes pricingFadeUp{
   from{opacity:0;transform:translateY(12px)}
@@ -1589,36 +1440,76 @@ footer{
 .fyn-showcase-inner { max-width: 1160px; margin: 0 auto; }
 .fyn-hero { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; margin-bottom: 48px; }
 .fyn-hero-left { display: flex; flex-direction: column; gap: 20px; }
-.fyn-coming-badge { display: inline-flex; align-items: center; gap: 6px; font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: #818CF8; background: rgba(99,102,241,0.1); border: 1px solid rgba(99,102,241,0.25); padding: 5px 12px; border-radius: 999px; width: fit-content; }
+.fyn-coming-badge { display: inline-flex; align-items: center; gap: 6px; font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: #4ADE80; background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.25); padding: 5px 12px; border-radius: 999px; width: fit-content; }
 .fyn-hero-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: clamp(26px, 3.2vw, 40px); color: #F1F5FF; line-height: 1.1; margin: 0; }
 .fyn-hero-sub { font-family: 'DM Sans', sans-serif; font-weight: 300; font-size: 16px; color: #4E6D92; line-height: 1.7; margin: 0; }
 .fyn-features-list { display: flex; flex-direction: column; gap: 8px; }
 .fyn-feat { display: flex; align-items: center; gap: 10px; font-family: 'DM Sans', sans-serif; font-size: 14px; color: #C4CFDF; }
-.fyn-feat-dot { width: 6px; height: 6px; border-radius: 50%; background: #818CF8; box-shadow: 0 0 6px rgba(129,140,248,0.5); flex-shrink: 0; }
-.fyn-cta { display: inline-flex; align-items: center; justify-content: center; padding: 13px 28px; border-radius: 10px; background: rgba(99,102,241,0.15); border: 1px solid rgba(99,102,241,0.35); color: #A5B4FC; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600; text-decoration: none; transition: all 200ms ease; width: fit-content; }
-.fyn-cta:hover { background: rgba(99,102,241,0.25); border-color: rgba(99,102,241,0.5); }
-.fyn-mock-browser { background: #060C18; border-radius: 12px; border: 1px solid rgba(99,102,241,0.15); overflow: hidden; box-shadow: 0 24px 80px rgba(0,0,0,0.5); }
-.fyn-mock-bar { background: #04080F; padding: 10px 14px; display: flex; align-items: center; gap: 6px; border-bottom: 1px solid rgba(99,102,241,0.08); }
+.fyn-feat-dot { width: 6px; height: 6px; border-radius: 50%; background: #4ADE80; box-shadow: 0 0 6px rgba(74,222,128,0.5); flex-shrink: 0; }
+.fyn-cta { display: inline-flex; align-items: center; justify-content: center; padding: 13px 28px; border-radius: 10px; background: rgba(34,197,94,0.12); border: 1px solid rgba(34,197,94,0.35); color: #86EFAC; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600; text-decoration: none; transition: all 200ms ease; width: fit-content; }
+.fyn-cta:hover { background: rgba(34,197,94,0.22); border-color: rgba(34,197,94,0.5); }
+.fyn-mock-browser { background: #060C18; border-radius: 12px; border: 1px solid rgba(34,197,94,0.15); overflow: hidden; box-shadow: 0 24px 80px rgba(0,0,0,0.5); }
+.fyn-mock-bar { background: #04080F; padding: 10px 14px; display: flex; align-items: center; gap: 6px; border-bottom: 1px solid rgba(34,197,94,0.08); }
 .fyn-mock-screen { display: flex; min-height: 280px; }
-.fyn-mock-sidebar { width: 120px; flex-shrink: 0; background: #03070F; padding: 12px 0; border-right: 1px solid rgba(99,102,241,0.07); }
+.fyn-mock-sidebar { width: 120px; flex-shrink: 0; background: #03070F; padding: 12px 0; border-right: 1px solid rgba(34,197,94,0.07); }
 .fyn-mock-nav { padding: 8px 14px; font-family: 'DM Sans', sans-serif; font-size: 11px; color: rgba(78,109,146,0.7); border-left: 2px solid transparent; }
-.fyn-mock-nav.fp-mock-nav-active { color: #A5B4FC; border-left-color: #818CF8; background: rgba(99,102,241,0.08); }
+.fyn-mock-nav.fp-mock-nav-active { color: #86EFAC; border-left-color: #4ADE80; background: rgba(34,197,94,0.08); }
 .fyn-mock-main { flex: 1; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
 .fyn-mock-stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; }
-.fyn-mock-card { background: #08101F; border: 1px solid rgba(99,102,241,0.08); border-radius: 8px; padding: 10px; }
+.fyn-mock-card { background: #08101F; border: 1px solid rgba(34,197,94,0.08); border-radius: 8px; padding: 10px; }
 .fyn-mock-val { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 16px; color: #F1F5FF; }
 .fyn-mock-invoice-header { font-family: 'DM Sans', sans-serif; font-size: 10px; font-weight: 500; color: #4E6D92; }
 .fyn-mock-invoices { display: flex; flex-direction: column; gap: 4px; }
-.fyn-sync-banner { background: rgba(99,102,241,0.06); border: 1px solid rgba(99,102,241,0.15); border-radius: 6px; padding: 6px 10px; font-family: 'JetBrains Mono', monospace; font-size: 9px; color: #818CF8; letter-spacing: 0.05em; display: flex; align-items: center; gap: 6px; }
+.fyn-sync-banner { background: rgba(34,197,94,0.06); border: 1px solid rgba(34,197,94,0.15); border-radius: 6px; padding: 6px 10px; font-family: 'JetBrains Mono', monospace; font-size: 9px; color: #4ADE80; letter-spacing: 0.05em; display: flex; align-items: center; gap: 6px; }
 .fyn-sync-icon { font-size: 12px; }
-.fyn-ecosystem-note { display: flex; align-items: center; gap: 24px; background: linear-gradient(135deg, rgba(10,16,32,1) 0%, rgba(6,11,20,1) 100%); border: 1px solid rgba(99,102,241,0.2); border-radius: 14px; padding: 28px 32px; }
+.fyn-ecosystem-note { display: flex; align-items: center; gap: 24px; background: linear-gradient(135deg, rgba(10,16,32,1) 0%, rgba(6,11,20,1) 100%); border: 1px solid rgba(34,197,94,0.2); border-radius: 14px; padding: 28px 32px; }
 .fyn-eco-icon { font-size: 28px; flex-shrink: 0; }
 .fyn-eco-text { flex: 1; }
 .fyn-eco-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 17px; color: #F1F5FF; margin-bottom: 6px; }
 .fyn-eco-sub { font-family: 'DM Sans', sans-serif; font-weight: 300; font-size: 14px; color: #4E6D92; line-height: 1.6; }
-.fyn-eco-cta { display: inline-flex; align-items: center; padding: 10px 20px; border-radius: 8px; background: rgba(99,102,241,0.12); border: 1px solid rgba(99,102,241,0.3); color: #A5B4FC; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; text-decoration: none; white-space: nowrap; flex-shrink: 0; transition: all 200ms ease; }
-.fyn-eco-cta:hover { background: rgba(99,102,241,0.22); }
+.fyn-eco-cta { display: inline-flex; align-items: center; padding: 10px 20px; border-radius: 8px; background: rgba(34,197,94,0.12); border: 1px solid rgba(34,197,94,0.3); color: #86EFAC; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; text-decoration: none; white-space: nowrap; flex-shrink: 0; transition: all 200ms ease; }
+.fyn-eco-cta:hover { background: rgba(34,197,94,0.22); }
 @media(max-width:860px){ .fyn-hero{grid-template-columns:1fr;} .fyn-mock-stats{grid-template-columns:1fr 1fr;} .fyn-ecosystem-note{flex-direction:column;text-align:center;} .fyn-showcase{padding:120px 16px 80px;} }
+
+.why2-wrap{background:#03060D;padding:90px 32px 60px;box-sizing:border-box;min-height:100vh;display:flex;flex-direction:column;justify-content:center;}
+.why2-head{text-align:center;margin-bottom:24px;}
+.why2-eye{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.3em;color:#2563EB;text-transform:uppercase;margin-bottom:8px;}
+.why2-title{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(20px,2.8vw,32px);color:#F1F5FF;line-height:1.1;margin-bottom:8px;}
+.why2-sub{font-family:'DM Sans',sans-serif;font-weight:300;font-size:14px;color:#4E6D92;}
+.why2-top-grid{margin-bottom:24px;}
+.why2-hero-card{background:linear-gradient(145deg,#0A1628,#060B14);border:1px solid rgba(37,99,235,0.25);border-radius:14px;padding:20px 24px;}
+.why2-hero-badge{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.15em;color:#3B82F6;text-transform:uppercase;margin-bottom:16px;display:flex;align-items:center;gap:10px;}
+.why2-live{color:#4ADE80;font-size:8px;}
+.why2-pillars{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;}
+.why2-pillar{display:flex;flex-direction:column;gap:4px;padding:12px;background:rgba(37,99,235,0.04);border:1px solid rgba(37,99,235,0.1);border-radius:8px;}
+.why2-pillar-icon{font-size:16px;}
+.why2-pillar-label{font-family:'DM Sans',sans-serif;font-weight:500;font-size:11px;color:#F1F5FF;}
+.why2-pillar-val{font-family:'DM Sans',sans-serif;font-weight:300;font-size:10px;color:#4E6D92;line-height:1.4;}
+.why2-comp-grid{background:rgba(6,11,20,0.6);border:1px solid rgba(37,99,235,0.1);border-radius:14px;overflow:hidden;}
+.why2-comp-head{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr 1fr;background:rgba(3,6,13,0.8);border-bottom:1px solid rgba(37,99,235,0.12);}
+.why2-comp-col{padding:12px 14px;}
+.why2-comp-brand{font-family:'Syne',sans-serif;font-weight:700;font-size:11px;color:#4E6D92;margin-bottom:3px;}
+.why2-comp-brand--xev{color:#3B82F6;}
+.why2-comp-price{font-family:'JetBrains Mono',monospace;font-size:8px;color:#2A3F58;letter-spacing:0.05em;}
+.why2-comp-us{background:rgba(37,99,235,0.06);border-right:1px solid rgba(37,99,235,0.12);}
+.why2-comp-feature-col{padding:12px 14px;}
+.why2-comp-rows{}
+.why2-comp-row{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr 1fr;border-top:1px solid rgba(37,99,235,0.06);}
+.why2-comp-row:hover{background:rgba(37,99,235,0.02);}
+.why2-comp-cell{padding:9px 14px;font-family:'DM Sans',sans-serif;font-size:11px;display:flex;align-items:center;}
+.why2-comp-cell.why2-comp-feature-col{color:#8BA4C0;font-weight:400;}
+.why2-comp-cell.why2-comp-us{background:rgba(37,99,235,0.04);}
+.why2-yes{color:#4ADE80;font-weight:500;}
+.why2-yes-dim{color:#4ADE80;opacity:0.5;font-weight:400;}
+.why2-no{color:#2A3F58;}
+.why2-partial{color:#FBB724;}
+.why2-disclaimer{text-align:center;margin-top:16px;font-family:'DM Sans',sans-serif;font-size:10px;color:#1E3048;}
+@media(max-width:900px){
+  .why2-pillars{grid-template-columns:repeat(3,1fr);}
+  .why2-comp-head,.why2-comp-row{grid-template-columns:1fr 1fr;}
+  .why2-comp-head .why2-comp-col:nth-child(n+4),.why2-comp-row .why2-comp-cell:nth-child(n+4){display:none;}
+  .why2-wrap{padding:100px 16px 60px;}
+}
 
 </style>
 </head>
@@ -1842,80 +1733,132 @@ footer{
 </section>
 
 <section id="why-panel" class="tab-panel">
-<div class="why-section">
-  <div class="why-inner">
-    <header class="why-head">
-      <p class="why-eyebrow">WHY XEVORA</p>
-      <h2 class="why-title">Built different.<br>For the people who build things.</h2>
-      <p class="why-sub">Other platforms were built for offices, restaurants, and retail. Xevora was built exclusively for drivers, field crews, and trades.</p>
-    </header>
+<div class="why2-wrap">
+  <header class="why2-head">
+    <p class="why2-eye">WHY XEVORA</p>
+    <h2 class="why2-title">Built different. For the people who build things.</h2>
+    <p class="why2-sub">Other platforms were built for offices. Xevora was built for the field.</p>
+  </header>
 
-    <div class="why-cards">
-      <div class="why-card why-card--xev">
-        <div class="why-card-header">
-          <div class="why-card-badge why-card-badge--xev">XEVORA</div>
-          <div class="why-card-status"><span class="why-status-dot"></span>Your platform</div>
+  <div class="why2-top-grid">
+    <div class="why2-hero-card">
+      <div class="why2-hero-badge">XEVORA <span class="why2-live">● YOUR PLATFORM</span></div>
+      <div class="why2-pillars">
+        <div class="why2-pillar">
+          <div class="why2-pillar-icon">📍</div>
+          <div class="why2-pillar-label">GPS-Native</div>
+          <div class="why2-pillar-val">Location stamped on every punch. No add-on needed.</div>
         </div>
-        <ul class="why-list">
-          <li class="why-item why-item--good"><span class="why-check">✓</span><div><strong>Mobile-first, GPS-native</strong><span>Location-stamped clock-in from any phone — built for workers who are never at a desk</span></div></li>
-          <li class="why-item why-item--good"><span class="why-check">✓</span><div><strong>W2 + 1099 on one platform</strong><span>Manage employees and contractors together — most competitors force you to choose</span></div></li>
-          <li class="why-item why-item--good"><span class="why-check">✓</span><div><strong>Flat pricing from $49/mo</strong><span>One price for your whole team — no per-employee fees, no per-location charges, no surprises</span></div></li>
-          <li class="why-item why-item--good"><span class="why-check">✓</span><div><strong>Setup in under 20 minutes</strong><span>First worker clocked in same day — no sales calls, no implementation consultants required</span></div></li>
-          <li class="why-item why-item--good"><span class="why-check">✓</span><div><strong>Payroll built-in, not an add-on</strong><span>Time tracking and payroll are one system — no exports, no integrations needed</span></div></li>
-          <li class="why-item why-item--good"><span class="why-check">✓</span><div><strong>AI anomaly detection</strong><span>Automatically flags unusual hours, missed punches, and payroll discrepancies before they become problems</span></div></li>
-          <li class="why-item why-item--good"><span class="why-check">✓</span><div><strong>Built for multi-site field ops</strong><span>Designed for workers who move between job sites — not tied to a single physical address</span></div></li>
-        </ul>
-      </div>
-
-      <div class="why-vs">VS</div>
-
-      <div class="why-competitors">
-        <div class="why-comp-card">
-          <div class="why-comp-name">ADP RUN</div>
-          <div class="why-comp-sub">Quote-based pricing, starting ~$79/mo + $4/employee</div>
-          <ul class="why-comp-list">
-            <li><span class="why-x">✗</span>Pricing requires a sales call — no transparent online rates</li>
-            <li><span class="why-x">✗</span>GPS time tracking sold as a paid add-on, not included</li>
-            <li><span class="why-x">✗</span>Built for office-based HR teams, not field operators</li>
-            <li><span class="why-x">✗</span>Implementation takes days with dedicated onboarding</li>
-            <li><span class="why-x">✗</span>Per-employee fees scale costs as your crew grows</li>
-            <li><span class="why-x">✗</span>Complex setup with potential annual contract lock-in</li>
-          </ul>
-          <div class="why-comp-source">Source: tech.co, comparisun.com — Jan 2026</div>
+        <div class="why2-pillar">
+          <div class="why2-pillar-icon">👥</div>
+          <div class="why2-pillar-label">W2 + 1099</div>
+          <div class="why2-pillar-val">Both worker types. One platform. No workarounds.</div>
         </div>
-        <div class="why-comp-card">
-          <div class="why-comp-name">Homebase</div>
-          <div class="why-comp-sub">From $24.95/mo per location + $39/mo payroll add-on</div>
-          <ul class="why-comp-list">
-            <li><span class="why-x">✗</span>Priced per location — 5 job sites = 5x your monthly bill</li>
-            <li><span class="why-x">✗</span>Payroll is a separate paid add-on ($39/mo base + $6/employee)</li>
-            <li><span class="why-x">✗</span>GPS shows location only at clock-in, not throughout the shift</li>
-            <li><span class="why-x">✗</span>Built for restaurants and retail — not field crews or drivers</li>
-            <li><span class="why-x">✗</span>No native 1099 contractor payroll support</li>
-            <li><span class="why-x">✗</span>Geofencing limited to preset distances, no custom boundaries</li>
-          </ul>
-          <div class="why-comp-source">Source: connecteam.com, turnozo.com — Feb 2026</div>
+        <div class="why2-pillar">
+          <div class="why2-pillar-icon">💰</div>
+          <div class="why2-pillar-label">From $49/mo</div>
+          <div class="why2-pillar-val">Flat pricing. No per-employee fees. No surprises.</div>
         </div>
-        <div class="why-comp-card">
-          <div class="why-comp-name">Gusto</div>
-          <div class="why-comp-sub">From $40/mo base + $6/employee/mo</div>
-          <ul class="why-comp-list">
-            <li><span class="why-x">✗</span>No native GPS time tracking — requires third-party integration</li>
-            <li><span class="why-x">✗</span>Designed for salaried office employees, not hourly field workers</li>
-            <li><span class="why-x">✗</span>Time tracking requires separate Gusto Time add-on</li>
-            <li><span class="why-x">✗</span>Per-employee pricing becomes expensive for larger crews</li>
-            <li><span class="why-x">✗</span>No mileage tracking or field-specific features</li>
-            <li><span class="why-x">✗</span>Limited support for multi-site or mobile workforce management</li>
-          </ul>
-          <div class="why-comp-source">Source: gusto.com pricing page — 2026</div>
+        <div class="why2-pillar">
+          <div class="why2-pillar-icon">⚡</div>
+          <div class="why2-pillar-label">20-min Setup</div>
+          <div class="why2-pillar-val">First worker clocked in same day. No sales call.</div>
+        </div>
+        <div class="why2-pillar">
+          <div class="why2-pillar-icon">🤖</div>
+          <div class="why2-pillar-label">AI Built-in</div>
+          <div class="why2-pillar-val">Anomaly detection and payroll assistant — core features, not add-ons.</div>
+        </div>
+        <div class="why2-pillar">
+          <div class="why2-pillar-icon">🚛</div>
+          <div class="why2-pillar-label">Field-First</div>
+          <div class="why2-pillar-val">Built for drivers, crews, trades — not office teams.</div>
         </div>
       </div>
-    </div>
-
-    <div class="why-disclaimer">
-      Competitor pricing and features based on publicly available information as of early 2026. Pricing subject to change. Xevora is not affiliated with ADP, Homebase, or Gusto.
     </div>
   </div>
+
+  <div class="why2-comp-grid">
+    <div class="why2-comp-head">
+      <div class="why2-comp-col why2-comp-feature-col"></div>
+      <div class="why2-comp-col why2-comp-us">
+        <div class="why2-comp-brand why2-comp-brand--xev">XEVORA</div>
+        <div class="why2-comp-price">from $49/mo</div>
+      </div>
+      <div class="why2-comp-col">
+        <div class="why2-comp-brand">ADP RUN</div>
+        <div class="why2-comp-price">~$79/mo + $4/employee</div>
+      </div>
+      <div class="why2-comp-col">
+        <div class="why2-comp-brand">Homebase</div>
+        <div class="why2-comp-price">$24.95/location + $39 payroll</div>
+      </div>
+      <div class="why2-comp-col">
+        <div class="why2-comp-brand">Gusto</div>
+        <div class="why2-comp-price">$40/mo + $6/employee</div>
+      </div>
+    </div>
+    <div class="why2-comp-rows">
+      <div class="why2-comp-row">
+        <div class="why2-comp-cell why2-comp-feature-col">GPS Clock-In Native</div>
+        <div class="why2-comp-cell why2-comp-us why2-yes">✓ Yes, native</div>
+        <div class="why2-comp-cell why2-no">✗ Add-on</div>
+        <div class="why2-comp-cell why2-no">✗ Snapshot only</div>
+        <div class="why2-comp-cell why2-no">✗ No</div>
+      </div>
+      <div class="why2-comp-row">
+        <div class="why2-comp-cell why2-comp-feature-col">W2 + 1099 Together</div>
+        <div class="why2-comp-cell why2-comp-us why2-yes">✓ Both</div>
+        <div class="why2-comp-cell why2-no">✗ Complex</div>
+        <div class="why2-comp-cell why2-no">✗ W2 only</div>
+        <div class="why2-comp-cell why2-no">✗ Limited</div>
+      </div>
+      <div class="why2-comp-row">
+        <div class="why2-comp-cell why2-comp-feature-col">Payroll Included</div>
+        <div class="why2-comp-cell why2-comp-us why2-yes">✓ Built-in</div>
+        <div class="why2-comp-cell why2-no">✗ Core only</div>
+        <div class="why2-comp-cell why2-no">✗ Add-on $39</div>
+        <div class="why2-comp-cell why2-no">✗ Separate</div>
+      </div>
+      <div class="why2-comp-row">
+        <div class="why2-comp-cell why2-comp-feature-col">Flat Pricing</div>
+        <div class="why2-comp-cell why2-comp-us why2-yes">✓ Yes</div>
+        <div class="why2-comp-cell why2-no">✗ Per-employee</div>
+        <div class="why2-comp-cell why2-no">✗ Per-location</div>
+        <div class="why2-comp-cell why2-no">✗ Per-employee</div>
+      </div>
+      <div class="why2-comp-row">
+        <div class="why2-comp-cell why2-comp-feature-col">Built for Field Workers</div>
+        <div class="why2-comp-cell why2-comp-us why2-yes">✓ 100%</div>
+        <div class="why2-comp-cell why2-no">✗ Office focus</div>
+        <div class="why2-comp-cell why2-no">✗ Retail/restaurant</div>
+        <div class="why2-comp-cell why2-no">✗ Office focus</div>
+      </div>
+      <div class="why2-comp-row">
+        <div class="why2-comp-cell why2-comp-feature-col">Setup Time</div>
+        <div class="why2-comp-cell why2-comp-us why2-yes">✓ 20 minutes</div>
+        <div class="why2-comp-cell why2-no">✗ Days</div>
+        <div class="why2-comp-cell why2-no">✗ Hours</div>
+        <div class="why2-comp-cell why2-no">✗ Hours</div>
+      </div>
+      <div class="why2-comp-row">
+        <div class="why2-comp-cell why2-comp-feature-col">AI Features</div>
+        <div class="why2-comp-cell why2-comp-us why2-yes">✓ Core</div>
+        <div class="why2-comp-cell why2-no">✗ Add-on</div>
+        <div class="why2-comp-cell why2-no">✗ Limited</div>
+        <div class="why2-comp-cell why2-no">✗ Limited</div>
+      </div>
+      <div class="why2-comp-row">
+        <div class="why2-comp-cell why2-comp-feature-col">Transparent Pricing</div>
+        <div class="why2-comp-cell why2-comp-us why2-yes">✓ Public</div>
+        <div class="why2-comp-cell why2-no">✗ Quote only</div>
+        <div class="why2-comp-cell why2-partial">~ Partial</div>
+        <div class="why2-comp-cell why2-yes-dim">✓ Public</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="why2-disclaimer">Competitor data sourced from tech.co, connecteam.com, turnozo.com — Jan/Feb 2026. Xevora is not affiliated with ADP, Homebase, or Gusto.</div>
 </div>
 </section>
 
