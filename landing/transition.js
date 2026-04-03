@@ -2,13 +2,21 @@ function xevoraTransition(e, destination) {
   if (e && e.preventDefault) e.preventDefault();
   if (document.getElementById('xev-overlay')) return;
 
+  /* Solid base layer first — landing never flashes through during/after overlay fades */
+  var preBlock = document.createElement('div');
+  preBlock.id = 'xev-preblock';
+  preBlock.style.cssText = 'position:fixed;inset:0;z-index:999998;background:#03060D;pointer-events:auto;';
+  document.body.appendChild(preBlock);
+
   var style = document.createElement('style');
   style.textContent = [
     '@keyframes xRing{0%{transform:translate(-50%,-50%) scale(0.9);opacity:0.7}50%{transform:translate(-50%,-50%) scale(1.1);opacity:0.15}100%{transform:translate(-50%,-50%) scale(0.9);opacity:0.7}}',
     '@keyframes xGlow{0%,100%{opacity:0.5}50%{opacity:1}}',
     '@keyframes xScan{0%{top:-2px;opacity:0}5%{opacity:0.6}95%{opacity:0.6}100%{top:100%;opacity:0}}',
     '@keyframes xSparkPop{0%{transform:translateY(-50%) scale(0);opacity:0}30%{transform:translateY(-50%) scale(1.4);opacity:1}100%{transform:translateY(-50%) scale(1);opacity:1}}',
-    '@keyframes xParticle{0%{opacity:1;transform:translate(0,0) scale(1)}100%{opacity:0;transform:translate(var(--px),var(--py)) scale(0)}}'
+    '@keyframes xParticle{0%{opacity:1;transform:translate(0,0) scale(1)}100%{opacity:0;transform:translate(var(--px),var(--py)) scale(0)}}',
+    '#xev-bar-fill{transition:width 1300ms cubic-bezier(0.4,0,0.15,1) !important}',
+    '#xev-spark{transition:opacity 200ms ease !important}'
   ].join('');
   document.head.appendChild(style);
 
@@ -64,11 +72,13 @@ function xevoraTransition(e, destination) {
   barWrap.style.cssText = 'width:200px;height:3px;background:rgba(37,99,235,0.1);border-radius:999px;position:relative;overflow:visible;';
 
   var barFill = document.createElement('div');
-  barFill.style.cssText = 'height:100%;width:0%;background:linear-gradient(90deg,rgba(37,99,235,0.6),#3B82F6,#60A5FA);border-radius:999px;position:relative;transition:width 1300ms cubic-bezier(0.4,0,0.15,1);';
+  barFill.id = 'xev-bar-fill';
+  barFill.style.cssText = 'height:100%;width:0%;background:linear-gradient(90deg,rgba(37,99,235,0.6),#3B82F6,#60A5FA);border-radius:999px;position:relative;';
 
   /* Spark at leading edge */
   var spark = document.createElement('div');
-  spark.style.cssText = 'position:absolute;right:-3px;top:50%;transform:translateY(-50%) scale(0);width:10px;height:10px;border-radius:50%;background:#fff;box-shadow:0 0 6px 3px rgba(96,165,250,1),0 0 14px 6px rgba(37,99,235,0.8),0 0 28px 10px rgba(37,99,235,0.4);opacity:0;transition:opacity 200ms ease;';
+  spark.id = 'xev-spark';
+  spark.style.cssText = 'position:absolute;right:-3px;top:50%;transform:translateY(-50%) scale(0);width:10px;height:10px;border-radius:50%;background:#fff;box-shadow:0 0 6px 3px rgba(96,165,250,1),0 0 14px 6px rgba(37,99,235,0.8),0 0 28px 10px rgba(37,99,235,0.4);opacity:0;';
   barFill.appendChild(spark);
 
   /* Particle container */
@@ -119,8 +129,13 @@ function xevoraTransition(e, destination) {
 
       /* Start bar fill after brief pause */
       setTimeout(function() {
-        barFill.style.width = '100%';
-        spark.style.animation = 'xSparkPop 300ms ease-out forwards';
+        void barFill.offsetWidth;
+        requestAnimationFrame(function () {
+          requestAnimationFrame(function () {
+            barFill.style.width = '100%';
+            spark.style.animation = 'xSparkPop 300ms ease-out forwards';
+          });
+        });
 
         /* Burst particles every 300ms while loading */
         var burstInterval = setInterval(burstParticles, 350);
@@ -167,21 +182,17 @@ function xevoraTransition(e, destination) {
                 r.style.opacity = '0';
               });
 
-              // Phase 3: full overlay implodes to center then hard cuts
+              // Phase 3: full overlay implodes — preBlock already covers viewport; raise it above fading overlay
               setTimeout(function() {
+                preBlock.style.zIndex = '10000000';
                 ov.style.transition = 'transform 350ms cubic-bezier(0.4,0,0.2,1), opacity 350ms ease-in';
                 ov.style.transformOrigin = 'center center';
                 ov.style.transform = 'scale(0.95)';
                 ov.style.opacity = '0';
 
-                // Navigate — overlay stays opaque until browser loads new page
-                setTimeout(function() {
-                  // Inject a black div that persists through navigation
-                  var blocker = document.createElement('div');
-                  blocker.style.cssText = 'position:fixed;inset:0;z-index:9999999;background:#03060D;';
-                  document.body.appendChild(blocker);
+                setTimeout(function () {
                   window.location.href = destination;
-                }, 320);
+                }, 340);
               }, 250);
             }, 300);
           }, 500);

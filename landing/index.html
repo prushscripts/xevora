@@ -345,6 +345,18 @@ button.site-tab:focus,button.site-tab:focus-visible{outline:none}
   z-index:6;
   pointer-events:none;
 }
+/* Inactive panels: collapse height so they don't extend document scroll (invisible "dead" space) */
+.tab-panel:not(.panel-active):not(.panel-exit):not(.panel-enter):not(.panel-enter-active){
+  visibility:hidden;
+  height:0 !important;
+  min-height:0 !important;
+  max-height:0 !important;
+  overflow:hidden !important;
+  padding:0 !important;
+  margin:0 !important;
+  border:none !important;
+  pointer-events:none;
+}
 @keyframes scanSweep{
   from{top:0;opacity:1}
   to{top:100%;opacity:0}
@@ -1168,6 +1180,10 @@ nav.load-in{opacity:1 !important;transform:translateY(0) !important;transition:o
   *,*::before,*::after{animation:none !important;transition:none !important;scroll-behavior:auto !important}
   .fr-stagger{opacity:1 !important;transform:none !important}
   .pricing-premium-section .pricing-card{opacity:1 !important;transform:none !important}
+  /* Keep nav hex + sign-in overlay progress bar animating (branding / intentional motion) */
+  .nav-hex-pulse{animation:navHexPulse 2.6s ease-out infinite !important}
+  .nav-hex-pulse--2{animation-delay:0.9s !important}
+  #xev-bar-fill{transition:width 1300ms cubic-bezier(0.4,0,0.15,1) !important}
 }
 
 /* FOOTER */
@@ -1453,17 +1469,32 @@ footer{
 }
 
 .phase-wrap{background:#03060D;background-image:linear-gradient(rgba(37,99,235,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(37,99,235,0.04) 1px,transparent 1px);background-size:44px 44px;padding:90px 40px 80px;width:100%;box-sizing:border-box;}
-.phase-cards-row{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;}
-.phase-block--next .phase-cards-row{grid-template-columns:repeat(8,minmax(0,1fr));}
-.phase-card{padding:10px 10px;border-radius:8px;transition:transform 160ms ease,box-shadow 160ms ease;}
+.phase-cards-row{
+  display:grid;
+  gap:12px;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  max-width:1000px;
+  margin-inline:auto;
+}
+.phase-block--next .phase-cards-row{
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  max-width:1100px;
+}
+@media(max-width:900px){
+  .phase-cards-row,.phase-block--next .phase-cards-row{grid-template-columns:repeat(2,minmax(0,1fr))!important;max-width:none;}
+}
+@media(max-width:520px){
+  .phase-cards-row,.phase-block--next .phase-cards-row{grid-template-columns:1fr!important;}
+}
+.phase-card{padding:12px 14px;border-radius:10px;transition:transform 160ms ease,box-shadow 160ms ease;}
 .phase-card--done{background:rgba(34,197,94,0.04);border:1px solid rgba(34,197,94,0.12);border-left:2px solid rgba(34,197,94,0.5);}
 .phase-card--done:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(34,197,94,0.08);border-color:rgba(34,197,94,0.25);}
 .phase-card--next{background:rgba(99,102,241,0.03);border:1px solid rgba(99,102,241,0.1);border-left:2px solid rgba(99,102,241,0.3);opacity:0.8;}
 .phase-card--next:hover{opacity:1;transform:translateY(-2px);box-shadow:0 4px 16px rgba(99,102,241,0.08);}
-.phase-card-icon{font-size:14px;margin-bottom:4px;}
-.phase-card-name{font-family:'DM Sans',sans-serif;font-weight:500;font-size:11px;color:#F1F5FF;line-height:1.2;margin-bottom:3px;}
+.phase-card-icon{font-size:18px;margin-bottom:6px;}
+.phase-card-name{font-family:'DM Sans',sans-serif;font-weight:500;font-size:13px;color:#F1F5FF;line-height:1.25;margin-bottom:4px;}
 .phase-card--next .phase-card-name{color:#C4CFDF;}
-.phase-card-desc{font-family:'DM Sans',sans-serif;font-weight:300;font-size:9px;color:#4E6D92;line-height:1.35;}
+.phase-card-desc{font-family:'DM Sans',sans-serif;font-weight:300;font-size:11px;color:#4E6D92;line-height:1.4;}
 .phase-head{text-align:center;margin-bottom:32px;}
 .phase-eye{display:flex;align-items:center;justify-content:center;gap:12px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.3em;color:#2563EB;text-transform:uppercase;margin-bottom:8px;}
 .phase-eye-line{display:block;width:28px;height:1px;background:rgba(37,99,235,0.4);}
@@ -1495,7 +1526,6 @@ footer{
 .phase-foot{text-align:center;margin-top:20px;font-family:'DM Sans',sans-serif;font-size:12px;color:#4E6D92;}
 .phase-foot a{color:#3B82F6;text-decoration:none;}
 @media(max-width:900px){
-  .phase-cards-row{grid-template-columns:repeat(3,1fr)!important;}
   .phase-wrap{padding:110px 16px 60px;}
 }
 
@@ -1541,8 +1571,8 @@ section { min-height: unset !important; }
   height: auto !important;
 }
 
-.phase-wrap { padding-bottom: 100px; }
-.why2-wrap { padding-bottom: 100px; }
+.phase-wrap { padding-bottom: 72px; }
+.why2-wrap { padding-bottom: 72px; }
 .pricing-premium-section { padding-bottom: 100px; }
 .fp-showcase { padding-bottom: 120px; }
 .fyn-showcase { padding-bottom: 120px; }
@@ -1613,9 +1643,58 @@ footer { position: relative !important; margin-top: 0 !important; }
   .why2-sub { font-size: 13px; }
 }
 
-@keyframes hexRingAnim {
-  0%   { transform: translate(-50%,-50%) scale(0.85); opacity: 0.8; }
-  100% { transform: translate(-50%,-50%) scale(1.9);  opacity: 0; }
+@keyframes navHexPulse {
+  0%   { transform: translate(-50%,-50%) scale(0.85); opacity: 0.85; }
+  100% { transform: translate(-50%,-50%) scale(1.95); opacity: 0; }
+}
+.nav-brand-hex{
+  position:relative;
+  width:32px;
+  height:32px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-shrink:0;
+}
+.nav-hex-pulse{
+  position:absolute;
+  left:50%;
+  top:50%;
+  border-radius:50%;
+  pointer-events:none;
+  box-sizing:border-box;
+  transform:translate(-50%,-50%) scale(0.85);
+  animation:navHexPulse 2.6s ease-out infinite;
+  opacity:0.85;
+}
+.nav-hex-pulse--1{
+  width:44px;
+  height:44px;
+  border:1.5px solid rgba(37,99,235,0.55);
+}
+.nav-hex-pulse--2{
+  width:58px;
+  height:58px;
+  border:1px solid rgba(37,99,235,0.28);
+  animation-delay:0.9s;
+}
+.nav-hex-core{
+  position:relative;
+  z-index:2;
+  width:28px;
+  height:28px;
+  border-radius:8px;
+  background:rgba(6,11,20,1);
+  border:1px solid rgba(37,99,235,0.45);
+  box-shadow:0 0 12px rgba(37,99,235,0.3),0 0 0 1px rgba(59,130,246,0.12);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  transition:box-shadow 250ms ease,border-color 250ms ease;
+}
+.nav-brand-group:hover .nav-hex-core{
+  box-shadow:0 0 18px rgba(37,99,235,0.45),0 0 0 1px rgba(59,130,246,0.22);
+  border-color:rgba(37,99,235,0.65);
 }
 
 </style>
@@ -1631,21 +1710,17 @@ footer { position: relative !important; margin-top: 0 !important; }
   <div class="nav-brand-wrap">
     <div class="nav-brand-group">
       <div style="position:relative;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-<div style="position:relative;width:32px;height:32px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-  <svg id="hex-pulse-ring-1" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:44px;height:44px;opacity:0.7;animation:hexRingAnim 2.6s ease-out infinite;" viewBox="0 0 44 44" fill="none">
-    <circle cx="22" cy="22" r="20" stroke="rgba(37,99,235,0.55)" stroke-width="1.2"/>
-  </svg>
-  <svg id="hex-pulse-ring-2" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:58px;height:58px;opacity:0.7;animation:hexRingAnim 2.6s ease-out infinite;animation-delay:0.9s;" viewBox="0 0 58 58" fill="none">
-    <circle cx="29" cy="29" r="27" stroke="rgba(37,99,235,0.25)" stroke-width="1"/>
-  </svg>
-  <div style="position:relative;z-index:2;width:28px;height:28px;border-radius:8px;background:rgba(6,11,20,1);border:1px solid rgba(37,99,235,0.45);box-shadow:0 0 12px rgba(37,99,235,0.3),0 0 0 1px rgba(59,130,246,0.12);display:flex;align-items:center;justify-content:center;">
-    <svg viewBox="0 0 100 100" fill="none" width="22" height="22">
-      <polygon points="50,6 89,28 89,72 50,94 11,72 11,28" fill="#0B1422" stroke="rgba(37,99,235,0.5)" stroke-width="2"/>
-      <path d="M33,25 L43,25 L50,37 L57,25 L67,25 L55,50 L67,75 L57,75 L50,63 L43,75 L33,75 L45,50 Z" fill="#2563EB"/>
-      <polygon points="50,43 57,50 50,57 43,50" fill="#60A5FA"/>
-    </svg>
-  </div>
-</div>
+        <div class="nav-brand-hex" aria-hidden="true">
+          <span class="nav-hex-pulse nav-hex-pulse--1"></span>
+          <span class="nav-hex-pulse nav-hex-pulse--2"></span>
+          <div class="nav-hex-core">
+            <svg viewBox="0 0 100 100" fill="none" width="22" height="22" aria-hidden="true">
+              <polygon points="50,6 89,28 89,72 50,94 11,72 11,28" fill="#0B1422" stroke="rgba(37,99,235,0.5)" stroke-width="2"/>
+              <path d="M33,25 L43,25 L50,37 L57,25 L67,25 L55,50 L67,75 L57,75 L50,63 L43,75 L33,75 L45,50 Z" fill="#2563EB"/>
+              <polygon points="50,43 57,50 50,57 43,50" fill="#60A5FA"/>
+            </svg>
+          </div>
+        </div>
       </div>
       <span class="nav-brand-sep" aria-hidden="true"></span>
       <div class="nav-brand-text-stack">
