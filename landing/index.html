@@ -150,36 +150,6 @@ nav{
   100% { background-position: -100% center; }
 }
 
-.brand-name {
-  font-family: 'Syne', sans-serif;
-  font-weight: 800;
-  font-size: 18px;
-  letter-spacing: 0.02em;
-  white-space: nowrap;
-  display: inline-block;
-  background: linear-gradient(
-    105deg,
-    #ffffff 0%,
-    #ffffff 28%,
-    #93C5FD 42%,
-    #60A5FA 50%,
-    #3B82F6 54%,
-    #93C5FD 62%,
-    #ffffff 74%,
-    #ffffff 100%
-  );
-  background-size: 300% auto;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  animation: brandShimmer 4s linear infinite;
-}
-
-@keyframes brandShimmer {
-  0%   { background-position: 200% center; }
-  100% { background-position: -100% center; }
-}
-
 .nav-badge{
   display:flex;align-items:center;gap:6px;
   font-size:11px;font-weight:500;color:var(--sub);
@@ -937,13 +907,13 @@ p.sub{
 
 .why-section {
   padding: 100px 20px 120px;
-  padding-top: 158px;
+  padding-top: 100px;
   background: #03060D;
   min-height: 100vh;
   box-sizing: border-box;
 }
 .why-inner { max-width: 960px; margin: 0 auto; }
-.why-head { text-align: center; margin-bottom: 40px; }
+.why-head { text-align: center; margin-bottom: 28px; }
 .why-eyebrow {
   font-family: 'JetBrains Mono', monospace;
   font-size: 10px; letter-spacing: 0.3em; color: #2563EB;
@@ -951,7 +921,7 @@ p.sub{
 }
 .why-title {
   font-family: 'Syne', sans-serif; font-weight: 800;
-  font-size: clamp(26px, 3.8vw, 40px);
+  font-size: clamp(22px, 3.2vw, 34px);
   line-height: 1.08;
   color: #F1F5FF; margin-bottom: 14px;
 }
@@ -1073,223 +1043,6 @@ p.sub{
   .why-competitors { flex-direction: column; }
 }
 
-.feat-wrap {
-  min-height: 100vh;
-  padding: 130px 32px 100px;
-  box-sizing: border-box;
-  background: #03060D;
-  background-image:
-    linear-gradient(rgba(37,99,235,0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(37,99,235,0.05) 1px, transparent 1px);
-  background-size: 44px 44px;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-.feat-head {
-  text-align: center;
-  margin-bottom: 40px;
-}
-.feat-eyebrow {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 0.3em;
-  color: #2563EB;
-  text-transform: uppercase;
-  margin-bottom: 14px;
-}
-.feat-line {
-  display: block;
-  width: 32px;
-  height: 1px;
-  background: rgba(37,99,235,0.4);
-  flex-shrink: 0;
-}
-.feat-title {
-  font-family: 'Syne', sans-serif;
-  font-weight: 800;
-  font-size: clamp(26px, 4vw, 42px);
-  color: #F1F5FF;
-  line-height: 1.1;
-  margin-bottom: 10px;
-}
-.feat-sub {
-  font-family: 'DM Sans', sans-serif;
-  font-weight: 300;
-  font-size: 16px;
-  color: #4E6D92;
-}
-.feat-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 40px;
-  align-items: start;
-}
-.feat-col {
-  display: flex;
-  flex-direction: column;
-}
-.feat-col-meta {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin-bottom: 8px;
-}
-.feat-stage {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  padding: 4px 12px;
-  border-radius: 999px;
-}
-.feat-stage--now {
-  background: rgba(37,99,235,0.12);
-  border: 1px solid rgba(37,99,235,0.3);
-  color: #3B82F6;
-}
-.feat-stage--next {
-  background: rgba(99,102,241,0.1);
-  border: 1px solid rgba(99,102,241,0.25);
-  color: #A5B4FC;
-}
-.feat-badge {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 9px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  padding: 4px 10px;
-  border-radius: 999px;
-}
-.feat-badge--live {
-  background: rgba(34,197,94,0.1);
-  border: 1px solid rgba(34,197,94,0.3);
-  color: #4ADE80;
-}
-.feat-badge--planned {
-  background: rgba(99,102,241,0.1);
-  border: 1px solid rgba(99,102,241,0.25);
-  color: #818CF8;
-}
-.feat-dot-pulse {
-  display: inline-block;
-  animation: statusPulse 1.5s ease-in-out infinite;
-}
-.feat-col-h {
-  font-family: 'Syne', sans-serif;
-  font-weight: 800;
-  font-size: 24px;
-  margin-bottom: 14px;
-}
-.feat-col-h--now { color: #F1F5FF; }
-.feat-col-h--next { color: #C4CFDF; }
-.feat-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-.feat-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 16px;
-  border-radius: 10px;
-  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease, background 180ms ease;
-  cursor: default;
-}
-.feat-item--now {
-  background: rgba(37,99,235,0.04);
-  border: 1px solid rgba(37,99,235,0.12);
-  border-left: 2px solid #2563EB;
-}
-.feat-item--now:hover {
-  transform: translateY(-2px);
-  background: rgba(37,99,235,0.08);
-  border-color: rgba(37,99,235,0.3);
-  border-left-color: #3B82F6;
-  box-shadow: 0 6px 20px rgba(37,99,235,0.1);
-}
-.feat-item--next {
-  background: rgba(99,102,241,0.02);
-  border: 1px solid rgba(99,102,241,0.1);
-  border-left: 2px solid rgba(99,102,241,0.3);
-  opacity: 0.78;
-}
-.feat-item--next:hover {
-  opacity: 1;
-  transform: translateY(-2px);
-  border-color: rgba(99,102,241,0.22);
-  border-left-color: rgba(129,140,248,0.6);
-  box-shadow: 0 6px 20px rgba(99,102,241,0.07);
-}
-.feat-check {
-  flex-shrink: 0;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 11px;
-  font-weight: 700;
-}
-.feat-check--now {
-  background: rgba(37,99,235,0.18);
-  border: 1px solid rgba(59,130,246,0.4);
-  color: #3B82F6;
-}
-.feat-check--next {
-  background: rgba(99,102,241,0.08);
-  border: 1px solid rgba(99,102,241,0.2);
-  color: #818CF8;
-}
-.feat-text {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  min-width: 0;
-}
-.feat-text strong {
-  font-family: 'DM Sans', sans-serif;
-  font-weight: 500;
-  font-size: 14px;
-  color: #F1F5FF;
-  line-height: 1.3;
-}
-.feat-col--next .feat-text strong {
-  color: #C4CFDF;
-}
-.feat-text span {
-  font-family: 'DM Sans', sans-serif;
-  font-weight: 300;
-  font-size: 12px;
-  color: #4E6D92;
-  line-height: 1.4;
-}
-.feat-foot {
-  text-align: center;
-  margin-top: 44px;
-  font-family: 'DM Sans', sans-serif;
-  font-weight: 300;
-  font-size: 13px;
-  color: #4E6D92;
-}
-.feat-foot a {
-  color: #3B82F6;
-  text-decoration: none;
-  margin-left: 4px;
-}
-.feat-foot a:hover { text-decoration: underline; }
-
-@media (max-width: 860px) {
-  .feat-grid { grid-template-columns: 1fr; gap: 28px; }
-  .feat-wrap { padding: 120px 16px 80px; }
-}
-
 /* Pricing — premium layout */
 @keyframes pricingFadeUp{
   from{opacity:0;transform:translateY(12px)}
@@ -1299,7 +1052,7 @@ p.sub{
   position:relative;
   background:#03060D;
   padding:120px 24px;
-  padding-top:158px;
+  padding-top:100px;
   box-sizing:border-box;
   overflow:visible;
 }
@@ -1309,13 +1062,13 @@ p.sub{
   background:radial-gradient(ellipse 90% 75% at 50% 60%,rgba(37,99,235,0.07) 0%,transparent 60%);
 }
 .pricing-premium-inner{position:relative;z-index:1;max-width:980px;margin:0 auto}
-.pricing-premium-head{text-align:center;margin-bottom:48px}
+.pricing-premium-head{text-align:center;margin-bottom:28px}
 .pricing-premium-eyebrow{
   font-family:'JetBrains Mono',ui-monospace,monospace;
   font-size:10px;font-weight:400;letter-spacing:0.3em;color:#2563EB;text-transform:uppercase;
 }
 .pricing-premium-title{
-  font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(32px,5vw,48px);
+  font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(28px,4vw,42px);
   color:#F1F5FF;line-height:1.1;margin:16px 0 28px;
 }
 .pricing-toggle-wrap{display:flex;justify-content:center;padding:0 16px}
@@ -1715,6 +1468,110 @@ footer{
   .stat-row{grid-template-columns:repeat(2,1fr)}
 }
 
+#xev-brand-text {
+  font-family: 'Syne', sans-serif !important;
+  font-weight: 800 !important;
+  font-size: 18px !important;
+  letter-spacing: 0.02em !important;
+  white-space: nowrap !important;
+  display: inline-block !important;
+  background: linear-gradient(
+    105deg,
+    #ffffff 0%,
+    #ffffff 25%,
+    #93C5FD 40%,
+    #60A5FA 50%,
+    #3B82F6 55%,
+    #93C5FD 65%,
+    #ffffff 78%,
+    #ffffff 100%
+  ) !important;
+  background-size: 300% auto !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  color: transparent !important;
+  animation: xBrandShimmer 4s linear infinite !important;
+}
+
+@keyframes xBrandShimmer {
+  0%   { background-position: 200% center; }
+  100% { background-position: -100% center; }
+}
+
+.xrf-wrap{min-height:100vh;padding:110px 32px 100px;box-sizing:border-box;background:#03060D;background-image:linear-gradient(rgba(37,99,235,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(37,99,235,0.04) 1px,transparent 1px);background-size:40px 40px;max-width:1200px;margin:0 auto;}
+.xrf-eye{display:flex;align-items:center;justify-content:center;gap:12px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.3em;color:#3B82F6;text-transform:uppercase;margin-bottom:12px;}
+.xrf-eline{display:block;width:32px;height:1px;background:rgba(37,99,235,0.4);}
+.xrf-title{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(24px,3.8vw,40px);color:#F1F5FF;text-align:center;margin:0 0 8px;line-height:1.1;letter-spacing:-0.5px;}
+.xrf-sub{font-family:'DM Sans',sans-serif;font-weight:300;font-size:15px;color:#4E6D92;text-align:center;margin:0 0 24px;}
+.xrf-stats{display:flex;align-items:center;justify-content:center;gap:0;margin-bottom:28px;border:1px solid rgba(37,99,235,0.1);border-radius:12px;background:rgba(6,11,20,0.6);max-width:400px;margin-left:auto;margin-right:auto;overflow:hidden;}
+.xrf-stat{text-align:center;padding:14px 28px;flex:1;position:relative;}
+.xrf-stat+.xrf-stat::before{content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);height:28px;width:1px;background:rgba(37,99,235,0.12);}
+.xrf-stat-num{font-family:'Syne',sans-serif;font-weight:800;font-size:22px;letter-spacing:-0.5px;line-height:1;}
+.xrf-num-now{background:linear-gradient(105deg,#4ADE80,#22C55E);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;}
+.xrf-num-next{background:linear-gradient(105deg,#A5B4FC,#818CF8);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;}
+.xrf-num-total{background:linear-gradient(105deg,#F1F5FF,#94A3B8);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;}
+.xrf-stat-label{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:0.12em;text-transform:uppercase;color:#4E6D92;margin-top:3px;}
+.xrf-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:0;}
+.xrf-col{border-radius:14px;padding:22px;position:relative;overflow:hidden;}
+.xrf-col-now{background:linear-gradient(160deg,rgba(16,32,16,0.95) 0%,rgba(3,6,13,1) 100%);border:1px solid rgba(34,197,94,0.18);box-shadow:0 0 60px rgba(34,197,94,0.04);}
+.xrf-col-now::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(34,197,94,0.5),transparent);}
+.xrf-col-next{background:linear-gradient(160deg,rgba(15,12,36,0.95) 0%,rgba(3,6,13,1) 100%);border:1px solid rgba(99,102,241,0.2);box-shadow:0 0 60px rgba(99,102,241,0.05);}
+.xrf-col-next::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(99,102,241,0.5),transparent);}
+.xrf-scan{position:absolute;left:0;right:0;height:1px;pointer-events:none;z-index:1;}
+.xrf-scan-now{background:linear-gradient(90deg,transparent,rgba(34,197,94,0.35),transparent);animation:xrfScanNow 4s linear infinite;}
+.xrf-scan-next{background:linear-gradient(90deg,transparent,rgba(99,102,241,0.35),transparent);animation:xrfScanNext 5s linear infinite 2s;}
+@keyframes xrfScanNow{0%{top:-2px;opacity:0}5%{opacity:1}95%{opacity:1}100%{top:100%;opacity:0}}
+@keyframes xrfScanNext{0%{top:-2px;opacity:0}5%{opacity:0.7}95%{opacity:0.7}100%{top:100%;opacity:0}}
+.xrf-col-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px;position:relative;z-index:2;}
+.xrf-stage{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;padding:4px 11px;border-radius:999px;}
+.xrf-stage-now{background:rgba(34,197,94,0.12);border:1px solid rgba(34,197,94,0.3);color:#4ADE80;}
+.xrf-stage-next{background:rgba(99,102,241,0.12);border:1px solid rgba(99,102,241,0.3);color:#A5B4FC;}
+.xrf-badge{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:0.1em;text-transform:uppercase;padding:4px 10px;border-radius:999px;}
+.xrf-badge-live{background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.25);color:#86EFAC;}
+.xrf-badge-plan{background:rgba(168,85,247,0.1);border:1px solid rgba(168,85,247,0.25);color:#D8B4FE;}
+.xrf-pulse{display:inline-block;animation:xrfPulse 1.5s ease-in-out infinite;}
+@keyframes xrfPulse{0%,100%{opacity:1}50%{opacity:0.3}}
+.xrf-col-title{font-family:'Syne',sans-serif;font-weight:800;font-size:19px;margin:0 0 10px;display:flex;align-items:center;gap:10px;position:relative;z-index:2;}
+.xrf-col-title::before{content:'';display:block;width:3px;height:18px;border-radius:999px;flex-shrink:0;}
+.xrf-col-title-now{background:linear-gradient(105deg,#F1F5FF 0%,#86EFAC 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;}
+.xrf-col-title-now::before{background:linear-gradient(to bottom,#4ADE80,#16A34A);}
+.xrf-col-title-next{background:linear-gradient(105deg,#C4CFDF 0%,#A5B4FC 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;}
+.xrf-col-title-next::before{background:linear-gradient(to bottom,#818CF8,#6D28D9);}
+.xrf-progress-row{display:flex;justify-content:space-between;margin-bottom:5px;position:relative;z-index:2;}
+.xrf-prog-label{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:0.1em;text-transform:uppercase;}
+.xrf-prog-label-now{color:rgba(34,197,94,0.6);}
+.xrf-prog-label-next{color:rgba(99,102,241,0.6);}
+.xrf-prog-pct{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:0.1em;}
+.xrf-prog-pct-now{color:rgba(34,197,94,0.6);}
+.xrf-prog-pct-next{color:rgba(99,102,241,0.6);}
+.xrf-prog-track{height:3px;border-radius:999px;overflow:hidden;margin-bottom:14px;position:relative;z-index:2;}
+.xrf-prog-track-now{background:rgba(34,197,94,0.1);}
+.xrf-prog-track-next{background:rgba(99,102,241,0.1);}
+.xrf-prog-fill{height:100%;border-radius:999px;}
+.xrf-prog-fill-now{width:72%;background:linear-gradient(90deg,#16A34A,#4ADE80);box-shadow:0 0 8px rgba(34,197,94,0.5);}
+.xrf-prog-fill-next{width:15%;background:linear-gradient(90deg,#4338CA,#818CF8);box-shadow:0 0 8px rgba(99,102,241,0.4);}
+.xrf-list{display:flex;flex-direction:column;gap:5px;position:relative;z-index:2;}
+.xrf-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;cursor:default;transition:all 180ms ease;}
+.xrf-item-now{background:rgba(34,197,94,0.04);border:1px solid rgba(34,197,94,0.1);border-left:2px solid rgba(34,197,94,0.5);}
+.xrf-item-now:hover{background:rgba(34,197,94,0.09);border-color:rgba(34,197,94,0.28);border-left-color:#4ADE80;box-shadow:0 4px 16px rgba(34,197,94,0.08);transform:translateX(3px);}
+.xrf-item-next{background:rgba(99,102,241,0.04);border:1px solid rgba(99,102,241,0.1);border-left:2px solid rgba(99,102,241,0.35);opacity:0.78;}
+.xrf-item-next:hover{opacity:1;background:rgba(99,102,241,0.08);border-color:rgba(99,102,241,0.22);border-left-color:#818CF8;box-shadow:0 4px 16px rgba(99,102,241,0.1);transform:translateX(3px);}
+.xrf-ico{flex-shrink:0;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;}
+.xrf-ico-now{background:rgba(34,197,94,0.15);border:1px solid rgba(34,197,94,0.35);color:#4ADE80;}
+.xrf-ico-next{background:rgba(99,102,241,0.12);border:1px solid rgba(99,102,241,0.28);color:#A5B4FC;}
+.xrf-body{min-width:0;}
+.xrf-name{font-family:'DM Sans',sans-serif;font-weight:500;font-size:13px;line-height:1.3;}
+.xrf-name-now{color:#E8FFF2;}
+.xrf-name-next{color:#C4CFDF;}
+.xrf-desc{font-family:'DM Sans',sans-serif;font-weight:300;font-size:11px;margin-top:1px;}
+.xrf-desc-now{color:rgba(74,222,128,0.45);}
+.xrf-desc-next{color:rgba(99,102,241,0.5);}
+.xrf-foot{text-align:center;margin-top:28px;font-family:'DM Sans',sans-serif;font-weight:300;font-size:13px;color:#4E6D92;}
+.xrf-foot a{color:#3B82F6;text-decoration:none;margin-left:4px;}
+.xrf-foot a:hover{text-decoration:underline;}
+@media(max-width:860px){.xrf-grid{grid-template-columns:1fr;gap:20px;}.xrf-wrap{padding:110px 16px 80px;}}
+
 </style>
 </head>
 <body>
@@ -1743,7 +1600,7 @@ footer{
       </div>
       <span class="nav-brand-sep" aria-hidden="true"></span>
       <div class="nav-brand-text-stack">
-        <span class="brand-name">XEVORA</span>
+        <span id="xev-brand-text">XEVORA</span>
         <a class="nav-xavorn-badge" href="https://xavorn.com" target="_blank" rel="noopener noreferrer"><span class="nav-xavorn-pill">PART OF XAVORN</span></a>
       </div>
     </div>
@@ -1883,47 +1740,56 @@ footer{
 </section>
 
 <section id="features-panel" class="tab-panel">
-<div class="feat-wrap">
-  <header class="feat-head">
-    <div class="feat-eyebrow"><span class="feat-line"></span>PLATFORM ROADMAP<span class="feat-line"></span></div>
-    <h2 class="feat-title">Everything your operation needs.</h2>
-    <p class="feat-sub">Built in stages. Shipped fast. No fluff.</p>
-  </header>
-  <div class="feat-grid">
-    <div class="feat-col feat-col--now">
-      <div class="feat-col-meta">
-        <span class="feat-stage feat-stage--now">● STAGE 1–2</span>
-        <span class="feat-badge feat-badge--live"><span class="feat-dot-pulse">●</span> IN DEVELOPMENT</span>
+<div class="xrf-wrap">
+  <div class="xrf-eye"><span class="xrf-eline"></span>PLATFORM ROADMAP<span class="xrf-eline"></span></div>
+  <h2 class="xrf-title">Everything your operation needs.</h2>
+  <p class="xrf-sub">Built in stages. Shipped fast. No fluff.</p>
+  <div class="xrf-stats">
+    <div class="xrf-stat"><div class="xrf-stat-num xrf-num-now">6</div><div class="xrf-stat-label">In Build</div></div>
+    <div class="xrf-stat"><div class="xrf-stat-num xrf-num-next">8</div><div class="xrf-stat-label">On Roadmap</div></div>
+    <div class="xrf-stat"><div class="xrf-stat-num xrf-num-total">14</div><div class="xrf-stat-label">Total Features</div></div>
+  </div>
+  <div class="xrf-grid">
+    <div class="xrf-col xrf-col-now">
+      <div class="xrf-scan xrf-scan-now"></div>
+      <div class="xrf-col-meta">
+        <span class="xrf-stage xrf-stage-now">● STAGE 1–2</span>
+        <span class="xrf-badge xrf-badge-live"><span class="xrf-pulse">●</span> IN DEVELOPMENT</span>
       </div>
-      <h3 class="feat-col-h feat-col-h--now">Building Now</h3>
-      <div class="feat-list">
-        <div class="feat-item feat-item--now"><div class="feat-check feat-check--now">✓</div><div class="feat-text"><strong>GPS Clock-In</strong><span>One tap, location stamped, works from any mobile device</span></div></div>
-        <div class="feat-item feat-item--now"><div class="feat-check feat-check--now">✓</div><div class="feat-text"><strong>Worker Management</strong><span>Add W2 and 1099 workers, invite via email, manage profiles</span></div></div>
-        <div class="feat-item feat-item--now"><div class="feat-check feat-check--now">✓</div><div class="feat-text"><strong>Time Entry Approval</strong><span>Review, approve or edit hours before payroll</span></div></div>
-        <div class="feat-item feat-item--now"><div class="feat-check feat-check--now">✓</div><div class="feat-text"><strong>Real-time Dashboard</strong><span>Live view of who's clocked in, hours this week, payroll estimates</span></div></div>
-        <div class="feat-item feat-item--now"><div class="feat-check feat-check--now">✓</div><div class="feat-text"><strong>Email Notifications</strong><span>Clock-in alerts, approval reminders, payroll confirmations</span></div></div>
-        <div class="feat-item feat-item--now"><div class="feat-check feat-check--now">✓</div><div class="feat-text"><strong>Billing &amp; Subscriptions</strong><span>Stripe integration, plan management, invoices</span></div></div>
+      <h3 class="xrf-col-title xrf-col-title-now">Building Now</h3>
+      <div class="xrf-progress-row"><span class="xrf-prog-label xrf-prog-label-now">BUILD PROGRESS</span><span class="xrf-prog-pct xrf-prog-pct-now">72%</span></div>
+      <div class="xrf-prog-track xrf-prog-track-now"><div class="xrf-prog-fill xrf-prog-fill-now"></div></div>
+      <div class="xrf-list">
+        <div class="xrf-item xrf-item-now"><div class="xrf-ico xrf-ico-now">✓</div><div class="xrf-body"><div class="xrf-name xrf-name-now">GPS Clock-In</div><div class="xrf-desc xrf-desc-now">One tap, location stamped, any device</div></div></div>
+        <div class="xrf-item xrf-item-now"><div class="xrf-ico xrf-ico-now">✓</div><div class="xrf-body"><div class="xrf-name xrf-name-now">Worker Management</div><div class="xrf-desc xrf-desc-now">W2 + 1099, invite via email</div></div></div>
+        <div class="xrf-item xrf-item-now"><div class="xrf-ico xrf-ico-now">✓</div><div class="xrf-body"><div class="xrf-name xrf-name-now">Time Entry Approval</div><div class="xrf-desc xrf-desc-now">Review and edit hours before payroll</div></div></div>
+        <div class="xrf-item xrf-item-now"><div class="xrf-ico xrf-ico-now">✓</div><div class="xrf-body"><div class="xrf-name xrf-name-now">Real-time Dashboard</div><div class="xrf-desc xrf-desc-now">Live clocked-in view, payroll estimates</div></div></div>
+        <div class="xrf-item xrf-item-now"><div class="xrf-ico xrf-ico-now">✓</div><div class="xrf-body"><div class="xrf-name xrf-name-now">Email Notifications</div><div class="xrf-desc xrf-desc-now">Alerts, reminders, confirmations</div></div></div>
+        <div class="xrf-item xrf-item-now"><div class="xrf-ico xrf-ico-now">✓</div><div class="xrf-body"><div class="xrf-name xrf-name-now">Billing &amp; Subscriptions</div><div class="xrf-desc xrf-desc-now">Stripe, plan management, invoices</div></div></div>
       </div>
     </div>
-    <div class="feat-col feat-col--next">
-      <div class="feat-col-meta">
-        <span class="feat-stage feat-stage--next">● STAGE 3–4</span>
-        <span class="feat-badge feat-badge--planned">● ON ROADMAP</span>
+    <div class="xrf-col xrf-col-next">
+      <div class="xrf-scan xrf-scan-next"></div>
+      <div class="xrf-col-meta">
+        <span class="xrf-stage xrf-stage-next">● STAGE 3–4</span>
+        <span class="xrf-badge xrf-badge-plan">● ON ROADMAP</span>
       </div>
-      <h3 class="feat-col-h feat-col-h--next">Coming Next</h3>
-      <div class="feat-list">
-        <div class="feat-item feat-item--next"><div class="feat-check feat-check--next">→</div><div class="feat-text"><strong>Check.com Payroll</strong><span>Automated direct deposit for W2 and 1099 workers</span></div></div>
-        <div class="feat-item feat-item--next"><div class="feat-check feat-check--next">→</div><div class="feat-text"><strong>Pay Stub Generation</strong><span>Auto PDF pay stubs emailed to every worker</span></div></div>
-        <div class="feat-item feat-item--next"><div class="feat-check feat-check--next">→</div><div class="feat-text"><strong>1099 Auto-Filing</strong><span>Year-end contractor documents generated automatically</span></div></div>
-        <div class="feat-item feat-item--next"><div class="feat-check feat-check--next">→</div><div class="feat-text"><strong>AI Payroll Assistant</strong><span>Natural language payroll runs and anomaly detection</span></div></div>
-        <div class="feat-item feat-item--next"><div class="feat-check feat-check--next">→</div><div class="feat-text"><strong>Fynlo Integration</strong><span>Labor costs sync directly to your books</span></div></div>
-        <div class="feat-item feat-item--next"><div class="feat-check feat-check--next">→</div><div class="feat-text"><strong>Mobile App (PWA)</strong><span>Installable app for workers, works offline</span></div></div>
-        <div class="feat-item feat-item--next"><div class="feat-check feat-check--next">→</div><div class="feat-text"><strong>QuickBooks Sync</strong><span>Import/export financial data</span></div></div>
-        <div class="feat-item feat-item--next"><div class="feat-check feat-check--next">→</div><div class="feat-text"><strong>Mileage Tracking</strong><span>Per-mile pay for drivers</span></div></div>
+      <h3 class="xrf-col-title xrf-col-title-next">Coming Next</h3>
+      <div class="xrf-progress-row"><span class="xrf-prog-label xrf-prog-label-next">PLANNED</span><span class="xrf-prog-pct xrf-prog-pct-next">Q3 2026</span></div>
+      <div class="xrf-prog-track xrf-prog-track-next"><div class="xrf-prog-fill xrf-prog-fill-next"></div></div>
+      <div class="xrf-list">
+        <div class="xrf-item xrf-item-next"><div class="xrf-ico xrf-ico-next">→</div><div class="xrf-body"><div class="xrf-name xrf-name-next">Check.com Payroll</div><div class="xrf-desc xrf-desc-next">Direct deposit for W2 and 1099</div></div></div>
+        <div class="xrf-item xrf-item-next"><div class="xrf-ico xrf-ico-next">→</div><div class="xrf-body"><div class="xrf-name xrf-name-next">Pay Stub Generation</div><div class="xrf-desc xrf-desc-next">Auto PDF stubs emailed to workers</div></div></div>
+        <div class="xrf-item xrf-item-next"><div class="xrf-ico xrf-ico-next">→</div><div class="xrf-body"><div class="xrf-name xrf-name-next">1099 Auto-Filing</div><div class="xrf-desc xrf-desc-next">Year-end contractor docs, automated</div></div></div>
+        <div class="xrf-item xrf-item-next"><div class="xrf-ico xrf-ico-next">→</div><div class="xrf-body"><div class="xrf-name xrf-name-next">AI Payroll Assistant</div><div class="xrf-desc xrf-desc-next">Natural language runs, anomaly detection</div></div></div>
+        <div class="xrf-item xrf-item-next"><div class="xrf-ico xrf-ico-next">→</div><div class="xrf-body"><div class="xrf-name xrf-name-next">Fynlo Integration</div><div class="xrf-desc xrf-desc-next">Labor costs sync to your books</div></div></div>
+        <div class="xrf-item xrf-item-next"><div class="xrf-ico xrf-ico-next">→</div><div class="xrf-body"><div class="xrf-name xrf-name-next">Mobile App (PWA)</div><div class="xrf-desc xrf-desc-next">Installable, works offline</div></div></div>
+        <div class="xrf-item xrf-item-next"><div class="xrf-ico xrf-ico-next">→</div><div class="xrf-body"><div class="xrf-name xrf-name-next">QuickBooks Sync</div><div class="xrf-desc xrf-desc-next">Import/export financial data</div></div></div>
+        <div class="xrf-item xrf-item-next"><div class="xrf-ico xrf-ico-next">→</div><div class="xrf-body"><div class="xrf-name xrf-name-next">Mileage Tracking</div><div class="xrf-desc xrf-desc-next">Per-mile pay for drivers</div></div></div>
       </div>
     </div>
   </div>
-  <p class="feat-foot">Feature request? <a href="mailto:hello@xevora.io">hello@xevora.io</a></p>
+  <p class="xrf-foot">Feature request? <a href="mailto:hello@xevora.io">hello@xevora.io</a></p>
 </div>
 </section>
 
