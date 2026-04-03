@@ -1459,49 +1459,35 @@ footer{
   font-weight: 800;
   font-size: 18px;
   letter-spacing: 0.02em;
+  color: #F1F5FF;
   white-space: nowrap;
-  display: inline-block;
   position: relative;
-  line-height: 1.15;
+  display: inline-block;
   overflow: hidden;
 }
 
-.xev-wordmark-base {
-  color: #F1F5FF;
-  position: relative;
-  z-index: 0;
-}
-
-/* Sliding gradient bar + transform (animated reliably); not background-clip:text
-   which Chromium often keeps static even when background-position keyframes run */
-.xev-wordmark-sheen {
+.xev-sheen {
   position: absolute;
-  top: -20%;
-  left: 0;
+  top: -10%;
+  left: -120%;
   width: 60%;
-  height: 140%;
-  z-index: 1;
-  pointer-events: none;
+  height: 120%;
   background: linear-gradient(
-    100deg,
+    105deg,
     transparent 0%,
-    transparent 20%,
-    rgba(147,197,253,0.45) 38%,
-    rgba(96,165,250,0.95) 50%,
-    rgba(59,130,246,0.85) 54%,
-    rgba(147,197,253,0.35) 68%,
+    rgba(255,255,255,0.08) 40%,
+    rgba(147,197,253,0.55) 50%,
+    rgba(255,255,255,0.08) 60%,
     transparent 100%
   );
-  mix-blend-mode: screen;
-  opacity: 1;
-  transform: skewX(-14deg) translate3d(-140%, 0, 0);
-  animation: xevSheenPass 3.5s linear infinite;
-  will-change: transform;
+  transform: skewX(-15deg);
+  animation: xevSheenMove 3.5s ease-in-out infinite;
+  pointer-events: none;
 }
 
-@keyframes xevSheenPass {
-  0%   { transform: skewX(-14deg) translate3d(-140%, 0, 0); }
-  100% { transform: skewX(-14deg) translate3d(240%, 0, 0); }
+@keyframes xevSheenMove {
+  0%   { left: -120%; }
+  100% { left: 160%; }
 }
 
 </style>
@@ -1532,7 +1518,10 @@ footer{
       </div>
       <span class="nav-brand-sep" aria-hidden="true"></span>
       <div class="nav-brand-text-stack">
-        <span class="xev-wordmark"><span class="xev-wordmark-base">XEVORA</span><span class="xev-wordmark-sheen" aria-hidden="true"></span></span>
+        <span class="xev-wordmark">
+          XEVORA
+          <span class="xev-sheen" aria-hidden="true"></span>
+        </span>
         <a class="nav-xavorn-badge" href="https://xavorn.com" target="_blank" rel="noopener noreferrer"><span class="nav-xavorn-pill">PART OF XAVORN</span></a>
       </div>
     </div>
