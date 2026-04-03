@@ -4,7 +4,7 @@ cd /d "%~dp0"
 
 echo.
 echo ========================================
-echo   Xevora — Deploy
+echo   Xevora - Deploy
 echo ========================================
 echo   Directory: %CD%
 echo   Targets BOTH Vercel projects: xevora ^(marketing^) + xevora-app ^(app^).
@@ -103,7 +103,7 @@ echo       Latest commit ^(local^):
 git log -1 --oneline
 echo.
 
-echo [5/5] Vercel Deploy Hooks ^(optional — forces xevora + xevora-app builds^)...
+echo [5/5] Vercel Deploy Hooks ^(optional - forces xevora + xevora-app builds^)...
 powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0deploy-invoke-hooks.ps1" -RepoRoot "%CD%"
 if errorlevel 1 (
   echo.
