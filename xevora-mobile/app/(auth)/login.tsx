@@ -14,7 +14,9 @@ import {
   Animated,
   Dimensions,
   Modal,
+  findNodeHandle,
 } from 'react-native';
+import * as Haptics from 'expo-haptics';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import Svg, { Polygon, Line, Circle, Defs, RadialGradient, Stop } from 'react-native-svg';
@@ -213,10 +215,21 @@ export default function LoginScreen() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  const [focusedField, setFocusedField] = useState<string | null>(null);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
   const [infoSheet, setInfoSheet] = useState<'about' | 'faq' | 'contact' | null>(null);
 
   const flipAnim = useRef(new Animated.Value(0)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
+  const scrollViewRef = useRef<ScrollView>(null);
+  
+  // Input refs for focus management
+  const companyCodeRef = useRef<TextInput>(null);
+  const fullNameRef = useRef<TextInput>(null);
+  const emailRef = useRef<TextInput>(null);
+  const passwordRef = useRef<TextInput>(null);
+  const confirmPasswordRef = useRef<TextInput>(null);
 
   useEffect(() => {
     Animated.timing(fadeAnim, {
@@ -225,6 +238,23 @@ export default function LoginScreen() {
       useNativeDriver: true,
     }).start();
   }, []);
+
+  const scrollToField = (fieldRef: React.RefObject<TextInput | null>) => {
+    if (fieldRef.current && scrollViewRef.current) {
+      setTimeout(() => {
+        fieldRef.current?.measureLayout(
+          findNodeHandle(scrollViewRef.current!) as number,
+          (x, y) => {
+            scrollViewRef.current?.scrollTo({ 
+              y: Math.max(0, y - 120), 
+              animated: true 
+            });
+          },
+          () => {}
+        );
+      }, 100);
+    }
+  };
 
   const switchMode = (newMode: 'signin' | 'signup') => {
     if (newMode === mode) return;
@@ -237,28 +267,44 @@ export default function LoginScreen() {
     
     setMode(newMode);
     setError('');
+    setFieldErrors({});
+    setFocusedField(null);
+    
+    // Clear form fields when switching modes
+    setCompanyCode('');
+    setEmail('');
+    setPassword('');
+    setConfirmPassword('');
+    setFullName('');
   };
 
   const handleSignIn = async () => {
-    if (!companyCode || !email || !password) {
-      setError('Please fill in all fields');
+    Keyboard.dismiss();
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    
+    const errors: Record<string, string> = {};
+    if (!companyCode) errors.companyCode = 'Company code is required';
+    if (!email) errors.email = 'Email is required';
+    if (!password) errors.password = 'Password is required';
+    
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors);
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
       return;
     }
 
     setLoading(true);
     setError('');
+    setFieldErrors({});
 
     try {
-      console.log('SignIn - Starting sign in process...');
-      
       const { data: codeCheck, error: codeError } = await supabase.rpc('verify_driver_signup_code', {
         p_plaincode: companyCode.trim(),
       });
 
-      console.log('SignIn - Code verification:', { codeCheck, codeError });
-
       if (codeError || !codeCheck?.ok) {
-        setError('Invalid company code');
+        setFieldErrors({ companyCode: 'Invalid company code' });
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
         setLoading(false);
         return;
       }
@@ -268,50 +314,62 @@ export default function LoginScreen() {
         password,
       });
 
-      console.log('SignIn - Auth result:', { user: data?.user?.id, error: signInError });
-
       if (signInError) {
-        setError(signInError.message);
+        if (signInError.message.includes('Invalid login credentials')) {
+          setFieldErrors({ email: 'Invalid email or password', password: 'Invalid email or password' });
+        } else {
+          setError(signInError.message);
+        }
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
         setLoading(false);
         return;
       }
 
-      console.log('SignIn - Success! User authenticated. Navigating to dashboard...');
+      // Success animation
+      setSubmitSuccess(true);
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       
-      // Navigate to driver dashboard
-      router.replace('/(driver)/');
-      setLoading(false);
+      setTimeout(() => {
+        router.replace('/(driver)/');
+        setLoading(false);
+      }, 400);
     } catch (err) {
-      console.log('SignIn - Error:', err);
       setError('An error occurred. Please try again.');
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
       setLoading(false);
     }
   };
 
   const handleSignUp = async () => {
-    if (!companyCode || !email || !password || !confirmPassword || !fullName) {
-      setError('Please fill in all fields');
-      return;
-    }
-
-    if (password !== confirmPassword) {
-      setError('Passwords do not match');
+    Keyboard.dismiss();
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    
+    const errors: Record<string, string> = {};
+    if (!companyCode) errors.companyCode = 'Company code is required';
+    if (!fullName) errors.fullName = 'Full name is required';
+    if (!email) errors.email = 'Email is required';
+    if (!password) errors.password = 'Password is required';
+    if (!confirmPassword) errors.confirmPassword = 'Please confirm your password';
+    else if (password !== confirmPassword) errors.confirmPassword = 'Passwords do not match';
+    
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors);
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
       return;
     }
 
     setLoading(true);
     setError('');
+    setFieldErrors({});
 
     try {
       const { data: codeCheck, error: codeError } = await supabase.rpc('verify_driver_signup_code', {
         p_plaincode: companyCode.trim(),
       });
 
-      console.log('SignUp - Code verification:', { codeCheck, codeError });
-
       if (codeError || !codeCheck?.ok) {
-        console.log('SignUp - Code check failed:', codeError?.message || codeCheck?.error);
-        setError('Invalid company code');
+        setFieldErrors({ companyCode: 'Invalid company code' });
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
         setLoading(false);
         return;
       }
@@ -324,7 +382,12 @@ export default function LoginScreen() {
       });
 
       if (signUpError) {
-        setError(signUpError.message);
+        if (signUpError.message.includes('already registered')) {
+          setFieldErrors({ email: 'This email is already registered' });
+        } else {
+          setError(signUpError.message);
+        }
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
         setLoading(false);
         return;
       }
@@ -338,17 +401,20 @@ export default function LoginScreen() {
         });
 
         if (profileError || !profileResult?.ok) {
-          console.log('Worker profile error:', profileError || profileResult?.error);
           setError(`Account created but profile setup failed: ${profileError?.message || profileResult?.error}`);
+          Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
           setLoading(false);
           return;
         }
 
-        console.log('SignUp - Success! Account created. Navigating to dashboard...');
+        // Success animation
+        setSubmitSuccess(true);
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
         
-        // Navigate to driver dashboard
-        router.replace('/(driver)/');
-        setLoading(false);
+        setTimeout(() => {
+          router.replace('/(driver)/');
+          setLoading(false);
+        }, 400);
       }
     } catch (err) {
       setError('An error occurred. Please try again.');
@@ -377,14 +443,19 @@ export default function LoginScreen() {
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <KeyboardAvoidingView
+        style={{ flex: 1 }}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.keyboardView}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
       >
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
           <ScrollView
+            ref={scrollViewRef}
+            style={{ flex: 1 }}
             contentContainerStyle={styles.scrollContent}
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}
+            bounces={false}
+            scrollEventThrottle={16}
           >
             {STARS.map((star, i) => (
               <View
@@ -439,61 +510,139 @@ export default function LoginScreen() {
                   },
                 ]}
               >
-                <Text style={styles.inputLabel}>COMPANY CODE</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Enter your company code"
-                  placeholderTextColor="#4E6D92"
-                  value={companyCode}
-                  onChangeText={(text) => setCompanyCode(text.toUpperCase())}
-                  autoCapitalize="characters"
-                  autoCorrect={false}
-                />
+                <View style={styles.inputGroup}>
+                  <Text style={styles.inputLabel}>COMPANY CODE</Text>
+                  <View style={[
+                    styles.inputWrapper,
+                    focusedField === 'signin-companyCode' && styles.inputWrapperFocused,
+                    fieldErrors.companyCode && styles.inputWrapperError
+                  ]}>
+                    <TextInput
+                      ref={companyCodeRef}
+                      style={styles.input}
+                      placeholder="Enter your company code"
+                      placeholderTextColor="#4E6D92"
+                      value={companyCode}
+                      onChangeText={(text) => setCompanyCode(text.toUpperCase())}
+                      onFocus={() => {
+                        setFocusedField('signin-companyCode');
+                        scrollToField(companyCodeRef);
+                      }}
+                      onBlur={() => setFocusedField(null)}
+                      onSubmitEditing={() => emailRef.current?.focus()}
+                      autoCapitalize="characters"
+                      autoCorrect={false}
+                      spellCheck={false}
+                      autoComplete="off"
+                      textContentType="none"
+                      returnKeyType="next"
+                      blurOnSubmit={false}
+                      editable={!loading}
+                      selectionColor="#3B82F6"
+                    />
+                  </View>
+                  {fieldErrors.companyCode && (
+                    <Text style={styles.fieldError}>{fieldErrors.companyCode}</Text>
+                  )}
+                  <Text style={styles.helperText}>Provided by your employer</Text>
+                </View>
 
-                <Text style={styles.inputLabel}>EMAIL ADDRESS</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="you@company.com"
-                  placeholderTextColor="#4E6D92"
-                  value={email}
-                  onChangeText={setEmail}
-                  autoCapitalize="none"
-                  keyboardType="email-address"
-                  autoComplete="email"
-                  returnKeyType="next"
-                  blurOnSubmit={false}
-                />
+                <View style={styles.inputGroup}>
+                  <Text style={styles.inputLabel}>EMAIL ADDRESS</Text>
+                  <View style={[
+                    styles.inputWrapper,
+                    focusedField === 'signin-email' && styles.inputWrapperFocused,
+                    fieldErrors.email && styles.inputWrapperError
+                  ]}>
+                    <TextInput
+                      ref={emailRef}
+                      style={styles.input}
+                      placeholder="you@company.com"
+                      placeholderTextColor="#4E6D92"
+                      value={email}
+                      onChangeText={setEmail}
+                      onFocus={() => {
+                        setFocusedField('signin-email');
+                        scrollToField(emailRef);
+                      }}
+                      onBlur={() => setFocusedField(null)}
+                      onSubmitEditing={() => passwordRef.current?.focus()}
+                      autoCapitalize="none"
+                      autoCorrect={false}
+                      spellCheck={false}
+                      keyboardType="email-address"
+                      autoComplete="email"
+                      textContentType="emailAddress"
+                      returnKeyType="next"
+                      blurOnSubmit={false}
+                      editable={!loading}
+                      selectionColor="#3B82F6"
+                    />
+                  </View>
+                  {fieldErrors.email && (
+                    <Text style={styles.fieldError}>{fieldErrors.email}</Text>
+                  )}
+                </View>
 
-                <Text style={styles.inputLabel}>PASSWORD</Text>
-                <View style={styles.passwordContainer}>
-                  <TextInput
-                    style={[styles.input, styles.passwordInput]}
-                    placeholder="Enter your password"
-                    placeholderTextColor="#4E6D92"
-                    value={password}
-                    onChangeText={setPassword}
-                    secureTextEntry={!showPassword}
-                    autoCapitalize="none"
-                    returnKeyType="done"
-                  />
-                  <TouchableOpacity
-                    style={styles.eyeBtn}
-                    onPress={() => setShowPassword(!showPassword)}
-                  >
-                    <Text style={styles.eyeText}>{showPassword ? '👁️' : '👁️‍🗨️'}</Text>
-                  </TouchableOpacity>
+                <View style={styles.inputGroup}>
+                  <Text style={styles.inputLabel}>PASSWORD</Text>
+                  <View style={[
+                    styles.inputWrapper,
+                    focusedField === 'signin-password' && styles.inputWrapperFocused,
+                    fieldErrors.password && styles.inputWrapperError
+                  ]}>
+                    <TextInput
+                      ref={passwordRef}
+                      style={[styles.input, styles.passwordInput]}
+                      placeholder="Enter your password"
+                      placeholderTextColor="#4E6D92"
+                      value={password}
+                      onChangeText={setPassword}
+                      onFocus={() => {
+                        setFocusedField('signin-password');
+                        scrollToField(passwordRef);
+                      }}
+                      onBlur={() => setFocusedField(null)}
+                      onSubmitEditing={handleSignIn}
+                      secureTextEntry={!showPassword}
+                      autoCapitalize="none"
+                      autoCorrect={false}
+                      spellCheck={false}
+                      textContentType="password"
+                      autoComplete="password"
+                      returnKeyType="done"
+                      editable={!loading}
+                      selectionColor="#3B82F6"
+                    />
+                    <TouchableOpacity
+                      style={styles.eyeBtn}
+                      onPress={() => setShowPassword(!showPassword)}
+                      activeOpacity={0.7}
+                    >
+                      <Text style={styles.eyeText}>{showPassword ? '👁️' : '👁️‍🗨️'}</Text>
+                    </TouchableOpacity>
+                  </View>
+                  {fieldErrors.password && (
+                    <Text style={styles.fieldError}>{fieldErrors.password}</Text>
+                  )}
                 </View>
 
                 {error && mode === 'signin' ? <Text style={styles.errorText}>{error}</Text> : null}
 
                 <TouchableOpacity
-                  style={[styles.submitBtn, loading && styles.submitBtnDisabled]}
+                  style={[
+                    styles.submitBtn,
+                    loading && styles.submitBtnDisabled,
+                    submitSuccess && styles.submitBtnSuccess
+                  ]}
                   onPress={handleSignIn}
                   disabled={loading}
                   activeOpacity={0.85}
                 >
                   {loading ? (
-                    <ActivityIndicator color="#fff" />
+                    <ActivityIndicator color="#fff" size="small" />
+                  ) : submitSuccess ? (
+                    <Text style={styles.submitBtnText}>✓ Success</Text>
                   ) : (
                     <Text style={styles.submitBtnText}>Sign In</Text>
                   )}
@@ -514,96 +663,217 @@ export default function LoginScreen() {
                   },
                 ]}
               >
-                <Text style={styles.inputLabel}>COMPANY CODE</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Enter your company code"
-                  placeholderTextColor="#4E6D92"
-                  value={companyCode}
-                  onChangeText={setCompanyCode}
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                  returnKeyType="next"
-                  blurOnSubmit={false}
-                />
-                <Text style={styles.helperText}>Get this from your employer</Text>
-
-                <Text style={styles.inputLabel}>FULL NAME</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="John Doe"
-                  placeholderTextColor="#4E6D92"
-                  value={fullName}
-                  onChangeText={setFullName}
-                  autoCapitalize="words"
-                  returnKeyType="next"
-                  blurOnSubmit={false}
-                />
-
-                <Text style={styles.inputLabel}>EMAIL ADDRESS</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="you@company.com"
-                  placeholderTextColor="#4E6D92"
-                  value={email}
-                  onChangeText={setEmail}
-                  autoCapitalize="none"
-                  keyboardType="email-address"
-                  returnKeyType="next"
-                  blurOnSubmit={false}
-                />
-
-                <Text style={styles.inputLabel}>PASSWORD</Text>
-                <View style={styles.passwordContainer}>
-                  <TextInput
-                    style={[styles.input, styles.passwordInput]}
-                    placeholder="Create a password"
-                    placeholderTextColor="#4E6D92"
-                    value={password}
-                    onChangeText={setPassword}
-                    secureTextEntry={!showPassword}
-                    autoCapitalize="none"
-                    returnKeyType="next"
-                    blurOnSubmit={false}
-                  />
-                  <TouchableOpacity
-                    style={styles.eyeBtn}
-                    onPress={() => setShowPassword(!showPassword)}
-                  >
-                    <Text style={styles.eyeText}>{showPassword ? '👁️' : '👁️‍🗨️'}</Text>
-                  </TouchableOpacity>
+                <View style={styles.inputGroup}>
+                  <Text style={styles.inputLabel}>COMPANY CODE</Text>
+                  <View style={[
+                    styles.inputWrapper,
+                    focusedField === 'signup-companyCode' && styles.inputWrapperFocused,
+                    fieldErrors.companyCode && styles.inputWrapperError
+                  ]}>
+                    <TextInput
+                      ref={companyCodeRef}
+                      style={styles.input}
+                      placeholder="Enter your company code"
+                      placeholderTextColor="#4E6D92"
+                      value={companyCode}
+                      onChangeText={(text) => setCompanyCode(text.toUpperCase())}
+                      onFocus={() => {
+                        setFocusedField('signup-companyCode');
+                        scrollToField(companyCodeRef);
+                      }}
+                      onBlur={() => setFocusedField(null)}
+                      onSubmitEditing={() => fullNameRef.current?.focus()}
+                      autoCapitalize="characters"
+                      autoCorrect={false}
+                      spellCheck={false}
+                      autoComplete="off"
+                      textContentType="none"
+                      returnKeyType="next"
+                      blurOnSubmit={false}
+                      editable={!loading}
+                      selectionColor="#3B82F6"
+                    />
+                  </View>
+                  {fieldErrors.companyCode && (
+                    <Text style={styles.fieldError}>{fieldErrors.companyCode}</Text>
+                  )}
+                  <Text style={styles.helperText}>Provided by your employer</Text>
                 </View>
 
-                <Text style={styles.inputLabel}>CONFIRM PASSWORD</Text>
-                <View style={styles.passwordContainer}>
-                  <TextInput
-                    style={[styles.input, styles.passwordInput]}
-                    placeholder="Confirm your password"
-                    placeholderTextColor="#4E6D92"
-                    value={confirmPassword}
-                    onChangeText={setConfirmPassword}
-                    secureTextEntry={!showConfirmPassword}
-                    autoCapitalize="none"
-                    returnKeyType="done"
-                  />
-                  <TouchableOpacity
-                    style={styles.eyeBtn}
-                    onPress={() => setShowConfirmPassword(!showConfirmPassword)}
-                  >
-                    <Text style={styles.eyeText}>{showConfirmPassword ? '👁️' : '👁️‍🗨️'}</Text>
-                  </TouchableOpacity>
+                <View style={styles.inputGroup}>
+                  <Text style={styles.inputLabel}>FULL NAME</Text>
+                  <View style={[
+                    styles.inputWrapper,
+                    focusedField === 'signup-fullName' && styles.inputWrapperFocused,
+                    fieldErrors.fullName && styles.inputWrapperError
+                  ]}>
+                    <TextInput
+                      ref={fullNameRef}
+                      style={styles.input}
+                      placeholder="John Doe"
+                      placeholderTextColor="#4E6D92"
+                      value={fullName}
+                      onChangeText={setFullName}
+                      onFocus={() => {
+                        setFocusedField('signup-fullName');
+                        scrollToField(fullNameRef);
+                      }}
+                      onBlur={() => setFocusedField(null)}
+                      onSubmitEditing={() => emailRef.current?.focus()}
+                      autoCapitalize="words"
+                      autoCorrect={false}
+                      spellCheck={false}
+                      textContentType="name"
+                      autoComplete="name"
+                      returnKeyType="next"
+                      blurOnSubmit={false}
+                      editable={!loading}
+                      selectionColor="#3B82F6"
+                    />
+                  </View>
+                  {fieldErrors.fullName && (
+                    <Text style={styles.fieldError}>{fieldErrors.fullName}</Text>
+                  )}
+                </View>
+
+                <View style={styles.inputGroup}>
+                  <Text style={styles.inputLabel}>EMAIL ADDRESS</Text>
+                  <View style={[
+                    styles.inputWrapper,
+                    focusedField === 'signup-email' && styles.inputWrapperFocused,
+                    fieldErrors.email && styles.inputWrapperError
+                  ]}>
+                    <TextInput
+                      ref={emailRef}
+                      style={styles.input}
+                      placeholder="you@company.com"
+                      placeholderTextColor="#4E6D92"
+                      value={email}
+                      onChangeText={setEmail}
+                      onFocus={() => {
+                        setFocusedField('signup-email');
+                        scrollToField(emailRef);
+                      }}
+                      onBlur={() => setFocusedField(null)}
+                      onSubmitEditing={() => passwordRef.current?.focus()}
+                      autoCapitalize="none"
+                      autoCorrect={false}
+                      spellCheck={false}
+                      keyboardType="email-address"
+                      autoComplete="email"
+                      textContentType="emailAddress"
+                      returnKeyType="next"
+                      blurOnSubmit={false}
+                      editable={!loading}
+                      selectionColor="#3B82F6"
+                    />
+                  </View>
+                  {fieldErrors.email && (
+                    <Text style={styles.fieldError}>{fieldErrors.email}</Text>
+                  )}
+                </View>
+
+                <View style={styles.inputGroup}>
+                  <Text style={styles.inputLabel}>PASSWORD</Text>
+                  <View style={[
+                    styles.inputWrapper,
+                    focusedField === 'signup-password' && styles.inputWrapperFocused,
+                    fieldErrors.password && styles.inputWrapperError
+                  ]}>
+                    <TextInput
+                      ref={passwordRef}
+                      style={[styles.input, styles.passwordInput]}
+                      placeholder="Create a password"
+                      placeholderTextColor="#4E6D92"
+                      value={password}
+                      onChangeText={setPassword}
+                      onFocus={() => {
+                        setFocusedField('signup-password');
+                        scrollToField(passwordRef);
+                      }}
+                      onBlur={() => setFocusedField(null)}
+                      onSubmitEditing={() => confirmPasswordRef.current?.focus()}
+                      secureTextEntry={!showPassword}
+                      autoCapitalize="none"
+                      autoCorrect={false}
+                      spellCheck={false}
+                      textContentType="newPassword"
+                      autoComplete="password-new"
+                      returnKeyType="next"
+                      blurOnSubmit={false}
+                      editable={!loading}
+                      selectionColor="#3B82F6"
+                    />
+                    <TouchableOpacity
+                      style={styles.eyeBtn}
+                      onPress={() => setShowPassword(!showPassword)}
+                      activeOpacity={0.7}
+                    >
+                      <Text style={styles.eyeText}>{showPassword ? '👁️' : '👁️‍🗨️'}</Text>
+                    </TouchableOpacity>
+                  </View>
+                  {fieldErrors.password && (
+                    <Text style={styles.fieldError}>{fieldErrors.password}</Text>
+                  )}
+                </View>
+
+                <View style={styles.inputGroup}>
+                  <Text style={styles.inputLabel}>CONFIRM PASSWORD</Text>
+                  <View style={[
+                    styles.inputWrapper,
+                    focusedField === 'signup-confirmPassword' && styles.inputWrapperFocused,
+                    fieldErrors.confirmPassword && styles.inputWrapperError
+                  ]}>
+                    <TextInput
+                      ref={confirmPasswordRef}
+                      style={[styles.input, styles.passwordInput]}
+                      placeholder="Confirm your password"
+                      placeholderTextColor="#4E6D92"
+                      value={confirmPassword}
+                      onChangeText={setConfirmPassword}
+                      onFocus={() => {
+                        setFocusedField('signup-confirmPassword');
+                        scrollToField(confirmPasswordRef);
+                      }}
+                      onBlur={() => setFocusedField(null)}
+                      onSubmitEditing={handleSignUp}
+                      secureTextEntry={!showConfirmPassword}
+                      autoCapitalize="none"
+                      autoCorrect={false}
+                      spellCheck={false}
+                      textContentType="newPassword"
+                      autoComplete="password-new"
+                      returnKeyType="done"
+                      editable={!loading}
+                      selectionColor="#3B82F6"
+                    />
+                    <TouchableOpacity
+                      style={styles.eyeBtn}
+                      onPress={() => setShowConfirmPassword(!showConfirmPassword)}
+                      activeOpacity={0.7}
+                    >
+                      <Text style={styles.eyeText}>{showConfirmPassword ? '👁️' : '👁️‍🗨️'}</Text>
+                    </TouchableOpacity>
+                  </View>
+                  {fieldErrors.confirmPassword && (
+                    <Text style={styles.fieldError}>{fieldErrors.confirmPassword}</Text>
+                  )}
                 </View>
 
                 {error && mode === 'signup' ? <Text style={styles.errorText}>{error}</Text> : null}
 
                 <TouchableOpacity
-                  style={[styles.submitBtn, loading && styles.submitBtnDisabled]}
+                  style={[
+                    styles.submitBtn,
+                    loading && styles.submitBtnDisabled,
+                    submitSuccess && styles.submitBtnSuccess
+                  ]}
                   onPress={handleSignUp}
                   disabled={loading}
                   activeOpacity={0.85}
                 >
                   {loading ? (
-                    <ActivityIndicator color="#fff" />
+                    <ActivityIndicator color="#fff" size="small" />
                   ) : (
                     <Text style={styles.submitBtnText}>Create Account</Text>
                   )}
@@ -776,24 +1046,42 @@ const styles = StyleSheet.create({
     right: 0,
     width: '100%',
   },
+  inputGroup: {
+    marginBottom: 4,
+  },
   inputLabel: {
     fontFamily: 'JetBrainsMono_400Regular',
     fontSize: 10,
     color: '#4E6D92',
     letterSpacing: 1.5,
     marginBottom: 8,
-    marginTop: 12,
   },
-  input: {
-    backgroundColor: 'rgba(255,255,255,0.03)',
+  inputWrapper: {
+    backgroundColor: '#0A1628',
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.08)',
     borderRadius: 12,
+    overflow: 'hidden',
+  },
+  inputWrapperFocused: {
+    borderColor: '#2563EB',
+    shadowColor: '#2563EB',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  inputWrapperError: {
+    borderColor: '#EF4444',
+  },
+  input: {
+    backgroundColor: 'transparent',
+    borderWidth: 0,
     paddingHorizontal: 16,
     paddingVertical: 14,
     fontSize: 16,
     color: '#F1F5FF',
-    fontFamily: 'PlusJakartaSans_700Bold',
+    fontFamily: 'PlusJakartaSans_400Regular',
   },
   passwordContainer: {
     position: 'relative',
@@ -813,8 +1101,15 @@ const styles = StyleSheet.create({
     fontFamily: 'PlusJakartaSans_300Light',
     fontSize: 11,
     color: '#4E6D92',
-    marginTop: 4,
-    marginBottom: 8,
+    marginTop: 6,
+    marginLeft: 4,
+  },
+  fieldError: {
+    fontFamily: 'PlusJakartaSans_500Medium',
+    fontSize: 12,
+    color: '#EF4444',
+    marginTop: 6,
+    marginLeft: 4,
   },
   errorText: {
     fontFamily: 'PlusJakartaSans_700Bold',
@@ -832,7 +1127,10 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   submitBtnDisabled: {
-    opacity: 0.6,
+    opacity: 0.7,
+  },
+  submitBtnSuccess: {
+    backgroundColor: '#10B981',
   },
   submitBtnText: {
     fontFamily: 'PlusJakartaSans_700Bold',
