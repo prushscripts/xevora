@@ -43,16 +43,17 @@
   function createSpark() {
     if (!flareContainer) return;
     var rect = flareContainer.getBoundingClientRect();
+    var sparkColor = ['#ffffff', '#93c5fd', '#60a5fa', '#bfdbfe', '#3B82F6'][Math.floor(Math.random() * 5)];
     var spark = {
       el: document.createElement('div'),
       x: rect.left + rect.width / 2,
       y: rect.top + rect.height / 2,
-      vx: Math.random() * 4 - 3,
-      vy: Math.random() * 8 - 4,
-      size: 1.5 + Math.random() * 2,
+      vx: 1 + Math.random() * 3,
+      vy: Math.random() * 10 - 5,
+      size: 2 + Math.random() * 3,
       lifetime: 200 + Math.random() * 200,
       age: 0,
-      color: ['#ffffff', '#93c5fd', '#60a5fa', '#bfdbfe', '#3B82F6'][Math.floor(Math.random() * 5)]
+      color: sparkColor
     };
     spark.el.style.cssText = [
       'position:fixed',
@@ -60,6 +61,7 @@
       'height:' + spark.size + 'px',
       'border-radius:50%',
       'background:' + spark.color,
+      'box-shadow:0 0 3px 1px ' + sparkColor,
       'pointer-events:none',
       'z-index:100001',
       'left:' + spark.x + 'px',
@@ -114,7 +116,7 @@
       s.y += s.vy;
       s.el.style.left = s.x + 'px';
       s.el.style.top = s.y + 'px';
-      s.el.style.opacity = (1 - progress) * 0.9;
+      s.el.style.opacity = (1 - progress) * 1.0;
       s.el.style.transform = 'scale(' + (1 - progress * 0.8) + ')';
     }
 
@@ -139,54 +141,48 @@
     }
   }
 
-  function triggerPortalWipe() {
-    // Create radial wipe circle
-    var portalCircle = document.createElement('div');
-    portalCircle.style.cssText = [
+  function triggerPortalExit() {
+    var duration = 600;
+    var start = performance.now();
+    
+    // Create the portal overlay
+    var portal = document.createElement('div');
+    portal.style.cssText = [
       'position:fixed',
       'inset:0',
       'background:#1d4ed8',
-      'z-index:100002',
-      'clip-path:circle(0% at 50% 50%)',
+      'z-index:100003',
+      'opacity:0',
       'pointer-events:none',
-      'will-change:clip-path'
+      'will-change:opacity'
     ].join(';');
-    document.body.appendChild(portalCircle);
+    document.body.appendChild(portal);
 
-    var wipeStart = performance.now();
-    var expandDuration = 400;
-    var collapseDuration = 150;
+    function animatePortal(now) {
+      var elapsed = now - start;
+      var progress = Math.min(elapsed / duration, 1);
 
-    function animateWipe(now) {
-      var elapsed = now - wipeStart;
+      if (progress < 0.4) {
+        // Phase 1: Blue fades IN fast (0-240ms)
+        var p = progress / 0.4;
+        portal.style.opacity = (p * p);
+      } else if (progress < 0.6) {
+        // Phase 2: Hold at full blue (240-360ms)
+        portal.style.opacity = '1';
+      } else if (progress < 1.0) {
+        // Phase 3: Quick snap to black (360-600ms)
+        portal.style.opacity = '1';
+        portal.style.background = '#000000';
+      }
 
-      if (elapsed < expandDuration) {
-        // Expand phase
-        var progress = elapsed / expandDuration;
-        var eased = progress < 0.5 ? 2 * progress * progress : -1 + (4 - 2 * progress) * progress;
-        var radius = eased * 150;
-        portalCircle.style.clipPath = 'circle(' + radius + '% at 50% 50%)';
-        requestAnimationFrame(animateWipe);
-      } else if (elapsed < expandDuration + 150) {
-        // Hold at full
-        portalCircle.style.clipPath = 'circle(150% at 50% 50%)';
-        overlay.style.background = '#000000';
-        requestAnimationFrame(animateWipe);
-      } else if (elapsed < expandDuration + 150 + collapseDuration) {
-        // Collapse phase
-        var collapseProgress = (elapsed - expandDuration - 150) / collapseDuration;
-        var radius = 150 * (1 - collapseProgress);
-        portalCircle.style.clipPath = 'circle(' + radius + '% at 50% 50%)';
-        requestAnimationFrame(animateWipe);
+      if (progress < 1.0) {
+        requestAnimationFrame(animatePortal);
       } else {
-        // Complete - redirect
-        if (!redirected) {
-          redirected = true;
-          window.location.href = 'https://app.xevora.io/auth/login';
-        }
+        // Redirect — guaranteed to fire
+        window.location.href = 'https://app.xevora.io/auth/login';
       }
     }
-    requestAnimationFrame(animateWipe);
+    requestAnimationFrame(animatePortal);
   }
 
   function tick(now) {
@@ -290,9 +286,10 @@
       }
     }
 
-    // STAGE 4: Portal wipe (2400ms)
-    if (elapsed >= STAGES.PORTAL.start && !redirected) {
-      triggerPortalWipe();
+    // STAGE 4: Portal exit (2200ms)
+    if (elapsed >= 2200 && !redirected) {
+      redirected = true;
+      triggerPortalExit();
       return; // Stop the rAF loop
     }
 
@@ -448,80 +445,52 @@
       'top:50%',
       'left:0%',
       'transform:translate(-50%,-50%)',
-      'width:28px',
-      'height:28px',
+      'width:32px',
+      'height:32px',
       'pointer-events:none',
       'z-index:10'
     ].join(';');
     barTrack.appendChild(flareContainer);
 
-    // Layer 1: Outermost glow
-    var flareGlow1 = document.createElement('div');
-    flareGlow1.style.cssText = [
+    // Outer glow ring
+    var flareGlowRing = document.createElement('div');
+    flareGlowRing.style.cssText = [
       'position:absolute',
       'left:50%',
       'top:50%',
       'transform:translate(-50%,-50%)',
-      'width:28px',
-      'height:28px',
+      'width:32px',
+      'height:32px',
       'border-radius:50%',
-      'background:#3B82F6',
-      'opacity:0.15',
-      'box-shadow:0 0 12px 8px rgba(59,130,246,0.3)'
+      'background:radial-gradient(circle, rgba(96,165,250,0.4) 0%, rgba(59,130,246,0.15) 40%, transparent 70%)',
+      'z-index:9',
+      'animation:flarePulse 0.4s ease-in-out infinite alternate'
     ].join(';');
-    flareContainer.appendChild(flareGlow1);
+    flareContainer.appendChild(flareGlowRing);
 
-    // Layer 2: Mid glow
-    var flareGlow2 = document.createElement('div');
-    flareGlow2.style.cssText = [
-      'position:absolute',
-      'left:50%',
-      'top:50%',
-      'transform:translate(-50%,-50%)',
-      'width:16px',
-      'height:16px',
-      'border-radius:50%',
-      'background:#60a5fa',
-      'opacity:0.4',
-      'box-shadow:0 0 8px 4px rgba(96,165,250,0.5)'
-    ].join(';');
-    flareContainer.appendChild(flareGlow2);
-
-    // Layer 3: Core
+    // Core dot
     var flareCore = document.createElement('div');
     flareCore.style.cssText = [
       'position:absolute',
       'left:50%',
       'top:50%',
       'transform:translate(-50%,-50%)',
-      'width:8px',
-      'height:8px',
+      'width:6px',
+      'height:6px',
       'border-radius:50%',
       'background:#ffffff',
-      'box-shadow:0 0 6px 2px #60a5fa, 0 0 12px 4px #3B82F6'
+      'box-shadow:0 0 4px 2px #ffffff, 0 0 10px 4px #60a5fa, 0 0 20px 8px #3B82F6, 0 0 35px 12px rgba(37,99,235,0.6)',
+      'z-index:10'
     ].join(';');
     flareContainer.appendChild(flareCore);
 
-    // Layer 4: Hot point
-    var flareHot = document.createElement('div');
-    flareHot.style.cssText = [
-      'position:absolute',
-      'left:50%',
-      'top:50%',
-      'transform:translate(-50%,-50%)',
-      'width:3px',
-      'height:3px',
-      'border-radius:50%',
-      'background:#e0f2fe'
-    ].join(';');
-    flareContainer.appendChild(flareHot);
-
-    // Ring pulse keyframes
+    // Keyframes for animations
     var style = document.createElement('style');
     style.textContent = [
       '@keyframes ringPulse0{0%,100%{opacity:0.12;transform:translate(-50%,-50%) scale(1)}50%{opacity:0.04;transform:translate(-50%,-50%) scale(1.06)}}',
       '@keyframes ringPulse1{0%,100%{opacity:0.08;transform:translate(-50%,-50%) scale(1)}50%{opacity:0.02;transform:translate(-50%,-50%) scale(1.06)}}',
-      '@keyframes ringPulse2{0%,100%{opacity:0.04;transform:translate(-50%,-50%) scale(1)}50%{opacity:0.01;transform:translate(-50%,-50%) scale(1.06)}}'
+      '@keyframes ringPulse2{0%,100%{opacity:0.04;transform:translate(-50%,-50%) scale(1)}50%{opacity:0.01;transform:translate(-50%,-50%) scale(1.06)}}',
+      '@keyframes flarePulse{from{transform:translate(-50%,-50%) scale(0.85);opacity:0.7}to{transform:translate(-50%,-50%) scale(1.15);opacity:1.0}}'
     ].join('');
     document.head.appendChild(style);
 
@@ -529,7 +498,7 @@
 
     // Particle intervals during loading
     setTimeout(function() {
-      sparkInterval = setInterval(createSpark, 60);
+      sparkInterval = setInterval(createSpark, 40);
       wispInterval = setInterval(createWisp, 120);
     }, 400);
 
