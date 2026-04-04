@@ -16,6 +16,7 @@ import {
   Modal,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useRouter } from 'expo-router';
 import Svg, { Polygon, Line, Circle, Defs, RadialGradient, Stop } from 'react-native-svg';
 import { useFonts, PlusJakartaSans_300Light, PlusJakartaSans_700Bold, PlusJakartaSans_800ExtraBold } from '@expo-google-fonts/plus-jakarta-sans';
 import { JetBrainsMono_400Regular } from '@expo-google-fonts/jetbrains-mono';
@@ -193,6 +194,8 @@ function AnimatedHexLogo({ size = 200 }) {
 }
 
 export default function LoginScreen() {
+  const router = useRouter();
+  
   const [fontsLoaded] = useFonts({
     PlusJakartaSans_300Light,
     PlusJakartaSans_700Bold,
@@ -246,13 +249,15 @@ export default function LoginScreen() {
     setError('');
 
     try {
-      const { data: company } = await supabase
-        .from('companies')
-        .select('id')
-        .eq('code', companyCode.toUpperCase())
-        .single();
+      console.log('SignIn - Starting sign in process...');
+      
+      const { data: codeCheck, error: codeError } = await supabase.rpc('verify_driver_signup_code', {
+        p_plaincode: companyCode.trim(),
+      });
 
-      if (!company) {
+      console.log('SignIn - Code verification:', { codeCheck, codeError });
+
+      if (codeError || !codeCheck?.ok) {
         setError('Invalid company code');
         setLoading(false);
         return;
@@ -263,11 +268,21 @@ export default function LoginScreen() {
         password,
       });
 
+      console.log('SignIn - Auth result:', { user: data?.user?.id, error: signInError });
+
       if (signInError) {
         setError(signInError.message);
         setLoading(false);
+        return;
       }
+
+      console.log('SignIn - Success! User authenticated. Navigating to dashboard...');
+      
+      // Navigate to driver dashboard
+      router.replace('/(driver)/');
+      setLoading(false);
     } catch (err) {
+      console.log('SignIn - Error:', err);
       setError('An error occurred. Please try again.');
       setLoading(false);
     }
@@ -288,17 +303,20 @@ export default function LoginScreen() {
     setError('');
 
     try {
-      const { data: company } = await supabase
-        .from('companies')
-        .select('id')
-        .eq('code', companyCode.toUpperCase())
-        .single();
+      const { data: codeCheck, error: codeError } = await supabase.rpc('verify_driver_signup_code', {
+        p_plaincode: companyCode.trim(),
+      });
 
-      if (!company) {
+      console.log('SignUp - Code verification:', { codeCheck, codeError });
+
+      if (codeError || !codeCheck?.ok) {
+        console.log('SignUp - Code check failed:', codeError?.message || codeCheck?.error);
         setError('Invalid company code');
         setLoading(false);
         return;
       }
+
+      const company = { id: codeCheck.company_id };
 
       const { data: authData, error: signUpError } = await supabase.auth.signUp({
         email,
@@ -312,20 +330,25 @@ export default function LoginScreen() {
       }
 
       if (authData.user) {
-        const { error: insertError } = await supabase.from('workers').insert({
-          id: authData.user.id,
-          company_id: company.id,
-          full_name: fullName,
-          email,
-          role: 'driver',
-          worker_type: '1099',
-          status: 'active',
+        const { data: profileResult, error: profileError } = await supabase.rpc('create_driver_account', {
+          p_user_id: authData.user.id,
+          p_company_id: company.id,
+          p_full_name: fullName,
+          p_email: email,
         });
 
-        if (insertError) {
-          setError('Account created but profile setup failed');
+        if (profileError || !profileResult?.ok) {
+          console.log('Worker profile error:', profileError || profileResult?.error);
+          setError(`Account created but profile setup failed: ${profileError?.message || profileResult?.error}`);
           setLoading(false);
+          return;
         }
+
+        console.log('SignUp - Success! Account created. Navigating to dashboard...');
+        
+        // Navigate to driver dashboard
+        router.replace('/(driver)/');
+        setLoading(false);
       }
     } catch (err) {
       setError('An error occurred. Please try again.');
@@ -406,7 +429,7 @@ export default function LoginScreen() {
               </TouchableOpacity>
             </View>
 
-            <View style={styles.cardContainer}>
+            <View style={[styles.cardContainer, { minHeight: mode === 'signup' ? 650 : 420 }]}>
               <Animated.View
                 style={[
                   styles.card,
@@ -437,6 +460,8 @@ export default function LoginScreen() {
                   autoCapitalize="none"
                   keyboardType="email-address"
                   autoComplete="email"
+                  returnKeyType="next"
+                  blurOnSubmit={false}
                 />
 
                 <Text style={styles.inputLabel}>PASSWORD</Text>
@@ -449,6 +474,7 @@ export default function LoginScreen() {
                     onChangeText={setPassword}
                     secureTextEntry={!showPassword}
                     autoCapitalize="none"
+                    returnKeyType="done"
                   />
                   <TouchableOpacity
                     style={styles.eyeBtn}
@@ -494,9 +520,11 @@ export default function LoginScreen() {
                   placeholder="Enter your company code"
                   placeholderTextColor="#4E6D92"
                   value={companyCode}
-                  onChangeText={(text) => setCompanyCode(text.toUpperCase())}
-                  autoCapitalize="characters"
+                  onChangeText={setCompanyCode}
+                  autoCapitalize="none"
                   autoCorrect={false}
+                  returnKeyType="next"
+                  blurOnSubmit={false}
                 />
                 <Text style={styles.helperText}>Get this from your employer</Text>
 
@@ -508,6 +536,8 @@ export default function LoginScreen() {
                   value={fullName}
                   onChangeText={setFullName}
                   autoCapitalize="words"
+                  returnKeyType="next"
+                  blurOnSubmit={false}
                 />
 
                 <Text style={styles.inputLabel}>EMAIL ADDRESS</Text>
@@ -519,6 +549,8 @@ export default function LoginScreen() {
                   onChangeText={setEmail}
                   autoCapitalize="none"
                   keyboardType="email-address"
+                  returnKeyType="next"
+                  blurOnSubmit={false}
                 />
 
                 <Text style={styles.inputLabel}>PASSWORD</Text>
@@ -531,6 +563,8 @@ export default function LoginScreen() {
                     onChangeText={setPassword}
                     secureTextEntry={!showPassword}
                     autoCapitalize="none"
+                    returnKeyType="next"
+                    blurOnSubmit={false}
                   />
                   <TouchableOpacity
                     style={styles.eyeBtn}
@@ -550,6 +584,7 @@ export default function LoginScreen() {
                     onChangeText={setConfirmPassword}
                     secureTextEntry={!showConfirmPassword}
                     autoCapitalize="none"
+                    returnKeyType="done"
                   />
                   <TouchableOpacity
                     style={styles.eyeBtn}
@@ -723,8 +758,7 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   cardContainer: {
-    position: 'relative',
-    minHeight: 420,
+    width: '100%',
   },
   card: {
     backgroundColor: '#060B14',
@@ -733,12 +767,14 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 24,
     paddingBottom: 24,
+    width: '100%',
   },
   cardBack: {
     position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
+    width: '100%',
   },
   inputLabel: {
     fontFamily: 'JetBrainsMono_400Regular',
