@@ -42,10 +42,10 @@ BEGIN
 
   IF NOT EXISTS (SELECT 1 FROM public.workers WHERE company_id = cid AND lower(email) = lower('joseph.pedro.demo@xevora.local')) THEN
     INSERT INTO public.workers (
-      company_id, full_name, email, role, worker_type, pay_type, flat_weekly_rate, ot_bonus_rate, status, default_client_id
+      company_id, first_name, last_name, full_name, email, role, worker_type, pay_type, flat_weekly_rate, ot_bonus_rate, status, default_client_id
     )
     VALUES (
-      cid, 'Joseph Pedro', 'joseph.pedro.demo@xevora.local', 'driver', '1099', 'flat_weekly', 725, 15, 'active', cl_id
+      cid, 'Joseph', 'Pedro', 'Joseph Pedro', 'joseph.pedro.demo@xevora.local', 'driver', '1099', 'flat_weekly', 725, 15, 'active', cl_id
     )
     RETURNING id INTO wid_j;
   ELSE
@@ -54,10 +54,10 @@ BEGIN
 
   IF NOT EXISTS (SELECT 1 FROM public.workers WHERE company_id = cid AND lower(email) = lower('mark.parra.demo@xevora.local')) THEN
     INSERT INTO public.workers (
-      company_id, full_name, email, role, worker_type, pay_type, flat_weekly_rate, ot_bonus_rate, status, default_client_id
+      company_id, first_name, last_name, full_name, email, role, worker_type, pay_type, flat_weekly_rate, ot_bonus_rate, status, default_client_id
     )
     VALUES (
-      cid, 'Mark Parra', 'mark.parra.demo@xevora.local', 'driver', '1099', 'flat_weekly', 725, 15, 'active', cl_id
+      cid, 'Mark', 'Parra', 'Mark Parra', 'mark.parra.demo@xevora.local', 'driver', '1099', 'flat_weekly', 725, 15, 'active', cl_id
     )
     RETURNING id INTO wid_m;
   ELSE

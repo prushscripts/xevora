@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+<defs>
+  <radialGradient id="hexbg" cx="50%" cy="50%" r="60%">
+    <stop offset="0%" stop-color="#0B1A3E"/>
+    <stop offset="100%" stop-color="#03060D"/>
+  </radialGradient>
+  <filter id="xbloom" x="-40%" y="-40%" width="180%" height="180%">
+    <feGaussianBlur stdDeviation="2" result="b1"/>
+    <feMerge><feMergeNode in="b1"/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+  <filter id="nuclear" x="-200%" y="-200%" width="500%" height="500%">
+    <feGaussianBlur stdDeviation="2.5" result="bloom"/>
+    <feMerge><feMergeNode in="bloom"/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+  <filter id="tailglow" x="-200%" y="-200%" width="500%" height="500%">
+    <feGaussianBlur stdDeviation="1.5"/>
+  </filter>
+</defs>
+<style>
+@keyframes go { from{offset-distance:0%} to{offset-distance:100%} }
+.ball { offset-path:path("M50,8 L92,32 L92,68 L50,92 L8,68 L8,32 Z"); offset-rotate:0deg; animation:go 2.6s linear infinite; }
+.t1   { offset-path:path("M50,8 L92,32 L92,68 L50,92 L8,68 L8,32 Z"); offset-rotate:0deg; animation:go 2.6s linear infinite; animation-delay:-0.07s; }
+.t2   { offset-path:path("M50,8 L92,32 L92,68 L50,92 L8,68 L8,32 Z"); offset-rotate:0deg; animation:go 2.6s linear infinite; animation-delay:-0.14s; }
+.t3   { offset-path:path("M50,8 L92,32 L92,68 L50,92 L8,68 L8,32 Z"); offset-rotate:0deg; animation:go 2.6s linear infinite; animation-delay:-0.21s; }
+@keyframes hexpulse { 0%,100%{opacity:0.4} 50%{opacity:0.9} }
+.hexrim { animation:hexpulse 2.6s ease-in-out infinite }
+</style>
+
+<rect width="100" height="100" rx="20" fill="#03060D"/>
+<polygon points="50,8 92,32 92,68 50,92 8,68 8,32" fill="url(#hexbg)" stroke="#1E3A6E" stroke-width="1.5"/>
+<polygon class="hexrim" points="50,8 92,32 92,68 50,92 8,68 8,32" fill="none" stroke="#2563EB" stroke-width="1"/>
+<g filter="url(#xbloom)">
+  <line x1="18" y1="18" x2="82" y2="82" stroke="#1d4ed8" stroke-width="14" stroke-linecap="round"/>
+  <line x1="82" y1="18" x2="18" y2="82" stroke="#1d4ed8" stroke-width="14" stroke-linecap="round"/>
+</g>
+<line x1="18" y1="18" x2="82" y2="82" stroke="#3B82F6" stroke-width="8" stroke-linecap="round"/>
+<line x1="82" y1="18" x2="18" y2="82" stroke="#3B82F6" stroke-width="8" stroke-linecap="round"/>
+<line x1="18" y1="18" x2="82" y2="82" stroke="#93c5fd" stroke-width="2.5" stroke-linecap="round" opacity="0.6"/>
+<line x1="82" y1="18" x2="18" y2="82" stroke="#93c5fd" stroke-width="2.5" stroke-linecap="round" opacity="0.6"/>
+<circle cx="50" cy="50" r="3" fill="#bfdbfe" opacity="0.9"/>
+<g class="t3"><circle cx="0" cy="0" r="5" fill="#1d4ed8" opacity="0.1" filter="url(#tailglow)"/></g>
+<g class="t2"><circle cx="0" cy="0" r="6" fill="#2563EB" opacity="0.2" filter="url(#tailglow)"/></g>
+<g class="t1"><circle cx="0" cy="0" r="7" fill="#60a5fa" opacity="0.4" filter="url(#tailglow)"/></g>
+<g class="ball">
+  <circle cx="0" cy="0" r="8" fill="#3B82F6" opacity="0.2" filter="url(#nuclear)"/>
+  <circle cx="0" cy="0" r="4" fill="#93c5fd" opacity="0.9" filter="url(#nuclear)"/>
+  <circle cx="0" cy="0" r="2" fill="#ffffff"/>
+</g>
+</svg>

@@ -4,11 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Xevora</title>
-<link rel="icon" type="image/png" sizes="32x32" href="/public/favicon/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/public/favicon/favicon-16x16.png">
-<link rel="shortcut icon" href="/public/favicon/favicon.ico">
-<link rel="apple-touch-icon" sizes="180x180" href="/public/favicon/apple-touch-icon.png">
-<link rel="manifest" href="/public/favicon/site.webmanifest">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#03060D">
 <meta name="description" content="Modern payroll and workforce infrastructure for field teams. GPS time tracking, automated payroll, built for drivers and trades.">
 
 <meta property="og:title" content="Xevora — GPS Payroll & Time Tracking for Field Teams"/>
@@ -905,10 +906,18 @@ p.sub{
   from{opacity:0;transform:translateY(12px)}
   to{opacity:1;transform:translateY(0)}
 }
+@keyframes pricingFadeUpGrowth{
+  from{opacity:0;transform:translateY(12px)}
+  to{opacity:1;transform:translateY(-16px)}
+}
+@keyframes pricingFadeUpPbnFull{
+  from{opacity:0;transform:translateY(12px)}
+  to{opacity:1;transform:translateY(-8px)}
+}
 .pricing-premium-section{
   position:relative;
   background:#03060D;
-  padding:90px 16px 120px;
+  padding:80px 16px 120px;
   box-sizing:border-box;
   overflow:visible;
 }
@@ -965,26 +974,61 @@ p.sub{
   line-height:1.6;margin-top:12px;
 }
 .pricing-all-grid{
-  display:flex;flex-direction:column;gap:32px;
+  display:flex;flex-direction:column;gap:0;
   margin-top:48px;width:100%;max-width:1200px;
   margin-left:auto;margin-right:auto;
 }
+.pricing-row-1-stack{
+  display:flex;flex-direction:column;align-items:center;gap:20px;width:100%;
+}
+.pricing-standalone-badge{
+  display:inline-block;
+  border:1px solid rgba(59,130,246,0.3);
+  background:rgba(37,99,235,0.08);
+  color:#4E6D92;
+  font-family:'JetBrains Mono',ui-monospace,monospace;
+  font-size:11px;
+  letter-spacing:0.15em;
+  text-transform:uppercase;
+  padding:8px 18px;
+  border-radius:999px;
+  white-space:nowrap;
+}
 .pricing-row-1{
   display:grid;grid-template-columns:1fr 1.4fr 1fr;
-  gap:20px;align-items:stretch;
+  gap:20px;align-items:stretch;width:100%;
 }
-.pricing-row-2-label{
-  text-align:center;margin-bottom:16px;
+.pricing-bundles-divider{
+  margin:48px 0 40px;
+  width:100%;
 }
-.pricing-row-2-label h3{
-  font-family:'JetBrains Mono',monospace;
-  font-size:11px;letter-spacing:0.25em;
-  color:#4E6D92;text-transform:uppercase;
-  margin:0 0 6px 0;
+.pricing-bundles-divider__lines{
+  display:flex;align-items:center;width:100%;gap:0;
 }
-.pricing-row-2-label p{
+.pricing-bundles-divider__line{
+  flex:1;height:1px;background:rgba(255,255,255,0.06);
+  min-width:0;
+}
+.pricing-bundles-divider__label{
+  flex-shrink:0;
+  background:#03060D;
+  padding:0 24px;
+  font-family:'JetBrains Mono',ui-monospace,monospace;
+  font-size:11px;
+  letter-spacing:0.2em;
+  color:#4E6D92;
+  text-transform:uppercase;
+  white-space:nowrap;
+}
+.pricing-bundles-divider__sub{
+  text-align:center;
+  margin:14px 0 0;
   font-family:'Plus Jakarta Sans',sans-serif;
-  font-size:13px;color:#4E6D92;margin:0;
+  font-size:14px;
+  font-weight:400;
+  color:#4E6D92;
+  line-height:1.5;
+  padding:0 16px;
 }
 .pricing-row-2{
   display:grid;grid-template-columns:repeat(3,1fr);
@@ -994,6 +1038,7 @@ p.sub{
   .pricing-row-1{grid-template-columns:1fr;gap:20px}
   .pricing-row-2{grid-template-columns:1fr;gap:20px}
   .pricing-card--growth{transform:none!important}
+  .pbn-card--full{transform:none!important}
 }
 .pricing-card-price{font-size:42px!important;letter-spacing:-1.5px!important}
 .pricing-card--growth .pricing-card-price{font-size:56px!important}
@@ -1006,8 +1051,14 @@ p.sub{
 .pricing-premium-section.pricing-inview .pricing-card{
   animation:pricingFadeUp 400ms ease-out forwards;
 }
+.pricing-premium-section.pricing-inview .pricing-card--growth{
+  animation:pricingFadeUpGrowth 400ms ease-out forwards;
+}
 .pricing-premium-section.pricing-reduced .pricing-card{
   opacity:1;transform:none;animation:none;
+}
+.pricing-premium-section.pricing-reduced .pricing-card--growth{
+  opacity:1;transform:translateY(-16px);animation:none;
 }
 .pricing-row-1 .pricing-card:nth-child(1){animation-delay:0ms}
 .pricing-row-1 .pricing-card:nth-child(2){animation-delay:80ms}
@@ -1018,6 +1069,7 @@ p.sub{
 .pricing-card--starter,.pricing-card--pro{
   background:#0A1628;border:1px solid rgba(255,255,255,0.06);
   padding:28px;
+  min-height:440px;
 }
 .pricing-card--starter:hover,.pricing-card--pro:hover{
   transform:translateY(-4px);
@@ -1027,13 +1079,13 @@ p.sub{
 .pricing-card--growth{
   background:linear-gradient(135deg,#0D1F45 0%,#0A1628 60%,#060B14 100%);
   border:1.5px solid #2563EB;
-  box-shadow:0 0 24px rgba(37,99,235,0.3),inset 0 1px 0 rgba(59,130,246,0.1);
-  padding:36px;
-  transform:translateY(-12px);
+  box-shadow:0 0 40px rgba(37,99,235,0.25),0 0 24px rgba(37,99,235,0.2),inset 0 1px 0 rgba(59,130,246,0.1);
+  padding:44px 40px;
+  min-height:520px;
 }
 .pricing-card--growth:hover{
-  transform:translateY(-16px);
-  box-shadow:0 0 32px rgba(37,99,235,0.45),inset 0 1px 0 rgba(59,130,246,0.15);
+  transform:translateY(-20px);
+  box-shadow:0 0 48px rgba(37,99,235,0.35),0 0 32px rgba(37,99,235,0.25),inset 0 1px 0 rgba(59,130,246,0.15);
   border-color:#3B82F6;
 }
 .pricing-card-badge{
@@ -1102,6 +1154,7 @@ p.sub{
   background:#060B14;border:1px solid rgba(255,255,255,0.08);
   border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:14px;
   position:relative;
+  min-height:520px;
   transition:transform 300ms cubic-bezier(0.34,1.56,0.64,1),box-shadow 300ms ease,border-color 300ms ease;
   opacity:0;transform:translateY(12px);
 }
@@ -1113,15 +1166,46 @@ p.sub{
   border-color:rgba(255,255,255,0.12);
   box-shadow:0 12px 40px rgba(0,0,0,0.3);
 }
+.pbn-card--ops{
+  border-top:3px solid #10B981;
+}
+.pbn-card--fleet{
+  border-top:3px solid #7C3AED;
+}
+.pbn-card--fleet:hover{
+  border-color:rgba(255,255,255,0.12);
+  border-top-color:#7C3AED;
+}
+.pbn-card--ops:hover{
+  border-color:rgba(255,255,255,0.12);
+  border-top-color:#10B981;
+}
 .pbn-card--full{
-  border:1.5px solid rgba(124,58,237,0.4);
+  border:1px solid rgba(124,58,237,0.35);
+  border-top:none;
+  box-shadow:0 0 30px rgba(124,58,237,0.15);
+}
+.pbn-card--full::before{
+  content:'';
+  position:absolute;top:0;left:0;right:0;height:3px;
+  border-radius:16px 16px 0 0;
+  background:linear-gradient(90deg,#10B981,#2563EB,#7C3AED);
+  pointer-events:none;z-index:1;
+}
+@media(min-width:1025px){
+  .pricing-premium-section.pricing-inview .pbn-card--full{
+    animation-name:pricingFadeUpPbnFull;
+  }
+  .pbn-card--full:hover{
+    transform:translateY(-12px);
+  }
 }
 .pbn-card--full:hover{
-  border-color:rgba(124,58,237,0.6);
-  box-shadow:0 16px 48px rgba(124,58,237,0.2);
+  border-color:rgba(124,58,237,0.5);
+  box-shadow:0 0 36px rgba(124,58,237,0.22),0 16px 48px rgba(0,0,0,0.25);
 }
 .pbn-featured-badge{
-  position:absolute;top:-14px;left:50%;transform:translateX(-50%);
+  position:absolute;top:-14px;left:50%;transform:translateX(-50%);z-index:2;
   background:#7C3AED;color:#fff;
   font-family:'JetBrains Mono',monospace;
   font-size:10px;letter-spacing:0.15em;text-transform:uppercase;
@@ -1129,15 +1213,15 @@ p.sub{
   box-shadow:0 4px 16px rgba(124,58,237,0.4);font-weight:700;
 }
 .pbn-top{display:flex;flex-direction:column;gap:8px}
-.pbn-pills{display:flex;flex-wrap:wrap;gap:6px}
+.pbn-pills{display:flex;flex-wrap:wrap;gap:8px}
 .pbn-pill{
   font-family:'JetBrains Mono',monospace;
-  font-size:10px;letter-spacing:0.1em;text-transform:uppercase;
-  padding:4px 10px;border-radius:999px;font-weight:500;
+  font-size:12px;letter-spacing:0.1em;text-transform:uppercase;
+  padding:7px 14px;border-radius:999px;font-weight:600;
 }
-.pbn-pill--xev{background:rgba(37,99,235,0.1);color:#2563EB;border:1px solid rgba(37,99,235,0.3)}
-.pbn-pill--fyn{background:rgba(16,185,129,0.1);color:#10B981;border:1px solid rgba(16,185,129,0.3)}
-.pbn-pill--fp{background:rgba(124,58,237,0.1);color:#7C3AED;border:1px solid rgba(124,58,237,0.3)}
+.pbn-pill--xev{background:rgba(37,99,235,0.15);color:#60a5fa;border:1px solid #2563EB}
+.pbn-pill--fyn{background:rgba(16,185,129,0.15);color:#34d399;border:1px solid #10B981}
+.pbn-pill--fp{background:rgba(124,58,237,0.15);color:#a78bfa;border:1px solid #7C3AED}
 .pbn-tag{
   font-family:'Plus Jakarta Sans',sans-serif;
   font-size:13px;color:#4E6D92;font-style:italic;
@@ -1267,6 +1351,11 @@ nav.load-in{opacity:1 !important;transform:translateY(0) !important;transition:o
   *,*::before,*::after{animation:none !important;transition:none !important;scroll-behavior:auto !important}
   .fr-stagger{opacity:1 !important;transform:none !important}
   .pricing-premium-section .pricing-card{opacity:1 !important;transform:none !important}
+  .pricing-premium-section .pricing-card--growth{opacity:1 !important;transform:translateY(-16px) !important}
+  .pricing-premium-section .pbn-card{opacity:1 !important;transform:translateY(0) !important}
+  @media (min-width:1025px){
+    .pricing-premium-section .pbn-card--full{transform:translateY(-8px) !important}
+  }
   /* Keep nav hex + sign-in overlay progress bar animating (branding / intentional motion) */
   .nav-hex-pulse{animation:navHexPulse 2.6s ease-out infinite !important}
   .nav-hex-pulse--2{animation-delay:0.9s !important}
@@ -2232,6 +2321,8 @@ footer { position: relative !important; margin-top: 0 !important; }
 </header>
 
 <div class="pricing-all-grid">
+  <div class="pricing-row-1-stack">
+  <span class="pricing-standalone-badge">XEVORA STANDALONE</span>
   <div class="pricing-row-1">
   <article class="pricing-card pricing-card--starter" data-group="XEVORA STANDALONE">
     <div class="pricing-card-plan">Starter</div>
@@ -2276,10 +2367,15 @@ footer { position: relative !important; margin-top: 0 !important; }
     <a class="pricing-card-cta pricing-card-cta--outline" href="https://app.xevora.io/auth/login">Join Waitlist</a>
   </article>
   </div>
+  </div>
 
-  <div class="pricing-row-2-label">
-    <h3>XAVORN BUNDLES</h3>
-    <p>Combine products. Save more.</p>
+  <div class="pricing-bundles-divider">
+    <div class="pricing-bundles-divider__lines">
+      <span class="pricing-bundles-divider__line" aria-hidden="true"></span>
+      <span class="pricing-bundles-divider__label">XAVORN BUNDLES</span>
+      <span class="pricing-bundles-divider__line" aria-hidden="true"></span>
+    </div>
+    <p class="pricing-bundles-divider__sub">Combine Xevora with FleetPulse and Fynlo. Save more.</p>
   </div>
 
   <div class="pricing-row-2">
@@ -2554,7 +2650,7 @@ footer { position: relative !important; margin-top: 0 !important; }
 <script>
 (function () {
   function bindSignInTransitions() {
-    if (typeof xevoraTransition !== 'function') {
+    if (typeof window.xevoraTransition !== 'function') {
       console.error('xevoraTransition missing: ensure transition.js loads (same folder as index.html, or set the correct src path).');
       return;
     }
@@ -2562,7 +2658,7 @@ footer { position: relative !important; margin-top: 0 !important; }
     signInLinks.forEach(function (el) {
       el.addEventListener('click', function (e) {
         e.preventDefault();
-        xevoraTransition(e, 'https://app.xevora.io/auth/login');
+        window.xevoraTransition('https://app.xevora.io/auth/login');
       });
     });
   }

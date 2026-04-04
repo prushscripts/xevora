@@ -1,0 +1,53 @@
+{
+  "expo": {
+    "name": "Xevora",
+    "slug": "xevora",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "newArchEnabled": true,
+    "scheme": "xevora",
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#03060D"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "io.xevora.app",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "Xevora uses your location to verify clock-in at your work site.",
+        "NSLocationAlwaysUsageDescription": "Xevora uses your location to track active shifts.",
+        "NSCameraUsageDescription": "Xevora uses your camera to scan documents and verify identity."
+      }
+    },
+    "android": {
+      "package": "io.xevora.app",
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION",
+        "RECEIVE_BOOT_COMPLETED",
+        "VIBRATE",
+        "CAMERA"
+      ],
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#03060D"
+      },
+      "edgeToEdgeEnabled": true,
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-secure-store",
+      "expo-location",
+      "expo-notifications",
+      "expo-font",
+      "expo-asset"
+    ]
+  }
+}

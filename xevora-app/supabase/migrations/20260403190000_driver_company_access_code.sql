@@ -67,6 +67,10 @@ AS $$
 DECLARE
   cid uuid;
   uid uuid := auth.uid();
+  raw_name text;
+  fn text;
+  ln text;
+  sp int;
 BEGIN
   IF uid IS NULL THEN
     RETURN jsonb_build_object('ok', false, 'error', 'not_authenticated');
@@ -94,11 +98,25 @@ BEGIN
     RETURN jsonb_build_object('ok', false, 'error', 'invalid_code');
   END IF;
 
-  INSERT INTO public.workers (company_id, user_id, full_name, role, status)
+  raw_name := COALESCE(nullif(trim(p_full_name), ''), 'Driver');
+  fn := split_part(raw_name, ' ', 1);
+  sp := position(' ' in raw_name);
+  IF sp = 0 THEN
+    ln := fn;
+  ELSE
+    ln := trim(substring(raw_name from sp + 1));
+    IF ln = '' THEN
+      ln := fn;
+    END IF;
+  END IF;
+
+  INSERT INTO public.workers (company_id, user_id, first_name, last_name, full_name, role, status)
   VALUES (
     cid,
     uid,
-    COALESCE(nullif(trim(p_full_name), ''), 'Driver'),
+    fn,
+    ln,
+    raw_name,
     'driver',
     'active'
   );

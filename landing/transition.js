@@ -1,278 +1,422 @@
-function xevoraTransition(e, destination) {
-  if (e && e.preventDefault) e.preventDefault();
-  if (document.getElementById('xev-overlay')) return;
+(function() {
+  var overlay, hexWrap, hexSvg, wordmark, statusEl, barTrack, barFill, barDot, sparks;
+  var startTime = null;
+  var redirected = false;
 
-  var TOTAL_DURATION = 2800;
-  var startTime = performance.now();
+  var STAGES = {
+    FADE_IN: { start: 0, end: 400 },
+    LOADING: { start: 400, end: 1900 },
+    READY: { start: 1900, end: 2200 },
+    PORTAL: { start: 2200, end: 3200 }
+  };
 
-  var style = document.createElement('style');
-  style.textContent = [
-    '@keyframes xGlow{0%,100%{opacity:0.5}50%{opacity:1}}',
-    '@keyframes xSparkPulse{0%,100%{box-shadow:0 0 6px 3px rgba(96,165,250,1),0 0 14px 6px rgba(37,99,235,0.8)}50%{box-shadow:0 0 10px 6px rgba(96,165,250,1),0 0 24px 12px rgba(37,99,235,0.9)}}'
-  ].join('');
-  document.head.appendChild(style);
-
-  var ov = document.createElement('div');
-  ov.id = 'xev-overlay';
-  ov.style.cssText = 'position:fixed;inset:0;z-index:999999;background:#03060D;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;transition:opacity 250ms ease-out;overflow:hidden;';
-
-
-  var glow = document.createElement('div');
-  glow.style.cssText = 'position:absolute;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,rgba(37,99,235,0.15) 0%,transparent 68%);top:50%;left:50%;transform:translate(-50%,-50%);animation:xGlow 2.8s ease-in-out infinite;pointer-events:none;opacity:0;transition:opacity 300ms ease;';
-
-  function makeRing(size, opacity) {
-    var r = document.createElement('div');
-    r.style.cssText = 'position:absolute;width:'+size+'px;height:'+size+'px;border-radius:50%;border:1px solid rgba(37,99,235,'+opacity+');top:50%;left:50%;transform:translate(-50%,-50%) scale(0);opacity:0;pointer-events:none;transition:transform 400ms cubic-bezier(0.4,0,0.2,1),opacity 400ms ease;will-change:transform,opacity;';
-    return r;
-  }
-
-  var ring1 = makeRing(320, '0.2');
-  var ring2 = makeRing(230, '0.12');
-  var ring3 = makeRing(160, '0.07');
-
-  var center = document.createElement('div');
-  center.style.cssText = 'position:relative;z-index:10;display:flex;flex-direction:column;align-items:center;opacity:0;transform:scale(0.88);transition:opacity 350ms ease 80ms,transform 350ms cubic-bezier(0.16,1,0.3,1) 80ms;';
-
-  var hexWrap = document.createElement('div');
-  hexWrap.style.cssText = 'width:76px;height:76px;border-radius:14px;background:rgba(6,11,20,1);border:1px solid rgba(37,99,235,0.4);box-shadow:0 0 0 1px rgba(59,130,246,0.12),0 0 40px rgba(37,99,235,0.35);display:flex;align-items:center;justify-content:center;margin-bottom:20px;transition:box-shadow 300ms ease;';
-  hexWrap.innerHTML = '<svg width="46" height="46" viewBox="0 0 100 100" fill="none"><polygon points="50,6 89,28 89,72 50,94 11,72 11,28" fill="#060B14" stroke="rgba(37,99,235,0.6)" stroke-width="2.5"/><path d="M33,25 L43,25 L50,37 L57,25 L67,25 L55,50 L67,75 L57,75 L50,63 L43,75 L33,75 L45,50 Z" fill="#2563EB"/><polygon points="50,43 57,50 50,57 43,50" fill="#60A5FA"/></svg>';
-
-  var wordmark = document.createElement('div');
-  wordmark.style.cssText = 'font-family:"Plus Jakarta Sans",sans-serif;font-weight:800;font-size:14px;letter-spacing:0.3em;color:#F1F5FF;margin-bottom:8px;opacity:0;transform:translateY(10px);transition:opacity 350ms ease,transform 350ms cubic-bezier(0.16,1,0.3,1);';
-  wordmark.textContent = 'XEVORA';
-
-  var statusEl = document.createElement('div');
-  statusEl.style.cssText = 'font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:0.15em;color:#4E6D92;margin-bottom:24px;min-height:16px;transition:color 200ms ease,opacity 150ms ease;';
-  statusEl.textContent = 'INITIALIZING...';
-
-  var barWrap = document.createElement('div');
-  barWrap.style.cssText = 'width:280px;height:3px;background:rgba(37,99,235,0.1);border-radius:999px;position:relative;overflow:visible;';
-
-  var barFill = document.createElement('div');
-  barFill.style.cssText =
-    'height:100%;width:0%;transform-origin:left center;' +
-    'background:linear-gradient(90deg,#1d4ed8,#3B82F6,#60a5fa);' +
-    'border-radius:999px;position:relative;will-change:width;';
-
-  var spark = document.createElement('div');
-  spark.style.cssText =
-    'position:absolute;right:-3px;top:50%;transform:translate(0,-50%);' +
-    'width:6px;height:6px;border-radius:50%;background:#fff;' +
-    'box-shadow:0 0 6px 3px rgba(96,165,250,1),0 0 14px 6px rgba(37,99,235,0.8);' +
-    'opacity:0;animation:xSparkPulse 0.8s ease-in-out infinite;' +
-    'will-change:opacity;';
-
-  var particleContainer = document.createElement('div');
-  particleContainer.style.cssText =
-    'position:absolute;right:-3px;top:50%;transform:translate(0,-50%);pointer-events:none;overflow:visible;width:0;height:0;';
-
-  barFill.appendChild(spark);
-  barFill.appendChild(particleContainer);
-  barWrap.appendChild(barFill);
-  center.appendChild(hexWrap);
-  center.appendChild(wordmark);
-  center.appendChild(statusEl);
-  center.appendChild(barWrap);
-
-  ov.appendChild(glow);
-  ov.appendChild(ring1);
-  ov.appendChild(ring2);
-  ov.appendChild(ring3);
-  ov.appendChild(center);
-  document.body.appendChild(ov);
-
-  function burstParticles() {
-    var count = 4 + Math.floor(Math.random() * 3);
-    for (var i = 0; i < count; i++) {
-      (function (idx) {
-        var p = document.createElement('div');
-        var angle = (Math.random() - 0.5) * (Math.PI / 2.5);
-        var dist = 8 + Math.random() * 12;
-        var px = Math.cos(angle) * dist;
-        var py = Math.sin(angle) * dist;
-        var size = 2 + Math.random() * 2;
-        var dur = 300;
-        var colors = ['255,255,255', '96,165,250', '147,197,253'];
-        var col = colors[Math.floor(Math.random() * colors.length)];
-        var op = 0.7 + Math.random() * 0.3;
-        p.style.cssText =
-          'position:absolute;width:' +
-          size +
-          'px;height:' +
-          size +
-          'px;border-radius:50%;background:rgba(' +
-          col +
-          ',' +
-          op +
-          ');top:0;left:0;';
-        particleContainer.appendChild(p);
-
-        if (typeof p.animate === 'function') {
-          var anim = p.animate(
-            [
-              { transform: 'translate(0,0) scale(1)', opacity: 1 },
-              { transform: 'translate(' + px + 'px,' + py + 'px) scale(0)', opacity: 0 },
-            ],
-            { duration: dur, easing: 'ease-out', fill: 'forwards' },
-          );
-          anim.onfinish = function () {
-            if (p.parentNode) p.parentNode.removeChild(p);
-          };
-        } else {
-          setTimeout(function () {
-            if (p.parentNode) p.parentNode.removeChild(p);
-          }, dur + 50);
-        }
-      })(i);
-    }
-  }
-
-  var statusMessages = [
-    { time: 0, text: 'INITIALIZING...', color: '#4E6D92' },
-    { time: 400, text: 'AUTHENTICATING...', color: '#4E6D92' },
-    { time: 900, text: 'LOADING WORKSPACE...', color: '#4E6D92' },
-    { time: 1400, text: 'ALMOST READY...', color: '#4E6D92' },
-    { time: 1700, text: 'READY.', color: '#3B82F6' }
+  var STATUS = [
+    { at: 0,    text: 'INITIALIZING...' },
+    { at: 500,  text: 'AUTHENTICATING...' },
+    { at: 1000, text: 'LOADING WORKSPACE...' },
+    { at: 1500, text: 'ALMOST READY...' },
+    { at: 1900, text: 'READY.' }
   ];
 
-  var lastParticleBurst = 0;
-  var particleBurstInterval = 120;
+  var lastStatus = -1;
+  var sparkInterval = null;
 
-  function easeInOutCubic(t) {
-    return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+  function easeInOut(t) {
+    return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
   }
 
-  function animationLoop() {
-    var elapsed = performance.now() - startTime;
-    
-    if (elapsed >= TOTAL_DURATION) {
-      window.location.href = destination;
-      return;
+  function easeInCubic(t) {
+    return t * t * t;
+  }
+
+  function lerp(a, b, t) {
+    return a + (b - a) * t;
+  }
+
+  function clamp(val, min, max) {
+    return Math.max(min, Math.min(max, val));
+  }
+
+  function createSpark() {
+    if (!barDot || !overlay) return;
+    var dotRect = barDot.getBoundingClientRect();
+    var spark = document.createElement('div');
+    spark.style.cssText = [
+      'position:fixed',
+      'width:3px',
+      'height:3px',
+      'border-radius:50%',
+      'pointer-events:none',
+      'z-index:100001',
+      'left:' + (dotRect.left + dotRect.width / 2) + 'px',
+      'top:' + (dotRect.top + dotRect.height / 2) + 'px',
+    ].join(';');
+    var colors = ['#ffffff', '#60a5fa', '#93c5fd', '#bfdbfe', '#3B82F6'];
+    spark.style.background = colors[Math.floor(Math.random() * colors.length)];
+    var angle = (Math.random() * 90) - 45;
+    var rad = angle * Math.PI / 180;
+    var speed = 3 + Math.random() * 8;
+    var vx = Math.cos(rad) * speed;
+    var vy = (Math.sin(rad) - 1) * speed;
+    document.body.appendChild(spark);
+    var sparkStart = performance.now();
+    var lifetime = 250 + Math.random() * 200;
+    function animateSpark(now) {
+      var elapsed = now - sparkStart;
+      var progress = elapsed / lifetime;
+      if (progress >= 1) {
+        spark.remove();
+        return;
+      }
+      var x = parseFloat(spark.style.left) + vx * (1 - progress);
+      var y = parseFloat(spark.style.top) + vy + (progress * progress * 4);
+      spark.style.left = x + 'px';
+      spark.style.top = y + 'px';
+      spark.style.opacity = (1 - progress) * 0.9;
+      spark.style.transform = 'scale(' + (1 - progress * 0.5) + ')';
+      requestAnimationFrame(animateSpark);
+    }
+    requestAnimationFrame(animateSpark);
+  }
+
+  function createPortalRing(delay) {
+    var ring = document.createElement('div');
+    ring.style.cssText = [
+      'position:fixed',
+      'border-radius:50%',
+      'border:2px solid #3B82F6',
+      'pointer-events:none',
+      'z-index:100001',
+      'left:50%',
+      'top:50%',
+      'transform:translate(-50%,-50%) scale(0)',
+      'opacity:0.8',
+      'width:20px',
+      'height:20px',
+    ].join(';');
+    overlay.appendChild(ring);
+    var ringStart = performance.now() + delay;
+    function animateRing(now) {
+      if (now < ringStart) { requestAnimationFrame(animateRing); return; }
+      var elapsed = now - ringStart;
+      var duration = 600;
+      var progress = clamp(elapsed / duration, 0, 1);
+      var scale = progress * 80;
+      var opacity = (1 - progress) * 0.6;
+      ring.style.transform = 'translate(-50%,-50%) scale(' + scale + ')';
+      ring.style.opacity = opacity;
+      if (progress < 1) {
+        requestAnimationFrame(animateRing);
+      } else {
+        ring.remove();
+      }
+    }
+    requestAnimationFrame(animateRing);
+  }
+
+  function triggerPortalExplosion() {
+    // Multiple expanding rings
+    for (var i = 0; i < 5; i++) {
+      createPortalRing(i * 80);
     }
 
-    if (elapsed < 400) {
-      var progress = elapsed / 400;
-      ov.style.opacity = String(progress);
-      glow.style.opacity = String(progress * 0.5);
-      
-      if (elapsed > 50) {
-        var ringProgress = (elapsed - 50) / 350;
-        var scale = easeInOutCubic(ringProgress);
-        ring1.style.transform = 'translate(-50%,-50%) scale(' + scale + ')';
-        ring1.style.opacity = String(scale * 0.2);
+    // Flash white-blue
+    var flash = document.createElement('div');
+    flash.style.cssText = [
+      'position:fixed',
+      'inset:0',
+      'background:#1d4ed8',
+      'z-index:100002',
+      'opacity:0',
+      'pointer-events:none'
+    ].join(';');
+    document.body.appendChild(flash);
+
+    // Hex scales to fill screen
+    if (hexWrap) {
+      var hexStart = performance.now();
+      var hexDuration = 600;
+      function animateHex(now) {
+        var elapsed = now - hexStart;
+        var progress = clamp(elapsed / hexDuration, 0, 1);
+        var easedProgress = easeInCubic(progress);
+        var scale = lerp(1, 25, easedProgress);
+        var opacity = progress > 0.7 ? 1 - ((progress - 0.7) / 0.3) : 1;
+        hexWrap.style.transform = 'translate(-50%,-50%) scale(' + scale + ')';
+        hexWrap.style.opacity = opacity;
+        if (progress < 1) requestAnimationFrame(animateHex);
       }
-      if (elapsed > 130) {
-        var ringProgress = (elapsed - 130) / 270;
-        var scale = easeInOutCubic(ringProgress);
-        ring2.style.transform = 'translate(-50%,-50%) scale(' + scale + ')';
-        ring2.style.opacity = String(scale * 0.12);
+      requestAnimationFrame(animateHex);
+    }
+
+    // Flash sequence
+    setTimeout(function() {
+      flash.style.opacity = '0.9';
+      setTimeout(function() {
+        flash.style.opacity = '0';
+        flash.style.transition = 'opacity 200ms';
+        setTimeout(function() {
+          overlay.style.background = '#000000';
+          if (!redirected) {
+            redirected = true;
+            window.location.href = 'https://app.xevora.io/auth/login';
+          }
+        }, 200);
+      }, 120);
+    }, 300);
+  }
+
+  function tick(now) {
+    if (!startTime) startTime = now;
+    var elapsed = now - startTime;
+
+    // STAGE 1: Fade in (0-400ms)
+    if (elapsed <= STAGES.FADE_IN.end) {
+      var fadeProgress = clamp(elapsed / STAGES.FADE_IN.end, 0, 1);
+      overlay.style.opacity = fadeProgress;
+
+      // Hex scales in
+      if (hexWrap) {
+        var hexScale = lerp(0.5, 1, easeInOut(fadeProgress));
+        hexWrap.style.opacity = fadeProgress;
+        hexWrap.style.transform = 'translate(-50%,-50%) scale(' + hexScale + ')';
       }
-      if (elapsed > 210) {
-        var ringProgress = (elapsed - 210) / 190;
-        var scale = easeInOutCubic(ringProgress);
-        ring3.style.transform = 'translate(-50%,-50%) scale(' + scale + ')';
-        ring3.style.opacity = String(scale * 0.07);
+
+      // Wordmark slides up
+      if (wordmark) {
+        var wordY = lerp(20, 0, easeInOut(fadeProgress));
+        wordmark.style.opacity = fadeProgress;
+        wordmark.style.transform = 'translateY(' + wordY + 'px)';
       }
-      
-      if (elapsed > 100) {
-        var centerProgress = (elapsed - 100) / 300;
-        center.style.opacity = String(centerProgress);
-        center.style.transform = 'scale(' + (0.88 + centerProgress * 0.12) + ')';
-      }
-      if (elapsed > 200) {
-        var wordProgress = (elapsed - 200) / 200;
-        wordmark.style.opacity = String(wordProgress);
-        wordmark.style.transform = 'translateY(' + (10 - wordProgress * 10) + 'px)';
+
+      // Bar track fades in
+      if (barTrack) {
+        barTrack.style.opacity = clamp((elapsed - 200) / 200, 0, 1);
       }
     }
-    
-    else if (elapsed >= 400 && elapsed < 1800) {
-      var barProgress = Math.min(1, (elapsed - 400) / 1400);
-      var easedProgress = easeInOutCubic(barProgress);
-      barFill.style.width = (easedProgress * 100) + '%';
-      
-      if (barProgress > 0.05 && spark.style.opacity !== '1') {
-        spark.style.opacity = '1';
+
+    // STAGE 2: Loading bar (400-1900ms)
+    if (elapsed >= STAGES.LOADING.start && elapsed <= STAGES.LOADING.end) {
+      var loadElapsed = elapsed - STAGES.LOADING.start;
+      var loadDuration = STAGES.LOADING.end - STAGES.LOADING.start;
+      var loadProgress = clamp(loadElapsed / loadDuration, 0, 1);
+      var easedLoad = easeInOut(loadProgress);
+
+      if (barFill) {
+        barFill.style.width = (easedLoad * 100) + '%';
       }
-      
-      if (elapsed - lastParticleBurst > particleBurstInterval && barProgress < 0.98) {
-        burstParticles();
-        lastParticleBurst = elapsed;
+      if (barDot) {
+        barDot.style.opacity = '1';
+        barDot.style.left = (easedLoad * 100) + '%';
       }
-      
-      for (var i = 0; i < statusMessages.length; i++) {
-        if (elapsed >= statusMessages[i].time && (i === statusMessages.length - 1 || elapsed < statusMessages[i + 1].time)) {
-          if (statusEl.textContent !== statusMessages[i].text) {
-            statusEl.textContent = statusMessages[i].text;
-            statusEl.style.color = statusMessages[i].color;
+
+      // Status text
+      for (var i = STATUS.length - 1; i >= 0; i--) {
+        if (elapsed >= STATUS[i].at && lastStatus !== i) {
+          lastStatus = i;
+          if (statusEl) {
+            statusEl.style.opacity = '0';
+            statusEl.style.transform = 'translateY(4px)';
+            ;(function(text, isReady) {
+              setTimeout(function() {
+                statusEl.textContent = text;
+                statusEl.style.transition = 'opacity 200ms, transform 200ms';
+                statusEl.style.opacity = '1';
+                statusEl.style.transform = 'translateY(0)';
+                if (isReady) {
+                  statusEl.style.color = '#3B82F6';
+                }
+              }, 100);
+            })(STATUS[i].text, STATUS[i].text === 'READY.');
           }
           break;
         }
       }
     }
-    
-    else if (elapsed >= 1800 && elapsed < 2400) {
-      if (elapsed < 1850) {
-        var fadeProgress = (elapsed - 1800) / 50;
-        spark.style.opacity = String(1 - fadeProgress);
-      }
-      
-      if (elapsed >= 1850 && elapsed < 2150) {
-        var pulseProgress = (elapsed - 1850) / 300;
-        var pulseScale = 1 + Math.sin(pulseProgress * Math.PI) * 0.15;
-        hexWrap.style.transform = 'scale(' + pulseScale + ')';
-        
-        if (pulseProgress > 0.3) {
-          var glowIntensity = (pulseProgress - 0.3) / 0.7;
-          hexWrap.style.boxShadow = '0 0 0 2px rgba(59,130,246,' + (0.5 + glowIntensity * 0.5) + '), 0 0 ' + (40 + glowIntensity * 120) + 'px rgba(37,99,235,1), 0 0 ' + (80 + glowIntensity * 200) + 'px rgba(37,99,235,0.7)';
-        }
-      }
-      
-      if (elapsed >= 2000) {
-        var collapseProgress = (elapsed - 2000) / 400;
-        var collapseScale = 1 - easeInOutCubic(collapseProgress) * 0.95;
-        ring1.style.transform = 'translate(-50%,-50%) scale(' + collapseScale + ')';
-        ring1.style.opacity = String((1 - collapseProgress) * 0.2);
-        ring2.style.transform = 'translate(-50%,-50%) scale(' + collapseScale + ')';
-        ring2.style.opacity = String((1 - collapseProgress) * 0.12);
-        ring3.style.transform = 'translate(-50%,-50%) scale(' + collapseScale + ')';
-        ring3.style.opacity = String((1 - collapseProgress) * 0.07);
-      }
-      
-      if (elapsed >= 2100) {
-        var expandProgress = (elapsed - 2100) / 500;
-        var expandScale = 1 + easeInOutCubic(expandProgress) * 17;
-        center.style.transform = 'scale(' + expandScale + ')';
-        
-        if (expandScale > 12) {
-          var fadeProgress = (expandScale - 12) / 6;
-          center.style.opacity = String(1 - fadeProgress);
-        }
-        
-        if (expandProgress > 0.4) {
-          var glowProgress = (expandProgress - 0.4) / 0.6;
-          glow.style.opacity = String(0.5 + glowProgress * 0.5);
-          glow.style.transform = 'translate(-50%,-50%) scale(' + (1 + glowProgress * 2) + ')';
-        }
-      }
-    }
-    
-    else if (elapsed >= 2400 && elapsed < 2500) {
-      var flashProgress = (elapsed - 2400) / 100;
-      ov.style.background = 'rgb(' + 
-        Math.floor(3 + flashProgress * 26) + ',' + 
-        Math.floor(6 + flashProgress * 68) + ',' + 
-        Math.floor(13 + flashProgress * 223) + ')';
-    }
-    
-    else if (elapsed >= 2500) {
-      ov.style.background = '#000';
+
+    // Bar complete — stop sparks
+    if (elapsed > STAGES.LOADING.end && sparkInterval) {
+      clearInterval(sparkInterval);
+      sparkInterval = null;
+      if (barDot) barDot.style.opacity = '0';
     }
 
-    requestAnimationFrame(animationLoop);
+    // STAGE 3: Ready pulse (1900-2200ms)
+    if (elapsed >= STAGES.READY.start && elapsed <= STAGES.READY.end) {
+      if (barFill) barFill.style.width = '100%';
+      var readyProgress = clamp((elapsed - STAGES.READY.start) / 300, 0, 1);
+      // Hex pulse
+      if (hexWrap) {
+        var pulse = 1 + Math.sin(readyProgress * Math.PI) * 0.12;
+        hexWrap.style.transform = 'translate(-50%,-50%) scale(' + pulse + ')';
+      }
+      // Fade out bar elements
+      if (barTrack) {
+        barTrack.style.opacity = clamp(1 - readyProgress * 2, 0, 1);
+      }
+      if (statusEl) {
+        statusEl.style.opacity = clamp(1 - readyProgress * 2, 0, 1);
+      }
+    }
+
+    // STAGE 4: Portal explosion (2200ms)
+    if (elapsed >= STAGES.PORTAL.start && !redirected) {
+      triggerPortalExplosion();
+      return; // Stop the rAF loop
+    }
+
+    requestAnimationFrame(tick);
   }
 
-  requestAnimationFrame(function() {
-    requestAnimationFrame(animationLoop);
-  });
-}
+  function launch() {
+    // Build overlay DOM
+    overlay = document.createElement('div');
+    overlay.style.cssText = [
+      'position:fixed',
+      'inset:0',
+      'background:#03060D',
+      'z-index:99999',
+      'opacity:0',
+      'pointer-events:all'
+    ].join(';');
+
+    // Hex icon
+    hexWrap = document.createElement('div');
+    hexWrap.style.cssText = [
+      'position:absolute',
+      'left:50%',
+      'top:42%',
+      'transform:translate(-50%,-50%) scale(0.5)',
+      'opacity:0',
+      'width:80px',
+      'height:80px'
+    ].join(';');
+    hexWrap.innerHTML = '<svg viewBox="0 0 100 100" width="80" height="80" xmlns="http://www.w3.org/2000/svg"><defs><radialGradient id="tg-hbg" cx="50%" cy="50%" r="60%"><stop offset="0%" stop-color="#0B1A3E"/><stop offset="100%" stop-color="#03060D"/></radialGradient><filter id="tg-xb" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><rect width="100" height="100" rx="20" fill="#03060D"/><polygon points="50,8 92,32 92,68 50,92 8,68 8,32" fill="url(#tg-hbg)" stroke="#1E3A6E" stroke-width="1.5"/><polygon points="50,8 92,32 92,68 50,92 8,68 8,32" fill="none" stroke="#2563EB" stroke-width="1" opacity="0.6"/><g filter="url(#tg-xb)"><line x1="22" y1="22" x2="78" y2="78" stroke="#1d4ed8" stroke-width="14" stroke-linecap="round"/><line x1="78" y1="22" x2="22" y2="78" stroke="#1d4ed8" stroke-width="14" stroke-linecap="round"/></g><line x1="22" y1="22" x2="78" y2="78" stroke="#3B82F6" stroke-width="8" stroke-linecap="round"/><line x1="78" y1="22" x2="22" y2="78" stroke="#3B82F6" stroke-width="8" stroke-linecap="round"/><line x1="22" y1="22" x2="78" y2="78" stroke="#93c5fd" stroke-width="2.5" stroke-linecap="round" opacity="0.6"/><line x1="78" y1="22" x2="22" y2="78" stroke="#93c5fd" stroke-width="2.5" stroke-linecap="round" opacity="0.6"/><circle cx="50" cy="50" r="3" fill="#bfdbfe" opacity="0.9"/></svg>';
+    overlay.appendChild(hexWrap);
+
+    // Concentric rings behind hex
+    for (var r = 0; r < 3; r++) {
+      var ring = document.createElement('div');
+      var ringSize = 120 + r * 60;
+      ring.style.cssText = [
+        'position:absolute',
+        'left:50%',
+        'top:42%',
+        'width:' + ringSize + 'px',
+        'height:' + ringSize + 'px',
+        'border-radius:50%',
+        'border:1px solid rgba(37,99,235,' + (0.15 - r * 0.04) + ')',
+        'transform:translate(-50%,-50%)',
+        'pointer-events:none',
+        'animation:ringPulse' + r + ' ' + (2.5 + r * 0.3) + 's ease-in-out infinite'
+      ].join(';');
+      overlay.appendChild(ring);
+    }
+
+    // XEVORA wordmark
+    wordmark = document.createElement('div');
+    wordmark.textContent = 'XEVORA';
+    wordmark.style.cssText = [
+      'position:absolute',
+      'left:50%',
+      'top:calc(42% + 60px)',
+      'transform:translateX(-50%) translateY(20px)',
+      'font-family:"Plus Jakarta Sans",sans-serif',
+      'font-weight:800',
+      'font-size:22px',
+      'letter-spacing:0.3em',
+      'color:#F1F5FF',
+      'opacity:0',
+      'white-space:nowrap'
+    ].join(';');
+    overlay.appendChild(wordmark);
+
+    // Status text
+    statusEl = document.createElement('div');
+    statusEl.textContent = 'INITIALIZING...';
+    statusEl.style.cssText = [
+      'position:absolute',
+      'left:50%',
+      'top:calc(42% + 96px)',
+      'transform:translateX(-50%)',
+      'font-family:"JetBrains Mono",monospace',
+      'font-size:11px',
+      'letter-spacing:0.15em',
+      'color:#4E6D92',
+      'opacity:1',
+      'white-space:nowrap'
+    ].join(';');
+    overlay.appendChild(statusEl);
+
+    // Bar track
+    barTrack = document.createElement('div');
+    barTrack.style.cssText = [
+      'position:absolute',
+      'left:50%',
+      'top:calc(42% + 124px)',
+      'transform:translateX(-50%)',
+      'width:260px',
+      'height:3px',
+      'background:rgba(37,99,235,0.15)',
+      'border-radius:2px',
+      'overflow:visible',
+      'opacity:0'
+    ].join(';');
+
+    // Bar fill
+    barFill = document.createElement('div');
+    barFill.style.cssText = [
+      'position:absolute',
+      'left:0',
+      'top:0',
+      'height:100%',
+      'width:0%',
+      'background:linear-gradient(90deg,#1d4ed8,#3B82F6,#60a5fa)',
+      'border-radius:2px',
+      'transition:none'
+    ].join(';');
+    barTrack.appendChild(barFill);
+
+    // Bar dot
+    barDot = document.createElement('div');
+    barDot.style.cssText = [
+      'position:absolute',
+      'top:50%',
+      'left:0%',
+      'transform:translate(-50%,-50%)',
+      'width:10px',
+      'height:10px',
+      'border-radius:50%',
+      'background:#ffffff',
+      'box-shadow:0 0 8px 3px #3B82F6, 0 0 20px 6px rgba(59,130,246,0.4)',
+      'opacity:0',
+      'z-index:2'
+    ].join(';');
+    barTrack.appendChild(barDot);
+    overlay.appendChild(barTrack);
+
+    // Ring pulse keyframes
+    var style = document.createElement('style');
+    style.textContent = [
+      '@keyframes ringPulse0{0%,100%{opacity:0.4;transform:translate(-50%,-50%) scale(1)}50%{opacity:0.1;transform:translate(-50%,-50%) scale(1.05)}}',
+      '@keyframes ringPulse1{0%,100%{opacity:0.25;transform:translate(-50%,-50%) scale(1)}50%{opacity:0.06;transform:translate(-50%,-50%) scale(1.05)}}',
+      '@keyframes ringPulse2{0%,100%{opacity:0.12;transform:translate(-50%,-50%) scale(1)}50%{opacity:0.03;transform:translate(-50%,-50%) scale(1.05)}}'
+    ].join('');
+    document.head.appendChild(style);
+
+    document.body.appendChild(overlay);
+
+    // Spark interval during loading
+    setTimeout(function() {
+      sparkInterval = setInterval(createSpark, 80);
+    }, 400);
+
+    // Kick off rAF loop
+    requestAnimationFrame(tick);
+  }
+
+  // Expose trigger function
+  window.xevoraTransition = function(targetUrl) {
+    launch();
+  };
+})();

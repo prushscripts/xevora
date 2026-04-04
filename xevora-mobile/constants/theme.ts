@@ -1,0 +1,17 @@
+export const theme = {
+  bg: '#03060D',
+  surface: '#060B14',
+  card: '#0A1628',
+  border: 'rgba(255,255,255,0.06)',
+  primary: '#2563EB',
+  bright: '#3B82F6',
+  success: '#22C55E',
+  warning: '#F59E0B',
+  danger: '#EF4444',
+  text: '#F1F5FF',
+  muted: '#4E6D92',
+  mono: 'JetBrainsMono_400Regular',
+  heading: 'PlusJakartaSans_800ExtraBold',
+  body: 'PlusJakartaSans_400Regular',
+  bodyMedium: 'PlusJakartaSans_500Medium',
+}

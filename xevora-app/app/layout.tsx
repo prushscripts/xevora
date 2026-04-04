@@ -18,6 +18,14 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://app.xevora.io"),
   title: "Xevora — Workforce & Payroll",
   description: "GPS time tracking and automated payroll for field workers.",
+  icons: {
+    icon: [
+      { url: '/favicon.ico' },
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+      { url: '/favicon-96x96.png', sizes: '96x96', type: 'image/png' },
+    ],
+    apple: '/apple-touch-icon.png',
+  },
 };
 
 export default function RootLayout({
@@ -30,10 +38,6 @@ export default function RootLayout({
       lang="en"
       className={`${plusJakartaSans.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
-      <head>
-        <link rel="icon" href="/favicon.ico" />
-        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-      </head>
       <body className="min-h-full flex flex-col bg-[#03060D] text-[#F1F5FF]">{children}</body>
     </html>
   );
