@@ -43,29 +43,31 @@
   function createSpark() {
     if (!flareContainer) return;
     var rect = flareContainer.getBoundingClientRect();
-    var sparkColor = ['#ffffff', '#93c5fd', '#60a5fa', '#bfdbfe', '#3B82F6'][Math.floor(Math.random() * 5)];
+    var sparkColor = ['#ffffff', '#ffffff', '#93c5fd', '#60a5fa', '#bfdbfe'][Math.floor(Math.random() * 5)];
     var spark = {
       el: document.createElement('div'),
       x: rect.left + rect.width / 2,
       y: rect.top + rect.height / 2,
-      vx: 1 + Math.random() * 3,
-      vy: Math.random() * 10 - 5,
-      size: 2 + Math.random() * 3,
-      lifetime: 200 + Math.random() * 200,
+      vx: 2 + Math.random() * 4,
+      vy: (Math.random() - 0.5) * 8,
+      size: 2.5 + Math.random() * 2.5,
+      lifetime: 300 + Math.random() * 250,
       age: 0,
-      color: sparkColor
+      color: sparkColor,
+      rotation: Math.random() * 360
     };
     spark.el.style.cssText = [
       'position:fixed',
       'width:' + spark.size + 'px',
-      'height:' + spark.size + 'px',
-      'border-radius:50%',
-      'background:' + spark.color,
-      'box-shadow:0 0 3px 1px ' + sparkColor,
+      'height:' + (spark.size * 1.8) + 'px',
+      'border-radius:50% 50% 0 0',
+      'background:linear-gradient(180deg, ' + sparkColor + ' 0%, transparent 100%)',
+      'box-shadow:0 0 4px 2px ' + sparkColor + ', 0 0 8px 3px rgba(255,255,255,0.5)',
       'pointer-events:none',
       'z-index:100001',
       'left:' + spark.x + 'px',
-      'top:' + spark.y + 'px'
+      'top:' + spark.y + 'px',
+      'transform:rotate(' + spark.rotation + 'deg)'
     ].join(';');
     document.body.appendChild(spark.el);
     sparks.push(spark);
@@ -100,7 +102,7 @@
   }
 
   function updateParticles() {
-    // Update sparks
+    // Update sparks with realistic physics
     for (var i = sparks.length - 1; i >= 0; i--) {
       var s = sparks[i];
       s.age += 16;
@@ -110,14 +112,26 @@
         continue;
       }
       var progress = s.age / s.lifetime;
-      s.vy += 0.3;
-      s.vx *= 0.92;
+      
+      // Stronger gravity and air resistance
+      s.vy += 0.6;
+      s.vx *= 0.88;
       s.x += s.vx;
       s.y += s.vy;
+      
+      // Rotation as it falls
+      s.rotation += s.vx * 2;
+      
       s.el.style.left = s.x + 'px';
       s.el.style.top = s.y + 'px';
       s.el.style.opacity = (1 - progress) * 1.0;
-      s.el.style.transform = 'scale(' + (1 - progress * 0.8) + ')';
+      s.el.style.transform = 'rotate(' + s.rotation + 'deg) scale(' + (1 - progress * 0.7) + ')';
+      
+      // Fade to smoke color as it ages
+      if (progress > 0.5) {
+        var smokeProgress = (progress - 0.5) * 2;
+        s.el.style.filter = 'blur(' + (smokeProgress * 2) + 'px)';
+      }
     }
 
     // Update wisps
@@ -142,47 +156,31 @@
   }
 
   function triggerPortalExit() {
-    var duration = 600;
+    var duration = 500;
     var start = performance.now();
     
-    // Create the portal overlay
-    var portal = document.createElement('div');
-    portal.style.cssText = [
+    // Elegant cross-fade to black - no blue screen
+    var fadeOverlay = document.createElement('div');
+    fadeOverlay.style.cssText = [
       'position:fixed',
       'inset:0',
-      'background:#1d4ed8',
+      'background:#000000',
       'z-index:100003',
       'opacity:0',
       'pointer-events:none',
-      'will-change:opacity'
+      'transition:opacity 500ms cubic-bezier(0.4, 0, 0.2, 1)'
     ].join(';');
-    document.body.appendChild(portal);
+    document.body.appendChild(fadeOverlay);
 
-    function animatePortal(now) {
-      var elapsed = now - start;
-      var progress = Math.min(elapsed / duration, 1);
+    // Trigger fade immediately
+    setTimeout(function() {
+      fadeOverlay.style.opacity = '1';
+    }, 10);
 
-      if (progress < 0.4) {
-        // Phase 1: Blue fades IN fast (0-240ms)
-        var p = progress / 0.4;
-        portal.style.opacity = (p * p);
-      } else if (progress < 0.6) {
-        // Phase 2: Hold at full blue (240-360ms)
-        portal.style.opacity = '1';
-      } else if (progress < 1.0) {
-        // Phase 3: Quick snap to black (360-600ms)
-        portal.style.opacity = '1';
-        portal.style.background = '#000000';
-      }
-
-      if (progress < 1.0) {
-        requestAnimationFrame(animatePortal);
-      } else {
-        // Redirect — guaranteed to fire
-        window.location.href = 'https://app.xevora.io/auth/login';
-      }
-    }
-    requestAnimationFrame(animatePortal);
+    // Redirect after fade completes
+    setTimeout(function() {
+      window.location.href = 'https://app.xevora.io/auth/login';
+    }, 520);
   }
 
   function tick(now) {
@@ -452,37 +450,69 @@
     ].join(';');
     barTrack.appendChild(flareContainer);
 
-    // Outer glow ring
+    // Outer glow ring - larger and more dramatic
     var flareGlowRing = document.createElement('div');
     flareGlowRing.style.cssText = [
       'position:absolute',
       'left:50%',
       'top:50%',
       'transform:translate(-50%,-50%)',
-      'width:32px',
-      'height:32px',
+      'width:40px',
+      'height:40px',
       'border-radius:50%',
-      'background:radial-gradient(circle, rgba(96,165,250,0.4) 0%, rgba(59,130,246,0.15) 40%, transparent 70%)',
+      'background:radial-gradient(circle, rgba(255,255,255,0.3) 0%, rgba(96,165,250,0.5) 20%, rgba(59,130,246,0.2) 50%, transparent 70%)',
       'z-index:9',
-      'animation:flarePulse 0.4s ease-in-out infinite alternate'
+      'animation:flarePulse 0.35s ease-in-out infinite alternate'
     ].join(';');
     flareContainer.appendChild(flareGlowRing);
 
-    // Core dot
+    // Mid glow layer
+    var flareMidGlow = document.createElement('div');
+    flareMidGlow.style.cssText = [
+      'position:absolute',
+      'left:50%',
+      'top:50%',
+      'transform:translate(-50%,-50%)',
+      'width:16px',
+      'height:16px',
+      'border-radius:50%',
+      'background:radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(147,197,253,0.6) 50%, transparent 100%)',
+      'box-shadow:0 0 8px 4px rgba(255,255,255,0.6)',
+      'z-index:10'
+    ].join(';');
+    flareContainer.appendChild(flareMidGlow);
+
+    // Core dot - bright hard spark
     var flareCore = document.createElement('div');
     flareCore.style.cssText = [
       'position:absolute',
       'left:50%',
       'top:50%',
       'transform:translate(-50%,-50%)',
-      'width:6px',
-      'height:6px',
+      'width:8px',
+      'height:8px',
       'border-radius:50%',
       'background:#ffffff',
-      'box-shadow:0 0 4px 2px #ffffff, 0 0 10px 4px #60a5fa, 0 0 20px 8px #3B82F6, 0 0 35px 12px rgba(37,99,235,0.6)',
-      'z-index:10'
+      'box-shadow:0 0 3px 1px #ffffff, 0 0 8px 3px #ffffff, 0 0 15px 6px #60a5fa, 0 0 25px 10px #3B82F6, 0 0 40px 15px rgba(37,99,235,0.4)',
+      'z-index:11'
     ].join(';');
     flareContainer.appendChild(flareCore);
+
+    // Hot center point
+    var flareHotPoint = document.createElement('div');
+    flareHotPoint.style.cssText = [
+      'position:absolute',
+      'left:50%',
+      'top:50%',
+      'transform:translate(-50%,-50%)',
+      'width:3px',
+      'height:3px',
+      'border-radius:50%',
+      'background:#ffffff',
+      'box-shadow:0 0 2px 1px #ffffff',
+      'z-index:12'
+    ].join(';');
+    flareContainer.appendChild(flareHotPoint);
 
     // Keyframes for animations
     var style = document.createElement('style');
