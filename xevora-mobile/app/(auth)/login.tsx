@@ -402,8 +402,8 @@ export default function LoginScreen() {
 
   const handleSignIn = async () => {
     Keyboard.dismiss()
-    if (!siCode || !siEmail || !siPassword) {
-      setError('Please fill in all fields')
+    if (!siEmail || !siPassword) {
+      setError('Please fill in all required fields')
       return
     }
     setError('')
@@ -412,16 +412,19 @@ export default function LoginScreen() {
     setLoading(true)
     await saveStaySignedInPreference(staySignedIn)
     try {
-      const { data: codeCheck, error: codeError } = await supabase.rpc(
-        'verify_driver_signup_code',
-        { p_plaincode: siCode.trim() }
-      )
+      // Company code is optional on sign in
+      if (siCode.trim()) {
+        const { data: codeCheck, error: codeError } = await supabase.rpc(
+          'verify_driver_signup_code',
+          { p_plaincode: siCode.trim() }
+        )
 
-      if (codeError || !codeCheck?.ok) {
-        setError('Invalid company code')
-        setSignInOverlay(false)
-        setLoading(false)
-        return
+        if (codeError || !codeCheck?.ok) {
+          setError('Invalid company code')
+          setSignInOverlay(false)
+          setLoading(false)
+          return
+        }
       }
 
       const { error: authError } = await supabase.auth.signInWithPassword({
@@ -602,7 +605,7 @@ export default function LoginScreen() {
                 label="COMPANY CODE"
                 value={siCode}
                 onChange={setSiCode}
-                placeholder="Enter your company code"
+                placeholder="Company code (optional)"
                 inputRef={siCodeRef}
                 nextRef={siEmailRef}
                 textContentType="none"
@@ -612,6 +615,7 @@ export default function LoginScreen() {
                 onFocus={() => setFocusedField('siCode')}
                 onBlur={() => setFocusedField(null)}
               />
+              <Text style={s.helperText}>Optional if you already have an account</Text>
               <InputField
                 label="EMAIL ADDRESS"
                 value={siEmail}
