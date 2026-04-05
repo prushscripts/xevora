@@ -13,11 +13,8 @@ import {
   StatusBar,
   Dimensions,
   Animated,
-  InputAccessoryView,
 } from 'react-native'
-import { router } from 'expo-router'
 import { supabase } from '../../lib/supabase'
-import { useAuth } from '../../hooks/useAuth'
 import { LoginStarBackdrop, LoginHexArt } from '../../components/LoginPremiumChrome'
 import { LoginSignInTransition } from '../../components/LoginSignInTransition'
 import { prefetchDriverHomeData } from '../../lib/driverPrefetch'
@@ -38,7 +35,7 @@ const s = StyleSheet.create({
     flexGrow: 1,
     paddingHorizontal: 24,
     paddingTop: 60,
-    paddingBottom: 40,
+    paddingBottom: Platform.OS === 'ios' ? 74 : 40,
   },
   header: {
     alignItems: 'center',
@@ -308,7 +305,6 @@ function InputField({
               onDone?.()
             }
           }}
-          inputAccessoryViewID=""
           style={[s.input, { backgroundColor: '#0A1628' }]}
         />
         {showToggle && (
@@ -327,14 +323,12 @@ function InputField({
 
 export default function LoginScreen() {
   const { width, height } = Dimensions.get('window')
-  const { user, loading: authLoading } = useAuth()
   const [mode, setMode] = useState<'signin' | 'register'>('signin')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [focusedField, setFocusedField] = useState<string | null>(null)
   const [signInOverlay, setSignInOverlay] = useState(false)
   const [signInProgress, setSignInProgress] = useState(0)
-  const pendingNavRef = useRef<'admin' | 'driver' | null>(null)
   const [staySignedIn, setStaySignedIn] = useState(true)
   const [showRegBanner, setShowRegBanner] = useState(false)
   const bannerOp = useRef(new Animated.Value(0)).current
@@ -356,24 +350,10 @@ export default function LoginScreen() {
     }).start()
   }, [staySignedIn, thumbX])
 
-  useEffect(() => {
-    if (authLoading || !user || signInOverlay) return
-    if (user.role === 'driver') {
-      router.replace('/(driver)')
-    } else {
-      router.replace('/(admin)')
-    }
-  }, [authLoading, user, signInOverlay])
-
   const onSignInExitComplete = useCallback(() => {
     setSignInOverlay(false)
     setSignInProgress(0)
-    const d = pendingNavRef.current
-    pendingNavRef.current = null
-    if (d === 'admin') router.replace('/(admin)')
-    else router.replace('/(driver)')
   }, [])
-
 
   // Sign in state
   const [siCode, setSiCode] = useState('')
@@ -467,7 +447,6 @@ export default function LoginScreen() {
       }
       setSignInProgress(0.9)
 
-      pendingNavRef.current = target
       setSignInProgress(1)
     } catch (e) {
       setError('Something went wrong. Please try again.')
@@ -550,7 +529,7 @@ export default function LoginScreen() {
     <KeyboardAvoidingView
       style={[s.root, { position: 'relative' }]}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? -34 : 0}
     >
       <LoginStarBackdrop width={width} height={height} />
       <StatusBar barStyle="light-content" />
@@ -561,6 +540,7 @@ export default function LoginScreen() {
         keyboardDismissMode="none"
         showsVerticalScrollIndicator={false}
         bounces={false}
+        automaticallyAdjustKeyboardInsets={true}
       >
         {/* HEADER */}
         <View style={s.header}>
