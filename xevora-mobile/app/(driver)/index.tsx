@@ -11,6 +11,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import Svg, { Polygon, Path } from 'react-native-svg';
 import { ClientChip } from '../../components/ClientChip';
+import { HexLogo } from '../../components/HexLogo';
 import { OfflineBanner } from '../../components/OfflineBanner';
 import { theme } from '../../constants/theme';
 import { supabase } from '../../lib/supabase';
@@ -35,7 +36,15 @@ type WorkerRow = {
   pay_rate: number | null;
   ot_pay_rate: number | null;
   flat_weekly_rate: number | null;
+  clients?: { abbreviation?: string | null; name?: string | null } | null;
 };
+
+function workerClientAbbrev(w: WorkerRow | null): string | undefined {
+  const c = w?.clients;
+  if (!c) return undefined;
+  const abbr = (c as { abbreviation?: string | null }).abbreviation;
+  return abbr?.trim() || undefined;
+}
 
 type ShiftRow = {
   id: string;
@@ -152,8 +161,34 @@ export default function DriverHomeScreen() {
   const [error, setError] = useState<string | null>(null);
   const [actionBusy, setActionBusy] = useState(false);
   const [tick, setTick] = useState(0);
+  const [currentTime, setCurrentTime] = useState('');
+  const [currentDate, setCurrentDate] = useState('');
 
   const borderPulse = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    const updateTime = () => {
+      const now = new Date();
+      setCurrentTime(
+        now.toLocaleTimeString('en-US', {
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+          hour12: true,
+        })
+      );
+      setCurrentDate(
+        now.toLocaleDateString('en-US', {
+          weekday: 'long',
+          month: 'long',
+          day: 'numeric',
+        })
+      );
+    };
+    updateTime();
+    const interval = setInterval(updateTime, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     if (activeShift) return;
@@ -183,39 +218,64 @@ export default function DriverHomeScreen() {
   const load = useCallback(async () => {
     setError(null);
     setLoading(true);
-    try {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      if (!user) {
-        setError('Not signed in');
-        setLoading(false);
-        return;
-      }
 
-      const { data: w, error: wErr } = await supabase
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) {
+      setError('Not signed in');
+      setWorker(null);
+      setLoading(false);
+      return;
+    }
+
+    let w: WorkerRow | null = null;
+    try {
+      const { data: workerData, error: wErr } = await supabase
         .from('workers')
         .select(
-          'id, company_id, first_name, full_name, pay_type, pay_rate, ot_pay_rate, flat_weekly_rate'
+          'id, company_id, first_name, full_name, pay_type, pay_rate, ot_pay_rate, flat_weekly_rate, clients!left(abbreviation, name)'
         )
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
 
-      if (wErr || !w) {
-        setError(wErr?.message || 'Worker profile not found');
+      if (wErr) {
+        console.log('Worker load error:', wErr);
+        setError(wErr.message || 'Worker profile not found');
+        setWorker(null);
         setLoading(false);
         return;
       }
+      if (!workerData) {
+        setError('Worker profile not found');
+        setWorker(null);
+        setLoading(false);
+        return;
+      }
+      w = workerData as WorkerRow;
+      setWorker(w);
+    } catch (e) {
+      console.log('Worker load error:', e);
+      setError('Worker profile not found');
+      setWorker(null);
+      setLoading(false);
+      return;
+    }
 
-      setWorker(w as WorkerRow);
+    const workerId = w.id;
 
+    try {
       const { data: co } = await supabase
         .from('companies')
         .select('name')
         .eq('id', w.company_id)
         .maybeSingle();
       setCompanyAbbr(abbrevCompany(co?.name as string | undefined));
+    } catch (e) {
+      console.log('Company load error:', e);
+    }
 
+    try {
       const today = new Date().toISOString().slice(0, 10);
       const { data: pp } = await supabase
         .from('pay_periods')
@@ -234,83 +294,109 @@ export default function DriverHomeScreen() {
       } else {
         setPayPeriodLabel('—');
       }
-
-      const { monday, sunday } = weekRange();
-
-      const [activeRes, recentRes, weekRes] = await Promise.all([
-        supabase
-          .from('shifts')
-          .select(
-            'id, clock_in, clock_out, status, total_hours, created_at, meal_breaks, edit_status, clients(abbreviation)'
-          )
-          .eq('worker_id', w.id)
-          .is('clock_out', null)
-          .order('clock_in', { ascending: false })
-          .limit(1)
-          .maybeSingle(),
-        supabase
-          .from('shifts')
-          .select(
-            'id, clock_in, clock_out, status, total_hours, created_at, meal_breaks, edit_status, clients(abbreviation)'
-          )
-          .eq('worker_id', w.id)
-          .gte('clock_in', monday.toISOString())
-          .lte('clock_in', sunday.toISOString())
-          .order('clock_in', { ascending: false })
-          .limit(3),
-        supabase
-          .from('shifts')
-          .select(
-            'clock_in, clock_out, meal_breaks, total_hours, regular_hours, ot_hours'
-          )
-          .eq('worker_id', w.id)
-          .gte('clock_in', monday.toISOString())
-          .lte('clock_in', sunday.toISOString()),
-      ]);
-
-      if (activeRes.error) throw activeRes.error;
-      if (recentRes.error) throw recentRes.error;
-      if (weekRes.error) throw weekRes.error;
-
-      const act = activeRes.data as unknown as ShiftRow | null;
-      setActiveShift(act && act.status === 'active' ? act : null);
-
-      setRecentShifts((recentRes.data as unknown as ShiftRow[]) || []);
-
-      const completedWeek = (weekRes.data || []).filter((row) => row.clock_out);
-      const shiftTotals = completedWeek.map((row) => {
-        if (row.total_hours != null && row.total_hours > 0) {
-          return { totalHours: Number(row.total_hours) };
-        }
-        const { totalHours } = calculateShiftHours(
-          new Date(row.clock_in),
-          new Date(row.clock_out!),
-          row.meal_breaks
-        );
-        return { totalHours };
-      });
-
-      const totals = calculateWeeklyTotals({
-        shifts: shiftTotals,
-        worker: {
-          pay_type: (w.pay_type as 'hourly' | 'flat_weekly') || 'hourly',
-          pay_rate: w.pay_rate,
-          ot_pay_rate: w.ot_pay_rate,
-          flat_weekly_rate: w.flat_weekly_rate,
-        },
-        workerClient: { billing_rate: 0, ot_billing_rate: 0 },
-        otWeeklyThreshold: 40,
-      });
-
-      setWeekHours(totals.totalHours);
-      setRegularHrs(totals.regularHours);
-      setOtHrs(totals.otHours);
-      setEstPay(totals.grossPay);
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Failed to load');
-    } finally {
-      setLoading(false);
+      console.log('Pay period load error:', e);
+      setPayPeriodLabel('—');
     }
+
+    const { monday, sunday } = weekRange();
+
+    try {
+      const { data: shiftData, error: activeErr } = await supabase
+        .from('shifts')
+        .select(
+          'id, clock_in, clock_out, status, total_hours, created_at, meal_breaks, edit_status, clients(abbreviation)'
+        )
+        .eq('worker_id', workerId)
+        .eq('status', 'active')
+        .is('clock_out', null)
+        .order('clock_in', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (activeErr) {
+        setActiveShift(null);
+      } else {
+        const row = shiftData as unknown as ShiftRow | null;
+        setActiveShift(row && row.status === 'active' ? row : null);
+      }
+    } catch {
+      setActiveShift(null);
+    }
+
+    try {
+      const { data: recentData, error: recentErr } = await supabase
+        .from('shifts')
+        .select(
+          'id, clock_in, clock_out, status, total_hours, created_at, meal_breaks, edit_status, clients(abbreviation)'
+        )
+        .eq('worker_id', workerId)
+        .gte('clock_in', monday.toISOString())
+        .lte('clock_in', sunday.toISOString())
+        .order('clock_in', { ascending: false })
+        .limit(3);
+
+      if (recentErr) {
+        setRecentShifts([]);
+      } else {
+        setRecentShifts((recentData as unknown as ShiftRow[]) || []);
+      }
+    } catch {
+      setRecentShifts([]);
+    }
+
+    try {
+      const { data: weekData, error: weekErr } = await supabase
+        .from('shifts')
+        .select('clock_in, clock_out, meal_breaks, total_hours, regular_hours, ot_hours')
+        .eq('worker_id', workerId)
+        .gte('clock_in', monday.toISOString())
+        .lte('clock_in', sunday.toISOString());
+
+      if (weekErr || !w) {
+        setWeekHours(0);
+        setRegularHrs(0);
+        setOtHrs(0);
+        setEstPay(0);
+      } else {
+        const completedWeek = (weekData || []).filter((row) => row.clock_out);
+        const shiftTotals = completedWeek.map((row) => {
+          if (row.total_hours != null && row.total_hours > 0) {
+            return { totalHours: Number(row.total_hours) };
+          }
+          const { totalHours } = calculateShiftHours(
+            new Date(row.clock_in),
+            new Date(row.clock_out!),
+            row.meal_breaks
+          );
+          return { totalHours };
+        });
+
+        const totals = calculateWeeklyTotals({
+          shifts: shiftTotals,
+          worker: {
+            pay_type: (w.pay_type as 'hourly' | 'flat_weekly') || 'hourly',
+            pay_rate: w.pay_rate,
+            ot_pay_rate: w.ot_pay_rate,
+            flat_weekly_rate: w.flat_weekly_rate,
+          },
+          workerClient: { billing_rate: 0, ot_billing_rate: 0 },
+          otWeeklyThreshold: 40,
+        });
+
+        setWeekHours(totals.totalHours);
+        setRegularHrs(totals.regularHours);
+        setOtHrs(totals.otHours);
+        setEstPay(totals.grossPay);
+      }
+    } catch {
+      setWeekHours(0);
+      setRegularHrs(0);
+      setOtHrs(0);
+      setEstPay(0);
+    }
+
+    setLoading(false);
   }, []);
 
   useEffect(() => {
@@ -323,26 +409,12 @@ export default function DriverHomeScreen() {
     return () => clearInterval(id);
   }, [activeShift]);
 
-  const getGreeting = () => {
-    const hour = new Date().getHours();
-    if (hour < 12) return 'Good morning';
-    if (hour < 18) return 'Good afternoon';
-    return 'Good evening';
-  };
-
   const firstName = useMemo(() => {
     if (!worker) return 'Driver';
     if (worker.first_name?.trim()) return worker.first_name.trim();
     if (worker.full_name?.trim()) return worker.full_name.trim().split(/\s+/)[0]!;
     return 'Driver';
   }, [worker]);
-
-  const clientAbbr = useMemo(() => {
-    const a = activeShift ? clientAbbrev(activeShift.clients) : undefined;
-    if (a) return a;
-    const r = recentShifts[0] ? clientAbbrev(recentShifts[0].clients) : undefined;
-    return r || companyAbbr;
-  }, [activeShift, recentShifts, companyAbbr]);
 
   const openMeal = activeShift
     ? getOpenMealBreak(activeShift.meal_breaks)
@@ -480,15 +552,57 @@ export default function DriverHomeScreen() {
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
       >
-        <View style={styles.header}>
-          <View>
-            <Text style={styles.greeting}>{getGreeting()},</Text>
-            <Text style={styles.name}>{firstName}</Text>
+        <View style={styles.hexHeroContainer}>
+          <View style={styles.hexHeroInner}>
+            <HexLogo
+              size={110}
+              glowColor={
+                activeShift && !openMeal
+                  ? '#22C55E'
+                  : openMeal
+                    ? '#F59E0B'
+                    : '#2563EB'
+              }
+              ringColor={
+                activeShift && !openMeal
+                  ? '#22C55E'
+                  : openMeal
+                    ? '#F59E0B'
+                    : '#2563EB'
+              }
+              animated
+            />
+            <Text style={styles.liveClock}>{currentTime}</Text>
+            <Text style={styles.liveDate}>{currentDate}</Text>
+            <View style={styles.statusChip}>
+              <View
+                style={[
+                  styles.statusDot,
+                  {
+                    backgroundColor: activeShift ? '#22C55E' : '#4E6D92',
+                  },
+                ]}
+              />
+              <Text style={styles.statusChipText}>
+                {activeShift && !openMeal
+                  ? 'ON SHIFT'
+                  : openMeal
+                    ? 'ON BREAK'
+                    : 'OFF SHIFT'}
+              </Text>
+            </View>
+            {workerClientAbbrev(worker) ? (
+              <View style={styles.heroClientChip}>
+                <ClientChip
+                  abbreviation={workerClientAbbrev(worker)!}
+                  isActive={!!activeShift && !openMeal}
+                />
+              </View>
+            ) : null}
           </View>
-          <ClientChip abbreviation={clientAbbr} isActive={!!activeShift && !openMeal} />
         </View>
 
-        {error ? (
+        {worker && error ? (
           <View style={styles.inlineError}>
             <Text style={styles.errorTextSmall}>{error}</Text>
             <TouchableOpacity onPress={load}>
@@ -500,6 +614,7 @@ export default function DriverHomeScreen() {
         <View style={styles.shiftCard}>
           {!activeShift ? (
             <>
+              <Text style={styles.shiftHello}>{firstName}</Text>
               <View style={styles.clockIconWrap}>
                 <Svg width={56} height={56} viewBox="0 0 24 24" fill="none">
                   <Path
@@ -623,7 +738,10 @@ export default function DriverHomeScreen() {
           </View>
         ) : (
           recentShifts.map((sh) => {
-            const abbr = clientAbbrev(sh.clients) ?? companyAbbr;
+            const abbr =
+              clientAbbrev(sh.clients) ??
+              workerClientAbbrev(worker) ??
+              companyAbbr;
             const d = new Date(sh.clock_in);
             const day = d.toLocaleDateString([], { weekday: 'short' }).toUpperCase();
             const tIn = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -696,22 +814,60 @@ const styles = StyleSheet.create({
     paddingBottom: 32,
     gap: 16,
   },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
+  hexHeroContainer: {
+    width: '100%',
+    marginBottom: 4,
   },
-  greeting: {
+  hexHeroInner: {
+    alignItems: 'center',
+    paddingTop: 20,
+    paddingBottom: 8,
+  },
+  liveClock: {
+    fontSize: 32,
+    fontWeight: '800',
+    color: '#F1F5FF',
+    fontFamily: theme.mono800,
+    marginTop: 12,
+    letterSpacing: 2,
+  },
+  liveDate: {
     fontSize: 13,
     color: '#4E6D92',
     fontFamily: theme.body,
-  },
-  name: {
-    fontSize: 22,
-    fontWeight: '800',
-    color: '#F1F5FF',
-    fontFamily: theme.heading,
     marginTop: 4,
+  },
+  statusChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255,255,255,0.06)',
+    borderRadius: 20,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    marginTop: 10,
+    gap: 6,
+  },
+  statusDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+  },
+  statusChipText: {
+    fontFamily: theme.bodyMedium,
+    fontSize: 11,
+    color: '#F1F5FF',
+    letterSpacing: 1.5,
+    textTransform: 'uppercase',
+  },
+  heroClientChip: {
+    marginTop: 12,
+  },
+  shiftHello: {
+    fontSize: 14,
+    color: '#4E6D92',
+    fontFamily: theme.body,
+    textAlign: 'center',
+    marginBottom: 8,
   },
   shiftCard: {
     backgroundColor: '#0A1628',

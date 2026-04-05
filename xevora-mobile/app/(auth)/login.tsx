@@ -380,15 +380,21 @@ export default function LoginScreen() {
   const regPasswordRef = useRef<TextInput>(null)
   const regConfirmRef = useRef<TextInput>(null)
 
-  const handleSignIn = async () => {
+  const handleSignInPress = () => {
     Keyboard.dismiss()
     if (!siEmail || !siPassword) {
       setError('Please fill in all required fields')
       return
     }
     setError('')
-    setSignInProgress(0)
     setSignInOverlay(true)
+    setSignInProgress(0)
+    setTimeout(() => {
+      void handleSignIn()
+    }, 50)
+  }
+
+  const handleSignIn = async () => {
     setLoading(true)
     await saveStaySignedInPreference(staySignedIn)
     try {
@@ -620,7 +626,7 @@ export default function LoginScreen() {
                 showToggle
                 onToggle={() => setSiShowPw(!siShowPw)}
                 textContentType="password"
-                onDone={handleSignIn}
+                onDone={handleSignInPress}
                 isFocused={focusedField === 'siPassword'}
                 disabled={loading}
                 onFocus={() => setFocusedField('siPassword')}
@@ -646,7 +652,7 @@ export default function LoginScreen() {
               {error ? <Text style={s.error}>{error}</Text> : null}
               <TouchableOpacity
                 style={[s.submitBtn, loading && s.submitBtnDisabled]}
-                onPress={handleSignIn}
+                onPress={handleSignInPress}
                 disabled={loading}
                 activeOpacity={0.8}
               >

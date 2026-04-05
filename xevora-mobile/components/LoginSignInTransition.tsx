@@ -179,7 +179,12 @@ export function LoginSignInTransition({
   }, [progress, visible, readyOp, hexPulse, scanY, rootOp, sw, onExitComplete])
 
   return (
-    <Modal visible={visible} transparent={false} animationType="none">
+    <Modal
+      visible={visible}
+      transparent={false}
+      animationType="none"
+      statusBarTranslucent
+    >
       <Animated.View style={[styles.root, { opacity: rootOp }]}>
         <View style={styles.center}>
           {ringScales.map((rs, i) => (
