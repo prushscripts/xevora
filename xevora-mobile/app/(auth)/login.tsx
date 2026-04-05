@@ -904,8 +904,9 @@ export default function LoginScreen() {
                 <Text style={styles.infoTabText}>Contact</Text>
               </TouchableOpacity>
             </View>
-          </ScrollView>
-        </TouchableWithoutFeedback>
+            </View>
+          </TouchableWithoutFeedback>
+        </ScrollView>
       </KeyboardAvoidingView>
 
       <Modal
