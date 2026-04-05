@@ -370,14 +370,14 @@ export default function DashboardPage() {
           <div>
             <h4 className="text-sm font-medium">Need help getting started?</h4>
             <p className="mt-1 text-sm text-[var(--muted)]">Our team is here to help operators get up and running fast.</p>
-            <a href="mailto:hello@xevora.io" className="mt-2 inline-flex text-sm text-[var(--blue-bright)] hover:underline">
-              hello@xevora.io
+            <a href="mailto:james@xevora.io" className="mt-2 inline-flex text-sm text-[var(--blue-bright)] hover:underline">
+              james@xevora.io
             </a>
           </div>
           <div>
             <h4 className="text-sm font-medium">Already using ADP or Gusto?</h4>
             <p className="mt-1 text-sm text-[var(--muted)]">We can help you migrate your workers and payroll history.</p>
-            <a href="mailto:hello@xevora.io" className="mt-2 inline-flex text-sm text-[var(--blue-bright)] hover:underline">
+            <a href="mailto:james@xevora.io" className="mt-2 inline-flex text-sm text-[var(--blue-bright)] hover:underline">
               Contact us to migrate →
             </a>
           </div>

@@ -217,7 +217,7 @@ export default function DriverProfileScreen() {
         {/* SUPPORT */}
         <Text style={s.sectionHeader}>SUPPORT</Text>
         <View style={s.section}>
-          <TouchableOpacity style={s.row} onPress={() => Linking.openURL('mailto:support@xevora.io')}>
+          <TouchableOpacity style={s.row} onPress={() => Linking.openURL('mailto:james@xevora.io')}>
             <Text style={s.rowLabel}>Contact Support</Text>
             <Text style={s.arrow}>›</Text>
           </TouchableOpacity>

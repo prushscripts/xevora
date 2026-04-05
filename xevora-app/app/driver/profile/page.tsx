@@ -101,7 +101,7 @@ export default function DriverProfilePage() {
           <span className="text-[#4E6D92]">→</span>
         </button>
         <a
-          href="mailto:support@xevora.io"
+          href="mailto:james@xevora.io"
           className="flex w-full items-center justify-between rounded-xl border border-[#0f1729] bg-[#060B14] px-4 py-4 text-sm font-medium text-[#F1F5FF] transition hover:border-[#2563EB]/35"
         >
           Contact support
