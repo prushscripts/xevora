@@ -13,6 +13,7 @@ import {
   StatusBar,
   Dimensions,
   Animated,
+  InputAccessoryView,
 } from 'react-native'
 import { router } from 'expo-router'
 import { supabase } from '../../lib/supabase'
@@ -307,7 +308,8 @@ function InputField({
               onDone?.()
             }
           }}
-          style={s.input}
+          inputAccessoryViewID=""
+          style={[s.input, { backgroundColor: '#0A1628' }]}
         />
         {showToggle && (
           <TouchableOpacity
@@ -336,33 +338,7 @@ export default function LoginScreen() {
   const [staySignedIn, setStaySignedIn] = useState(true)
   const [showRegBanner, setShowRegBanner] = useState(false)
   const bannerOp = useRef(new Animated.Value(0)).current
-  const flipAnim = useRef(new Animated.Value(0)).current
   const thumbX = useRef(new Animated.Value(14)).current
-  const [flipMinH, setFlipMinH] = useState(420)
-  const frontHRef = useRef(0)
-  const backHRef = useRef(0)
-
-  const flipToSignIn = useCallback(() => {
-    setMode('signin')
-    setError('')
-    Animated.spring(flipAnim, {
-      toValue: 0,
-      friction: 8,
-      tension: 40,
-      useNativeDriver: true,
-    }).start()
-  }, [flipAnim])
-
-  const flipToRegister = useCallback(() => {
-    setMode('register')
-    setError('')
-    Animated.spring(flipAnim, {
-      toValue: 1,
-      friction: 8,
-      tension: 40,
-      useNativeDriver: true,
-    }).start()
-  }, [flipAnim])
 
   useEffect(() => {
     void loadStaySignedInPreference().then((v) => {
@@ -389,10 +365,6 @@ export default function LoginScreen() {
     }
   }, [authLoading, user, signInOverlay])
 
-  const recalcFlipH = useCallback(() => {
-    setFlipMinH(Math.max(frontHRef.current, backHRef.current, 380))
-  }, [])
-
   const onSignInExitComplete = useCallback(() => {
     setSignInOverlay(false)
     setSignInProgress(0)
@@ -402,14 +374,6 @@ export default function LoginScreen() {
     else router.replace('/(driver)')
   }, [])
 
-  const frontRotate = flipAnim.interpolate({
-    inputRange: [0, 1],
-    outputRange: ['0deg', '180deg'],
-  })
-  const backRotate = flipAnim.interpolate({
-    inputRange: [0, 1],
-    outputRange: ['180deg', '360deg'],
-  })
 
   // Sign in state
   const [siCode, setSiCode] = useState('')
@@ -562,7 +526,7 @@ export default function LoginScreen() {
       setSiEmail(regEmail)
       setSiPassword('')
       setError('')
-      flipToSignIn()
+      setMode('signin')
       setShowRegBanner(true)
       bannerOp.setValue(1)
       Animated.sequence([
@@ -606,7 +570,7 @@ export default function LoginScreen() {
         <View style={s.modeSwitcher}>
           <TouchableOpacity
             style={[s.modeBtn, mode === 'signin' && s.modeBtnActive]}
-            onPress={flipToSignIn}
+            onPress={() => { setMode('signin'); setError('') }}
           >
             <Text style={[s.modeBtnText, mode === 'signin' && s.modeBtnTextActive]}>
               Sign In
@@ -614,7 +578,7 @@ export default function LoginScreen() {
           </TouchableOpacity>
           <TouchableOpacity
             style={[s.modeBtn, mode === 'register' && s.modeBtnActive]}
-            onPress={flipToRegister}
+            onPress={() => { setMode('register'); setError('') }}
           >
             <Text style={[s.modeBtnText, mode === 'register' && s.modeBtnTextActive]}>
               Create Account
@@ -630,24 +594,10 @@ export default function LoginScreen() {
           </Animated.View>
         ) : null}
 
-        {/* FORM CARD — flip: both faces mounted */}
-        <View style={[s.card, { minHeight: flipMinH }]}>
-          <View style={s.flipStage}>
-            <Animated.View
-              style={[
-                s.flipFace,
-                {
-                  transform: [
-                    { perspective: 1200 },
-                    { rotateY: frontRotate },
-                  ],
-                },
-              ]}
-              onLayout={(e) => {
-                frontHRef.current = e.nativeEvent.layout.height
-                recalcFlipH()
-              }}
-            >
+        {/* FORM CARD — simple conditional render */}
+        <View style={s.card}>
+          {mode === 'signin' ? (
+            <View>
               <InputField
                 label="COMPANY CODE"
                 value={siCode}
@@ -721,23 +671,9 @@ export default function LoginScreen() {
                   : <Text style={s.submitBtnText}>Sign In</Text>
                 }
               </TouchableOpacity>
-            </Animated.View>
-
-            <Animated.View
-              style={[
-                s.flipFaceAbs,
-                {
-                  transform: [
-                    { perspective: 1200 },
-                    { rotateY: backRotate },
-                  ],
-                },
-              ]}
-              onLayout={(e) => {
-                backHRef.current = e.nativeEvent.layout.height
-                recalcFlipH()
-              }}
-            >
+            </View>
+          ) : (
+            <View>
               <InputField
                 label="COMPANY CODE"
                 value={regCode}
@@ -828,8 +764,8 @@ export default function LoginScreen() {
               <Text style={s.terms}>
                 By creating an account you agree to our Terms of Service
               </Text>
-            </Animated.View>
-          </View>
+            </View>
+          )}
         </View>
 
         <View style={{ height: 40 }} />

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Tabs, useRouter } from 'expo-router';
 import { DriverTabBar } from '../../components/driver/DriverTabBar';
-import { View, ActivityIndicator, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { theme } from '../../constants/theme';
 import { supabase } from '../../lib/supabase';
 
@@ -28,7 +28,9 @@ export default function DriverLayout() {
   if (sessionOk !== true) {
     return (
       <View style={styles.gate}>
-        <ActivityIndicator size="large" color={theme.primary} />
+        <View style={styles.sk1} />
+        <View style={styles.sk2} />
+        <View style={styles.sk3} />
       </View>
     );
   }
@@ -53,7 +55,25 @@ const styles = StyleSheet.create({
   gate: {
     flex: 1,
     backgroundColor: theme.bg,
-    alignItems: 'center',
+    padding: 24,
+    gap: 16,
     justifyContent: 'center',
+  },
+  sk1: {
+    height: 56,
+    borderRadius: 14,
+    backgroundColor: 'rgba(255,255,255,0.06)',
+    width: '70%',
+    alignSelf: 'center',
+  },
+  sk2: {
+    height: 160,
+    borderRadius: 20,
+    backgroundColor: 'rgba(255,255,255,0.06)',
+  },
+  sk3: {
+    height: 72,
+    borderRadius: 16,
+    backgroundColor: 'rgba(255,255,255,0.06)',
   },
 });
