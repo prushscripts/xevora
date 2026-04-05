@@ -13,6 +13,7 @@ export default function DriverLayout() {
       <Tabs.Screen name="timecard" options={{ title: 'Timecard' }} />
       <Tabs.Screen name="pay" options={{ title: 'Pay' }} />
       <Tabs.Screen name="vault" options={{ title: 'Vault' }} />
+      <Tabs.Screen name="profile" options={{ title: 'Profile' }} />
     </Tabs>
   );
 }

@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { supabase } from './supabase';
 
 export type AuthUser = {
@@ -53,6 +54,7 @@ export async function signIn(email: string, password: string): Promise<{ user: A
 }
 
 export async function signOut() {
+  await AsyncStorage.removeItem('xevora_last_auth_time');
   await supabase.auth.signOut();
 }
 

@@ -14,7 +14,7 @@ import Svg, { Path, Circle, Rect } from 'react-native-svg'
 
 const { width: SCREEN_W } = Dimensions.get('window')
 
-const TAB_COUNT = 5
+const TAB_COUNT = 6
 const TAB_W = SCREEN_W / TAB_COUNT
 
 const inactive = '#4E6D92'
@@ -24,7 +24,7 @@ function Icon({
   name,
   color,
 }: {
-  name: 'home' | 'clock' | 'timecard' | 'pay' | 'vault'
+  name: 'home' | 'clock' | 'timecard' | 'pay' | 'vault' | 'profile'
   color: string
 }) {
   switch (name) {
@@ -91,6 +91,18 @@ function Icon({
           <Circle cx={12} cy={15} r={1.5} fill={color} />
         </Svg>
       )
+    case 'profile':
+      return (
+        <Svg width={22} height={22} viewBox="0 0 24 24" fill="none">
+          <Circle cx={12} cy={9} r={4} stroke={color} strokeWidth={2} />
+          <Path
+            d="M6 21v-1a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v1"
+            stroke={color}
+            strokeWidth={2}
+            strokeLinecap="round"
+          />
+        </Svg>
+      )
     default:
       return null
   }
@@ -102,6 +114,7 @@ const ROUTES = [
   { key: 'timecard', label: 'Timecard', icon: 'timecard' as const },
   { key: 'pay', label: 'Pay', icon: 'pay' as const },
   { key: 'vault', label: 'Vault', icon: 'vault' as const },
+  { key: 'profile', label: 'Profile', icon: 'profile' as const },
 ]
 
 export function DriverTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
@@ -139,7 +152,7 @@ export function DriverTabBar({ state, descriptors, navigation }: BottomTabBarPro
             ROUTES.find((r) => r.key === route.name)?.label ??
             route.name
           const iconName = (ROUTES.find((r) => r.key === route.name)?.icon ??
-            'home') as 'home' | 'clock' | 'timecard' | 'pay' | 'vault'
+            'home') as 'home' | 'clock' | 'timecard' | 'pay' | 'vault' | 'profile'
 
           const onPress = () => {
             void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)

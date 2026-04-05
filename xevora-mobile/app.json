@@ -19,7 +19,8 @@
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "Xevora uses your location to verify clock-in at your work site.",
         "NSLocationAlwaysUsageDescription": "Xevora uses your location to track active shifts.",
-        "NSCameraUsageDescription": "Xevora uses your camera to scan documents and verify identity."
+        "NSCameraUsageDescription": "Xevora uses your camera to scan documents and verify identity.",
+        "NSFaceIDUsageDescription": "Unlock Xevora with Face ID when returning to the app."
       }
     },
     "android": {
