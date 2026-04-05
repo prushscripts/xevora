@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { View, ActivityIndicator, StyleSheet } from 'react-native';
 import { Slot, useRouter, useSegments } from 'expo-router';
 import { useFonts } from 'expo-font';
@@ -16,6 +16,7 @@ import {
 import { HexLogo } from '../components/HexLogo';
 import { useAuth } from '../hooks/useAuth';
 import { theme } from '../constants/theme';
+import { supabase } from '../lib/supabase';
 import '../global.css';
 
 export default function RootLayout() {
@@ -32,27 +33,25 @@ export default function RootLayout() {
   const { user, loading } = useAuth();
   const segments = useSegments();
   const router = useRouter();
-  const [isNavigating, setIsNavigating] = useState(false);
 
   useEffect(() => {
-    if (loading || !fontsLoaded || isNavigating) return;
+    const { data } = supabase.auth.onAuthStateChange((event) => {
+      if (event === 'SIGNED_OUT') {
+        router.replace('/(auth)/login');
+      }
+    });
+    return () => data.subscription.unsubscribe();
+  }, [router]);
+
+  useEffect(() => {
+    if (loading || !fontsLoaded) return;
 
     const inAuthGroup = segments[0] === '(auth)';
 
     if (!user && !inAuthGroup) {
-      setIsNavigating(true);
       router.replace('/(auth)/login');
-      setTimeout(() => setIsNavigating(false), 100);
-    } else if (user && inAuthGroup) {
-      setIsNavigating(true);
-      if (user.role === 'driver') {
-        router.replace('/(driver)/');
-      } else {
-        router.replace('/(admin)/');
-      }
-      setTimeout(() => setIsNavigating(false), 100);
     }
-  }, [user, loading, segments, fontsLoaded]);
+  }, [user, loading, segments, fontsLoaded, router]);
 
   if (!fontsLoaded || loading) {
     return (

@@ -1,4 +1,4 @@
-import React, { useState, useRef, type RefObject } from 'react'
+import React, { useState, useRef, useEffect, type RefObject } from 'react'
 import {
   View,
   Text,
@@ -11,9 +11,13 @@ import {
   ActivityIndicator,
   Keyboard,
   StatusBar,
+  Dimensions,
 } from 'react-native'
 import { router } from 'expo-router'
 import { supabase } from '../../lib/supabase'
+import { useAuth } from '../../hooks/useAuth'
+import { LoginStarBackdrop, LoginHexArt } from '../../components/LoginPremiumChrome'
+import { LoginTransitionOverlay } from '../../components/LoginTransitionOverlay'
 
 const s = StyleSheet.create({
   root: {
@@ -257,11 +261,31 @@ function InputField({
   )
 }
 
+type AuthTransitionState = {
+  active: boolean
+  firstName: string
+  target: 'admin' | 'driver'
+}
+
 export default function LoginScreen() {
+  const { width, height } = Dimensions.get('window')
+  const { user, loading: authLoading } = useAuth()
   const [mode, setMode] = useState<'signin' | 'register'>('signin')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [focusedField, setFocusedField] = useState<string | null>(null)
+  const [authTransition, setAuthTransition] = useState<AuthTransitionState | null>(
+    null
+  )
+
+  useEffect(() => {
+    if (authLoading || !user || authTransition?.active) return
+    if (user.role === 'driver') {
+      router.replace('/(driver)')
+    } else {
+      router.replace('/(admin)')
+    }
+  }, [authLoading, user, authTransition?.active])
 
   // Sign in state
   const [siCode, setSiCode] = useState('')
@@ -329,15 +353,26 @@ export default function LoginScreen() {
 
       const { data: worker } = await supabase
         .from('workers')
-        .select('role')
+        .select('role, first_name, full_name')
         .eq('user_id', user.id)
         .single()
 
-      if (worker?.role === 'admin' || worker?.role === 'manager') {
-        router.replace('/(admin)')
-      } else {
-        router.replace('/(driver)')
-      }
+      const firstName =
+        worker?.first_name ||
+        (worker?.full_name
+          ? worker.full_name.trim().split(/\s+/)[0]
+          : null) ||
+        'Driver'
+      const target: 'admin' | 'driver' =
+        worker?.role === 'admin' || worker?.role === 'manager'
+          ? 'admin'
+          : 'driver'
+
+      setAuthTransition({
+        active: true,
+        firstName,
+        target,
+      })
     } catch (e) {
       setError('Something went wrong. Please try again.')
     }
@@ -393,7 +428,13 @@ export default function LoginScreen() {
         return
       }
 
-      router.replace('/(driver)')
+      const firstName =
+        regName.trim().split(/\s+/).filter(Boolean)[0] || 'Driver'
+      setAuthTransition({
+        active: true,
+        firstName,
+        target: 'driver',
+      })
     } catch (e) {
       setError('Something went wrong. Please try again.')
     }
@@ -402,13 +443,14 @@ export default function LoginScreen() {
 
   return (
     <KeyboardAvoidingView
-      style={s.root}
+      style={[s.root, { position: 'relative' }]}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0}
     >
+      <LoginStarBackdrop width={width} height={height} />
       <StatusBar barStyle="light-content" />
       <ScrollView
-        style={s.scroll}
+        style={[s.scroll, { zIndex: 1 }]}
         contentContainerStyle={s.scrollContent}
         keyboardShouldPersistTaps="handled"
         keyboardDismissMode="none"
@@ -417,9 +459,7 @@ export default function LoginScreen() {
       >
         {/* HEADER */}
         <View style={s.header}>
-          <View style={s.hexWrap}>
-            <Text style={s.hexX}>✕</Text>
-          </View>
+          <LoginHexArt />
           <Text style={s.wordmark}>XEVORA</Text>
           <Text style={s.tagline}>Workforce. Simplified.</Text>
         </View>
@@ -603,6 +643,16 @@ export default function LoginScreen() {
 
         <View style={{ height: 40 }} />
       </ScrollView>
+
+      <LoginTransitionOverlay
+        visible={!!authTransition?.active}
+        firstName={authTransition?.firstName ?? ''}
+        target={authTransition?.target ?? 'driver'}
+        onComplete={(dest) => {
+          setAuthTransition(null)
+          router.replace(dest === 'admin' ? '/(admin)' : '/(driver)')
+        }}
+      />
     </KeyboardAvoidingView>
   )
 }

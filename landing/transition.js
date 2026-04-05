@@ -40,155 +40,331 @@
     return Math.max(min, Math.min(max, val));
   }
 
+  var sparkColors = ['#ffffff','#ffffff','#fffbeb','#fef08a','#93c5fd','#60a5fa','#e0f2fe','#bfdbfe'];
+
   function createSpark() {
     if (!flareContainer) return;
     var rect = flareContainer.getBoundingClientRect();
-    var sparkColor = ['#ffffff', '#ffffff', '#93c5fd', '#60a5fa', '#bfdbfe'][Math.floor(Math.random() * 5)];
-    var spark = {
-      el: document.createElement('div'),
-      x: rect.left + rect.width / 2,
-      y: rect.top + rect.height / 2,
-      vx: 2 + Math.random() * 4,
-      vy: (Math.random() - 0.5) * 8,
-      size: 2.5 + Math.random() * 2.5,
-      lifetime: 300 + Math.random() * 250,
-      age: 0,
-      color: sparkColor,
-      rotation: Math.random() * 360
-    };
-    spark.el.style.cssText = [
+    var originX = rect.left + rect.width / 2;
+    var originY = rect.top + rect.height / 2;
+    
+    var spark = document.createElement('div');
+    var size = Math.random() * 3.5 + 1.5;
+    var color = sparkColors[Math.floor(Math.random() * sparkColors.length)];
+    var angle = (Math.random() * 140) - 130;
+    var rad = angle * Math.PI / 180;
+    var speed = Math.random() * 9 + 4;
+    var vx = Math.cos(rad) * speed;
+    var vy = Math.sin(rad) * speed - 3;
+    var gravity = 0.35 + Math.random() * 0.2;
+    var lifetime = Math.random() * 350 + 200;
+    var willHitFloor = Math.random() < 0.18;
+
+    spark.style.cssText = [
       'position:fixed',
-      'width:' + spark.size + 'px',
-      'height:' + (spark.size * 1.8) + 'px',
-      'border-radius:50% 50% 0 0',
-      'background:linear-gradient(180deg, ' + sparkColor + ' 0%, transparent 100%)',
-      'box-shadow:0 0 4px 2px ' + sparkColor + ', 0 0 8px 3px rgba(255,255,255,0.5)',
+      'width:' + size + 'px',
+      'height:' + (size * 1.6) + 'px',
+      'border-radius:50% 50% 30% 30%',
+      'background:' + color,
       'pointer-events:none',
       'z-index:100001',
-      'left:' + spark.x + 'px',
-      'top:' + spark.y + 'px',
-      'transform:rotate(' + spark.rotation + 'deg)'
+      'left:' + originX + 'px',
+      'top:' + originY + 'px',
+      'box-shadow:0 0 ' + (size*2) + 'px ' + size + 'px ' + color
     ].join(';');
-    document.body.appendChild(spark.el);
-    sparks.push(spark);
+    document.body.appendChild(spark);
+
+    var startTime = performance.now();
+    var rotation = Math.random() * 360;
+    var hasHitFloor = false;
+    var screenH = window.innerHeight;
+    var floorLine = screenH * 0.72;
+
+    function animateSpark(now) {
+      var elapsed = now - startTime;
+      var progress = elapsed / lifetime;
+
+      if (progress >= 1) {
+        spark.remove();
+        return;
+      }
+
+      vx *= 0.97;
+      vy += gravity;
+      rotation += vx * 3;
+
+      var x = parseFloat(spark.style.left) + vx;
+      var y = parseFloat(spark.style.top) + vy;
+
+      if (willHitFloor && !hasHitFloor && y >= floorLine) {
+        hasHitFloor = true;
+        createFloorSplash(x, floorLine, color);
+        vy = -(Math.abs(vy) * 0.3);
+        vx *= 0.4;
+      }
+
+      var opacity = progress < 0.15 
+        ? progress / 0.15 
+        : 1 - ((progress - 0.15) / 0.85);
+      opacity = Math.max(0, opacity * (1 - progress * 0.3));
+
+      spark.style.left = x + 'px';
+      spark.style.top = y + 'px';
+      spark.style.opacity = opacity;
+      spark.style.transform = 'rotate(' + rotation + 'deg) scaleY(' + (1 + Math.abs(vy) * 0.04) + ')';
+
+      requestAnimationFrame(animateSpark);
+    }
+    requestAnimationFrame(animateSpark);
   }
 
-  function createWisp() {
-    if (!flareContainer) return;
-    var rect = flareContainer.getBoundingClientRect();
-    var wisp = {
-      el: document.createElement('div'),
-      x: rect.left + rect.width / 2,
-      y: rect.top + rect.height / 2,
-      vx: 0.3,
-      vy: -0.8,
-      radius: 4,
-      lifetime: 600,
-      age: 0
-    };
-    wisp.el.style.cssText = [
+  function createFloorSplash(x, y, color) {
+    var count = Math.floor(Math.random() * 3) + 2;
+    for (var i = 0; i < count; i++) {
+      var floorSpark = document.createElement('div');
+      var fs = Math.random() * 2 + 0.8;
+      var fvx = (Math.random() - 0.5) * 6;
+      var fvy = -(Math.random() * 2 + 0.5);
+      floorSpark.style.cssText = [
+        'position:fixed',
+        'width:' + fs + 'px',
+        'height:' + fs + 'px',
+        'border-radius:50%',
+        'background:' + color,
+        'box-shadow:0 0 3px 1px ' + color,
+        'pointer-events:none',
+        'z-index:100001',
+        'left:' + x + 'px',
+        'top:' + y + 'px',
+        'opacity:0.9'
+      ].join(';');
+      document.body.appendChild(floorSpark);
+
+      var fsStart = performance.now();
+      var fsLife = Math.random() * 250 + 150;
+      ;(function(el, fvx, fvy) {
+        function animateFloorSpark(now) {
+          var elapsed = now - fsStart;
+          var prog = elapsed / fsLife;
+          if (prog >= 1) { el.remove(); return; }
+          fvx *= 0.92;
+          fvy += 0.15;
+          el.style.left = (parseFloat(el.style.left) + fvx) + 'px';
+          el.style.top = (parseFloat(el.style.top) + fvy) + 'px';
+          el.style.opacity = (1 - prog) * 0.8;
+          requestAnimationFrame(animateFloorSpark);
+        }
+        requestAnimationFrame(animateFloorSpark);
+      })(floorSpark, fvx, fvy);
+    }
+
+    var splat = document.createElement('div');
+    splat.style.cssText = [
       'position:fixed',
-      'width:8px',
-      'height:8px',
+      'width:20px',
+      'height:4px',
       'border-radius:50%',
-      'background:rgba(147,197,253,0.15)',
+      'background:radial-gradient(ellipse, rgba(96,165,250,0.6) 0%, transparent 70%)',
       'pointer-events:none',
       'z-index:100000',
-      'left:' + wisp.x + 'px',
-      'top:' + wisp.y + 'px'
+      'left:' + (x - 10) + 'px',
+      'top:' + (y - 2) + 'px',
+      'opacity:0.8'
     ].join(';');
-    document.body.appendChild(wisp.el);
-    wisps.push(wisp);
+    document.body.appendChild(splat);
+    var splatStart = performance.now();
+    function animateSplat(now) {
+      var prog = (now - splatStart) / 400;
+      if (prog >= 1) { splat.remove(); return; }
+      splat.style.opacity = (1 - prog) * 0.8;
+      splat.style.width = (20 + prog * 30) + 'px';
+      splat.style.left = (x - 10 - prog * 15) + 'px';
+      requestAnimationFrame(animateSplat);
+    }
+    requestAnimationFrame(animateSplat);
   }
 
-  function updateParticles() {
-    // Update sparks with realistic physics
-    for (var i = sparks.length - 1; i >= 0; i--) {
-      var s = sparks[i];
-      s.age += 16;
-      if (s.age >= s.lifetime) {
-        s.el.remove();
-        sparks.splice(i, 1);
-        continue;
-      }
-      var progress = s.age / s.lifetime;
-      
-      // Stronger gravity and air resistance
-      s.vy += 0.6;
-      s.vx *= 0.88;
-      s.x += s.vx;
-      s.y += s.vy;
-      
-      // Rotation as it falls
-      s.rotation += s.vx * 2;
-      
-      s.el.style.left = s.x + 'px';
-      s.el.style.top = s.y + 'px';
-      s.el.style.opacity = (1 - progress) * 1.0;
-      s.el.style.transform = 'rotate(' + s.rotation + 'deg) scale(' + (1 - progress * 0.7) + ')';
-      
-      // Fade to smoke color as it ages
-      if (progress > 0.5) {
-        var smokeProgress = (progress - 0.5) * 2;
-        s.el.style.filter = 'blur(' + (smokeProgress * 2) + 'px)';
-      }
-    }
-
-    // Update wisps
-    for (var j = wisps.length - 1; j >= 0; j--) {
-      var w = wisps[j];
-      w.age += 16;
-      if (w.age >= w.lifetime) {
-        w.el.remove();
-        wisps.splice(j, 1);
-        continue;
-      }
-      var wprogress = w.age / w.lifetime;
-      w.x += w.vx;
-      w.y += w.vy;
-      var newRadius = 4 + wprogress * 10;
-      w.el.style.left = w.x + 'px';
-      w.el.style.top = w.y + 'px';
-      w.el.style.width = (newRadius * 2) + 'px';
-      w.el.style.height = (newRadius * 2) + 'px';
-      w.el.style.opacity = 0.15 * (1 - wprogress);
-    }
-  }
-
-  function triggerPortalExit() {
-    var duration = 500;
-    var start = performance.now();
+  function createSmoke() {
+    if (!flareContainer) return;
+    var rect = flareContainer.getBoundingClientRect();
+    var originX = rect.left + rect.width / 2;
+    var originY = rect.top + rect.height / 2;
     
-    // Elegant cross-fade to black - no blue screen
-    var fadeOverlay = document.createElement('div');
-    fadeOverlay.style.cssText = [
+    var smoke = document.createElement('div');
+    var size = Math.random() * 8 + 4;
+    smoke.style.cssText = [
       'position:fixed',
-      'inset:0',
-      'background:#000000',
-      'z-index:100003',
-      'opacity:0',
+      'width:' + size + 'px',
+      'height:' + size + 'px',
+      'border-radius:50%',
+      'background:radial-gradient(circle, rgba(147,197,253,0.2) 0%, transparent 70%)',
       'pointer-events:none',
-      'transition:opacity 500ms cubic-bezier(0.4, 0, 0.2, 1)'
+      'z-index:100000',
+      'left:' + originX + 'px',
+      'top:' + originY + 'px',
+      'filter:blur(2px)'
     ].join(';');
-    document.body.appendChild(fadeOverlay);
+    document.body.appendChild(smoke);
 
-    // Trigger fade immediately
-    setTimeout(function() {
-      fadeOverlay.style.opacity = '1';
-    }, 10);
+    var startTime = performance.now();
+    var lifetime = Math.random() * 500 + 600;
+    var vx = (Math.random() - 0.3) * 0.8;
+    var vy = -(Math.random() * 1.2 + 0.6);
 
-    // Redirect after fade completes
+    function animateSmoke(now) {
+      var elapsed = now - startTime;
+      var progress = elapsed / lifetime;
+      if (progress >= 1) { smoke.remove(); return; }
+
+      var x = parseFloat(smoke.style.left) + vx;
+      var y = parseFloat(smoke.style.top) + vy;
+      var currentSize = size + progress * 20;
+      var opacity = (1 - progress) * 0.18;
+
+      smoke.style.left = x + 'px';
+      smoke.style.top = y + 'px';
+      smoke.style.width = currentSize + 'px';
+      smoke.style.height = currentSize + 'px';
+      smoke.style.opacity = opacity;
+      requestAnimationFrame(animateSmoke);
+    }
+    requestAnimationFrame(animateSmoke);
+  }
+
+
+  function triggerEntrance() {
+    // Step 1: Bar + status fade out
+    if (barContainer) barContainer.style.transition = 'opacity 200ms';
+    if (barContainer) barContainer.style.opacity = '0';
+    if (statusEl) statusEl.style.transition = 'opacity 200ms';
+    if (statusEl) statusEl.style.opacity = '0';
+
+    // Step 2: Status text → READY. and hex pulse
     setTimeout(function() {
-      window.location.href = 'https://app.xevora.io/auth/login';
-    }, 520);
+      if (statusEl) {
+        statusEl.textContent = 'READY.';
+        statusEl.style.color = '#3B82F6';
+        statusEl.style.opacity = '1';
+      }
+      if (hexWrap) {
+        var hexPulseStart = performance.now();
+        function pulseHex(now) {
+          var elapsed = now - hexPulseStart;
+          var progress = Math.min(elapsed / 300, 1);
+          var scale = progress < 0.5 
+            ? 1 + (progress * 2) * 0.12 
+            : 1.12 - ((progress - 0.5) * 2) * 0.12;
+          hexWrap.style.transform = 'scale(' + scale + ')';
+          if (progress < 1) requestAnimationFrame(pulseHex);
+        }
+        requestAnimationFrame(pulseHex);
+      }
+    }, 200);
+
+    // Step 3: Horizontal scan line (starts at 500ms)
+    setTimeout(function() {
+      var scanLine = document.createElement('div');
+      scanLine.style.cssText = [
+        'position:fixed',
+        'left:0',
+        'width:100%',
+        'height:2px',
+        'background:linear-gradient(90deg, transparent 0%, #3B82F6 20%, #93c5fd 50%, #3B82F6 80%, transparent 100%)',
+        'box-shadow:0 0 20px 10px rgba(59,130,246,0.4), 0 0 60px 30px rgba(59,130,246,0.15)',
+        'pointer-events:none',
+        'z-index:100005',
+        'top:-2px'
+      ].join(';');
+      document.body.appendChild(scanLine);
+
+      var scanStart = performance.now();
+      function animateScan(now) {
+        var elapsed = now - scanStart;
+        var progress = Math.min(elapsed / 500, 1);
+        var eased = progress < 0.5 
+          ? 2 * progress * progress 
+          : -1 + (4 - 2 * progress) * progress;
+        scanLine.style.top = (eased * window.innerHeight) + 'px';
+        if (progress < 1) {
+          requestAnimationFrame(animateScan);
+        } else {
+          scanLine.remove();
+          triggerFinalWarp();
+        }
+      }
+      requestAnimationFrame(animateScan);
+    }, 500);
+
+    // Step 4: Warp effect
+    function triggerFinalWarp() {
+      var warpOverlay = document.createElement('div');
+      warpOverlay.style.cssText = [
+        'position:fixed',
+        'inset:0',
+        'background:#03060D',
+        'z-index:100006',
+        'opacity:0',
+        'pointer-events:none',
+        'will-change:opacity'
+      ].join(';');
+      document.body.appendChild(warpOverlay);
+
+      // Concentric rings expand from center
+      for (var r = 0; r < 4; r++) {
+        ;(function(delay) {
+          setTimeout(function() {
+            var ring = document.createElement('div');
+            ring.style.cssText = [
+              'position:fixed',
+              'border-radius:50%',
+              'border:1px solid rgba(59,130,246,0.6)',
+              'pointer-events:none',
+              'z-index:100007',
+              'left:50%',
+              'top:50%',
+              'width:10px',
+              'height:10px',
+              'transform:translate(-50%,-50%) scale(1)',
+              'opacity:0.8'
+            ].join(';');
+            document.body.appendChild(ring);
+
+            var rStart = performance.now();
+            var rDur = 600;
+            function animateRing(now) {
+              var prog = Math.min((now - rStart) / rDur, 1);
+              var scale = 1 + prog * 180;
+              ring.style.transform = 'translate(-50%,-50%) scale(' + scale + ')';
+              ring.style.opacity = (1 - prog) * 0.6;
+              if (prog < 1) {
+                requestAnimationFrame(animateRing);
+              } else {
+                ring.remove();
+              }
+            }
+            requestAnimationFrame(animateRing);
+          }, delay);
+        })(r * 80);
+      }
+
+      // Overlay fades in over 400ms then redirect
+      var fadeStart = performance.now();
+      function fadeToDark(now) {
+        var prog = Math.min((now - fadeStart) / 400, 1);
+        warpOverlay.style.opacity = prog * prog;
+        if (prog < 1) {
+          requestAnimationFrame(fadeToDark);
+        } else {
+          window.location.href = 'https://app.xevora.io/auth/login';
+        }
+      }
+      requestAnimationFrame(fadeToDark);
+    }
   }
 
   function tick(now) {
     if (!startTime) startTime = now;
     var elapsed = now - startTime;
-
-    // Update particles
-    updateParticles();
 
     // STAGE 1: Fade in (0-400ms)
     if (elapsed <= STAGES.FADE_IN.end) {
@@ -284,17 +460,32 @@
       }
     }
 
-    // STAGE 4: Portal exit (2200ms)
-    if (elapsed >= 2200 && !redirected) {
+    // STAGE 4: Entrance sequence (1900ms - when bar finishes)
+    if (elapsed >= 1900 && !redirected) {
       redirected = true;
-      triggerPortalExit();
-      return; // Stop the rAF loop
+      triggerEntrance();
+      return;
     }
 
     requestAnimationFrame(tick);
   }
 
   function launch() {
+    // Preload the destination page invisibly
+    var preloadFrame = document.createElement('iframe');
+    preloadFrame.src = 'https://app.xevora.io/auth/login';
+    preloadFrame.style.cssText = [
+      'position:fixed',
+      'width:1px',
+      'height:1px',
+      'opacity:0',
+      'pointer-events:none',
+      'border:none',
+      'top:-9999px',
+      'left:-9999px'
+    ].join(';');
+    document.body.appendChild(preloadFrame);
+
     // Build overlay DOM
     overlay = document.createElement('div');
     overlay.style.cssText = [
@@ -528,8 +719,11 @@
 
     // Particle intervals during loading
     setTimeout(function() {
-      sparkInterval = setInterval(createSpark, 40);
-      wispInterval = setInterval(createWisp, 120);
+      sparkInterval = setInterval(function() {
+        createSpark();
+        createSpark();
+      }, 35);
+      wispInterval = setInterval(createSmoke, 100);
     }, 400);
 
     // Kick off rAF loop

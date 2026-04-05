@@ -7,23 +7,50 @@ export function useAuth() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getSession().then((session) => {
-      setUser(session);
-      setLoading(false);
+    let cancelled = false;
+
+    const applySession = async () => {
+      const authUser = await getSession();
+      if (!cancelled) {
+        setUser(authUser);
+        setLoading(false);
+      }
+    };
+
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session?.user) {
+        setUser(null);
+        setLoading(false);
+        return;
+      }
+      setLoading(true);
+      applySession();
     });
 
     const { data: authListener } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        if (event === 'SIGNED_IN' && session?.user) {
-          const authUser = await getSession();
-          setUser(authUser);
-        } else if (event === 'SIGNED_OUT') {
+        if (event === 'SIGNED_OUT' || !session?.user) {
           setUser(null);
+          setLoading(false);
+          return;
+        }
+        if (
+          event === 'SIGNED_IN' ||
+          event === 'TOKEN_REFRESHED' ||
+          event === 'INITIAL_SESSION'
+        ) {
+          setLoading(true);
+          const authUser = await getSession();
+          if (!cancelled) {
+            setUser(authUser);
+            setLoading(false);
+          }
         }
       }
     );
 
     return () => {
+      cancelled = true;
       authListener.subscription.unsubscribe();
     };
   }, []);

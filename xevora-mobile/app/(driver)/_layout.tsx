@@ -1,11 +1,13 @@
-import { Tabs } from 'expo-router';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { useEffect, useState } from 'react';
+import { Tabs, useRouter } from 'expo-router';
+import { View, ActivityIndicator, StyleSheet } from 'react-native';
 import Svg, { Path, Circle, Rect } from 'react-native-svg';
 import { theme } from '../../constants/theme';
+import { supabase } from '../../lib/supabase';
 
 function TabBarIcon({ name, focused }: { name: string; focused: boolean }) {
   const color = focused ? theme.bright : theme.muted;
-  
+
   const icons: Record<string, JSX.Element> = {
     home: (
       <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -43,6 +45,33 @@ function TabBarIcon({ name, focused }: { name: string; focused: boolean }) {
 }
 
 export default function DriverLayout() {
+  const router = useRouter();
+  const [sessionOk, setSessionOk] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (cancelled) return;
+      if (!session) {
+        router.replace('/(auth)/login');
+        setSessionOk(false);
+        return;
+      }
+      setSessionOk(true);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [router]);
+
+  if (sessionOk !== true) {
+    return (
+      <View style={styles.gate}>
+        <ActivityIndicator size="large" color={theme.primary} />
+      </View>
+    );
+  }
+
   return (
     <Tabs
       screenOptions={{
@@ -93,6 +122,12 @@ export default function DriverLayout() {
 }
 
 const styles = StyleSheet.create({
+  gate: {
+    flex: 1,
+    backgroundColor: theme.bg,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   tabBar: {
     backgroundColor: theme.surface,
     borderTopWidth: 1,
