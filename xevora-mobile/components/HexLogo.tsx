@@ -6,10 +6,17 @@ import { theme } from '../constants/theme';
 type HexLogoProps = {
   size?: number;
   glowColor?: string;
+  ringColor?: string;
   animated?: boolean;
 };
 
-export function HexLogo({ size = 76, glowColor = theme.primary, animated = true }: HexLogoProps) {
+export function HexLogo({
+  size = 76,
+  glowColor = theme.primary,
+  ringColor,
+  animated = true,
+}: HexLogoProps) {
+  const ringStroke = ringColor ?? glowColor;
   const ring1Opacity = useRef(new Animated.Value(0.2)).current;
   const ring2Opacity = useRef(new Animated.Value(0.12)).current;
   const ring3Opacity = useRef(new Animated.Value(0.07)).current;
@@ -82,6 +89,7 @@ export function HexLogo({ size = 76, glowColor = theme.primary, animated = true 
             borderRadius: ringSize1 / 2,
             opacity: ring1Opacity,
             transform: [{ scale: ring1Scale }],
+            borderColor: ringStroke,
           },
         ]}
       />
@@ -94,6 +102,7 @@ export function HexLogo({ size = 76, glowColor = theme.primary, animated = true 
             borderRadius: ringSize2 / 2,
             opacity: ring2Opacity,
             transform: [{ scale: ring2Scale }],
+            borderColor: ringStroke,
           },
         ]}
       />
@@ -106,6 +115,7 @@ export function HexLogo({ size = 76, glowColor = theme.primary, animated = true 
             borderRadius: ringSize3 / 2,
             opacity: ring3Opacity,
             transform: [{ scale: ring3Scale }],
+            borderColor: ringStroke,
           },
         ]}
       />
@@ -116,6 +126,8 @@ export function HexLogo({ size = 76, glowColor = theme.primary, animated = true 
             width: size,
             height: size,
             borderRadius: size * 0.18,
+            borderColor: `${glowColor}66`,
+            shadowColor: glowColor,
           },
         ]}
       >
@@ -145,15 +157,12 @@ const styles = StyleSheet.create({
   ring: {
     position: 'absolute',
     borderWidth: 1,
-    borderColor: theme.primary,
   },
   hexContainer: {
     backgroundColor: theme.surface,
     borderWidth: 1,
-    borderColor: 'rgba(37,99,235,0.4)',
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: theme.primary,
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.35,
     shadowRadius: 20,

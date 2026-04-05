@@ -12,11 +12,14 @@ import {
 import {
   JetBrainsMono_400Regular,
   JetBrainsMono_500Medium,
+  JetBrainsMono_700Bold,
+  JetBrainsMono_800ExtraBold,
 } from '@expo-google-fonts/jetbrains-mono';
 import { HexLogo } from '../components/HexLogo';
 import { useAuth } from '../hooks/useAuth';
 import { theme } from '../constants/theme';
 import { supabase } from '../lib/supabase';
+import { loadStaySignedInPreference } from '../lib/authSessionStorage';
 import '../global.css';
 
 export default function RootLayout() {
@@ -28,11 +31,17 @@ export default function RootLayout() {
     PlusJakartaSans_800ExtraBold,
     JetBrainsMono_400Regular,
     JetBrainsMono_500Medium,
+    JetBrainsMono_700Bold,
+    JetBrainsMono_800ExtraBold,
   });
 
   const { user, loading } = useAuth();
   const segments = useSegments();
   const router = useRouter();
+
+  useEffect(() => {
+    void loadStaySignedInPreference();
+  }, []);
 
   useEffect(() => {
     const { data } = supabase.auth.onAuthStateChange((event) => {

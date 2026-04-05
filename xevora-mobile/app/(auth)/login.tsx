@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, type RefObject } from 'react'
+import React, { useState, useRef, useEffect, useCallback, type RefObject } from 'react'
 import {
   View,
   Text,
@@ -12,12 +12,18 @@ import {
   Keyboard,
   StatusBar,
   Dimensions,
+  Animated,
 } from 'react-native'
 import { router } from 'expo-router'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../hooks/useAuth'
 import { LoginStarBackdrop, LoginHexArt } from '../../components/LoginPremiumChrome'
-import { LoginTransitionOverlay } from '../../components/LoginTransitionOverlay'
+import { LoginSignInTransition } from '../../components/LoginSignInTransition'
+import { prefetchDriverHomeData } from '../../lib/driverPrefetch'
+import {
+  loadStaySignedInPreference,
+  saveStaySignedInPreference,
+} from '../../lib/authSessionStorage'
 
 const s = StyleSheet.create({
   root: {
@@ -168,6 +174,62 @@ const s = StyleSheet.create({
     textAlign: 'center',
     marginTop: 16,
   },
+  successBanner: {
+    borderLeftWidth: 4,
+    borderLeftColor: '#22C55E',
+    backgroundColor: 'rgba(34,197,94,0.08)',
+    paddingVertical: 12,
+    paddingHorizontal: 14,
+    borderRadius: 12,
+    marginBottom: 16,
+  },
+  successBannerText: {
+    color: '#F1F5FF',
+    fontSize: 14,
+    fontFamily: 'PlusJakartaSans_500Medium',
+  },
+  flipStage: {
+    position: 'relative',
+    width: '100%',
+  },
+  flipFace: {
+    width: '100%',
+    backfaceVisibility: 'hidden' as const,
+  },
+  flipFaceAbs: {
+    position: 'absolute',
+    width: '100%',
+    top: 0,
+    left: 0,
+    right: 0,
+    backfaceVisibility: 'hidden' as const,
+  },
+  stayRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 12,
+    marginBottom: 4,
+    gap: 10,
+  },
+  stayTrack: {
+    width: 28,
+    height: 16,
+    borderRadius: 8,
+    padding: 2,
+    justifyContent: 'center',
+  },
+  stayThumb: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    backgroundColor: '#fff',
+  },
+  stayLabel: {
+    fontSize: 13,
+    color: '#4E6D92',
+    fontFamily: 'PlusJakartaSans_500Medium',
+    flex: 1,
+  },
 })
 
 type InputFieldProps = {
@@ -261,12 +323,6 @@ function InputField({
   )
 }
 
-type AuthTransitionState = {
-  active: boolean
-  firstName: string
-  target: 'admin' | 'driver'
-}
-
 export default function LoginScreen() {
   const { width, height } = Dimensions.get('window')
   const { user, loading: authLoading } = useAuth()
@@ -274,18 +330,86 @@ export default function LoginScreen() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [focusedField, setFocusedField] = useState<string | null>(null)
-  const [authTransition, setAuthTransition] = useState<AuthTransitionState | null>(
-    null
-  )
+  const [signInOverlay, setSignInOverlay] = useState(false)
+  const [signInProgress, setSignInProgress] = useState(0)
+  const pendingNavRef = useRef<'admin' | 'driver' | null>(null)
+  const [staySignedIn, setStaySignedIn] = useState(true)
+  const [showRegBanner, setShowRegBanner] = useState(false)
+  const bannerOp = useRef(new Animated.Value(0)).current
+  const flipAnim = useRef(new Animated.Value(0)).current
+  const thumbX = useRef(new Animated.Value(14)).current
+  const [flipMinH, setFlipMinH] = useState(420)
+  const frontHRef = useRef(0)
+  const backHRef = useRef(0)
+
+  const flipToSignIn = useCallback(() => {
+    setMode('signin')
+    setError('')
+    Animated.spring(flipAnim, {
+      toValue: 0,
+      friction: 8,
+      tension: 40,
+      useNativeDriver: true,
+    }).start()
+  }, [flipAnim])
+
+  const flipToRegister = useCallback(() => {
+    setMode('register')
+    setError('')
+    Animated.spring(flipAnim, {
+      toValue: 1,
+      friction: 8,
+      tension: 40,
+      useNativeDriver: true,
+    }).start()
+  }, [flipAnim])
 
   useEffect(() => {
-    if (authLoading || !user || authTransition?.active) return
+    void loadStaySignedInPreference().then((v) => {
+      setStaySignedIn(v)
+      thumbX.setValue(v ? 14 : 2)
+    })
+  }, [thumbX])
+
+  useEffect(() => {
+    Animated.spring(thumbX, {
+      toValue: staySignedIn ? 14 : 2,
+      friction: 8,
+      tension: 120,
+      useNativeDriver: false,
+    }).start()
+  }, [staySignedIn, thumbX])
+
+  useEffect(() => {
+    if (authLoading || !user || signInOverlay) return
     if (user.role === 'driver') {
       router.replace('/(driver)')
     } else {
       router.replace('/(admin)')
     }
-  }, [authLoading, user, authTransition?.active])
+  }, [authLoading, user, signInOverlay])
+
+  const recalcFlipH = useCallback(() => {
+    setFlipMinH(Math.max(frontHRef.current, backHRef.current, 380))
+  }, [])
+
+  const onSignInExitComplete = useCallback(() => {
+    setSignInOverlay(false)
+    setSignInProgress(0)
+    const d = pendingNavRef.current
+    pendingNavRef.current = null
+    if (d === 'admin') router.replace('/(admin)')
+    else router.replace('/(driver)')
+  }, [])
+
+  const frontRotate = flipAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['0deg', '180deg'],
+  })
+  const backRotate = flipAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['180deg', '360deg'],
+  })
 
   // Sign in state
   const [siCode, setSiCode] = useState('')
@@ -318,8 +442,11 @@ export default function LoginScreen() {
       setError('Please fill in all fields')
       return
     }
-    setLoading(true)
     setError('')
+    setSignInProgress(0)
+    setSignInOverlay(true)
+    setLoading(true)
+    await saveStaySignedInPreference(staySignedIn)
     try {
       const { data: codeCheck, error: codeError } = await supabase.rpc(
         'verify_driver_signup_code',
@@ -328,6 +455,7 @@ export default function LoginScreen() {
 
       if (codeError || !codeCheck?.ok) {
         setError('Invalid company code')
+        setSignInOverlay(false)
         setLoading(false)
         return
       }
@@ -338,43 +466,45 @@ export default function LoginScreen() {
       })
       if (authError) {
         setError(authError.message)
+        setSignInOverlay(false)
         setLoading(false)
         return
       }
+      setSignInProgress(0.4)
 
       const {
-        data: { user },
+        data: { user: authUser },
       } = await supabase.auth.getUser()
-      if (!user) {
+      if (!authUser) {
         setError('Auth failed')
+        setSignInOverlay(false)
         setLoading(false)
         return
       }
 
       const { data: worker } = await supabase
         .from('workers')
-        .select('role, first_name, full_name')
-        .eq('user_id', user.id)
+        .select('id, role, first_name, full_name')
+        .eq('user_id', authUser.id)
         .single()
 
-      const firstName =
-        worker?.first_name ||
-        (worker?.full_name
-          ? worker.full_name.trim().split(/\s+/)[0]
-          : null) ||
-        'Driver'
+      setSignInProgress(0.65)
+
       const target: 'admin' | 'driver' =
         worker?.role === 'admin' || worker?.role === 'manager'
           ? 'admin'
           : 'driver'
 
-      setAuthTransition({
-        active: true,
-        firstName,
-        target,
-      })
+      if (target === 'driver' && worker?.id) {
+        await prefetchDriverHomeData(worker.id)
+      }
+      setSignInProgress(0.9)
+
+      pendingNavRef.current = target
+      setSignInProgress(1)
     } catch (e) {
       setError('Something went wrong. Please try again.')
+      setSignInOverlay(false)
     }
     setLoading(false)
   }
@@ -428,13 +558,21 @@ export default function LoginScreen() {
         return
       }
 
-      const firstName =
-        regName.trim().split(/\s+/).filter(Boolean)[0] || 'Driver'
-      setAuthTransition({
-        active: true,
-        firstName,
-        target: 'driver',
-      })
+      setSiCode(regCode)
+      setSiEmail(regEmail)
+      setSiPassword('')
+      setError('')
+      flipToSignIn()
+      setShowRegBanner(true)
+      bannerOp.setValue(1)
+      Animated.sequence([
+        Animated.delay(3200),
+        Animated.timing(bannerOp, {
+          toValue: 0,
+          duration: 800,
+          useNativeDriver: true,
+        }),
+      ]).start(() => setShowRegBanner(false))
     } catch (e) {
       setError('Something went wrong. Please try again.')
     }
@@ -468,7 +606,7 @@ export default function LoginScreen() {
         <View style={s.modeSwitcher}>
           <TouchableOpacity
             style={[s.modeBtn, mode === 'signin' && s.modeBtnActive]}
-            onPress={() => { setMode('signin'); setError('') }}
+            onPress={flipToSignIn}
           >
             <Text style={[s.modeBtnText, mode === 'signin' && s.modeBtnTextActive]}>
               Sign In
@@ -476,7 +614,7 @@ export default function LoginScreen() {
           </TouchableOpacity>
           <TouchableOpacity
             style={[s.modeBtn, mode === 'register' && s.modeBtnActive]}
-            onPress={() => { setMode('register'); setError('') }}
+            onPress={flipToRegister}
           >
             <Text style={[s.modeBtnText, mode === 'register' && s.modeBtnTextActive]}>
               Create Account
@@ -484,10 +622,32 @@ export default function LoginScreen() {
           </TouchableOpacity>
         </View>
 
-        {/* FORM CARD */}
-        <View style={s.card}>
-          {mode === 'signin' ? (
-            <View>
+        {showRegBanner ? (
+          <Animated.View style={[s.successBanner, { opacity: bannerOp }]}>
+            <Text style={s.successBannerText}>
+              Account created! Sign in to continue.
+            </Text>
+          </Animated.View>
+        ) : null}
+
+        {/* FORM CARD — flip: both faces mounted */}
+        <View style={[s.card, { minHeight: flipMinH }]}>
+          <View style={s.flipStage}>
+            <Animated.View
+              style={[
+                s.flipFace,
+                {
+                  transform: [
+                    { perspective: 1200 },
+                    { rotateY: frontRotate },
+                  ],
+                },
+              ]}
+              onLayout={(e) => {
+                frontHRef.current = e.nativeEvent.layout.height
+                recalcFlipH()
+              }}
+            >
               <InputField
                 label="COMPANY CODE"
                 value={siCode}
@@ -532,6 +692,23 @@ export default function LoginScreen() {
                 onFocus={() => setFocusedField('siPassword')}
                 onBlur={() => setFocusedField(null)}
               />
+              <View style={s.stayRow}>
+                <TouchableOpacity
+                  activeOpacity={0.85}
+                  onPress={() => setStaySignedIn(!staySignedIn)}
+                  style={[
+                    s.stayTrack,
+                    {
+                      backgroundColor: staySignedIn
+                        ? '#2563EB'
+                        : 'rgba(255,255,255,0.1)',
+                    },
+                  ]}
+                >
+                  <Animated.View style={[s.stayThumb, { marginLeft: thumbX }]} />
+                </TouchableOpacity>
+                <Text style={s.stayLabel}>Stay signed in</Text>
+              </View>
               {error ? <Text style={s.error}>{error}</Text> : null}
               <TouchableOpacity
                 style={[s.submitBtn, loading && s.submitBtnDisabled]}
@@ -544,9 +721,23 @@ export default function LoginScreen() {
                   : <Text style={s.submitBtnText}>Sign In</Text>
                 }
               </TouchableOpacity>
-            </View>
-          ) : (
-            <View>
+            </Animated.View>
+
+            <Animated.View
+              style={[
+                s.flipFaceAbs,
+                {
+                  transform: [
+                    { perspective: 1200 },
+                    { rotateY: backRotate },
+                  ],
+                },
+              ]}
+              onLayout={(e) => {
+                backHRef.current = e.nativeEvent.layout.height
+                recalcFlipH()
+              }}
+            >
               <InputField
                 label="COMPANY CODE"
                 value={regCode}
@@ -637,21 +828,17 @@ export default function LoginScreen() {
               <Text style={s.terms}>
                 By creating an account you agree to our Terms of Service
               </Text>
-            </View>
-          )}
+            </Animated.View>
+          </View>
         </View>
 
         <View style={{ height: 40 }} />
       </ScrollView>
 
-      <LoginTransitionOverlay
-        visible={!!authTransition?.active}
-        firstName={authTransition?.firstName ?? ''}
-        target={authTransition?.target ?? 'driver'}
-        onComplete={(dest) => {
-          setAuthTransition(null)
-          router.replace(dest === 'admin' ? '/(admin)' : '/(driver)')
-        }}
+      <LoginSignInTransition
+        visible={signInOverlay}
+        progress={signInProgress}
+        onExitComplete={onSignInExitComplete}
       />
     </KeyboardAvoidingView>
   )

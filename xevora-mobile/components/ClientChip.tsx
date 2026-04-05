@@ -5,12 +5,22 @@ import { theme } from '../constants/theme';
 type ClientChipProps = {
   abbreviation: string;
   isActive?: boolean;
+  dotColor?: string;
 };
 
-export function ClientChip({ abbreviation, isActive = false }: ClientChipProps) {
+export function ClientChip({
+  abbreviation,
+  isActive = false,
+  dotColor = '#3B82F6',
+}: ClientChipProps) {
   return (
     <View style={styles.container}>
-      {isActive && <View style={styles.pulseDot} />}
+      <View
+        style={[
+          isActive ? styles.pulseDot : styles.staticDot,
+          !isActive && { backgroundColor: dotColor },
+        ]}
+      />
       <Text style={styles.text}>{abbreviation}</Text>
     </View>
   );
@@ -33,6 +43,11 @@ const styles = StyleSheet.create({
     height: 6,
     borderRadius: 3,
     backgroundColor: theme.success,
+  },
+  staticDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
   },
   text: {
     fontSize: 11,
