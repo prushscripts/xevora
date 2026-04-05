@@ -53,6 +53,140 @@ const HEX_VERTICES = [
   { x: 8, y: 32 },
 ];
 
+interface InputFieldProps {
+  label: string;
+  value: string;
+  onChangeText: (text: string) => void;
+  placeholder: string;
+  fieldName: string;
+  inputRef: React.RefObject<TextInput | null>;
+  nextRef?: React.RefObject<TextInput | null>;
+  secureTextEntry?: boolean;
+  showToggle?: boolean;
+  onToggleShow?: () => void;
+  keyboardType?: 'default' | 'email-address' | 'numeric' | 'phone-pad';
+  textContentType?: TextInput['props']['textContentType'];
+  autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters';
+  autoComplete?: TextInput['props']['autoComplete'];
+  returnKeyType?: 'done' | 'go' | 'next' | 'search' | 'send';
+  onSubmitEditing?: () => void;
+  scrollY?: number;
+  focusedField: string | null;
+  setFocusedField: (field: string | null) => void;
+  scrollViewRef: React.RefObject<ScrollView | null>;
+  editable?: boolean;
+}
+
+const InputField = ({
+  label,
+  value,
+  onChangeText,
+  placeholder,
+  fieldName,
+  inputRef,
+  nextRef,
+  secureTextEntry = false,
+  showToggle = false,
+  onToggleShow,
+  keyboardType = 'default',
+  textContentType = 'none',
+  autoCapitalize = 'none',
+  autoComplete = 'off',
+  returnKeyType = 'next',
+  onSubmitEditing,
+  scrollY = 0,
+  focusedField,
+  setFocusedField,
+  scrollViewRef,
+  editable = true,
+}: InputFieldProps) => {
+  const isFocused = focusedField === fieldName;
+
+  return (
+    <View style={{ marginBottom: 16 }}>
+      <Text style={{
+        fontFamily: 'JetBrainsMono_400Regular',
+        fontSize: 10,
+        color: '#4E6D92',
+        letterSpacing: 1.5,
+        marginBottom: 8,
+        textTransform: 'uppercase'
+      }}>
+        {label}
+      </Text>
+      <View style={{
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: '#0A1628',
+        borderRadius: 12,
+        borderWidth: 1,
+        borderColor: isFocused ? '#2563EB' : 'rgba(255,255,255,0.08)',
+        shadowColor: isFocused ? '#2563EB' : 'transparent',
+        shadowOffset: { width: 0, height: 0 },
+        shadowOpacity: isFocused ? 0.3 : 0,
+        shadowRadius: isFocused ? 8 : 0,
+        elevation: isFocused ? 4 : 0,
+      }}>
+        <TextInput
+          ref={inputRef}
+          value={value}
+          onChangeText={onChangeText}
+          placeholder={placeholder}
+          placeholderTextColor="#4E6D92"
+          secureTextEntry={secureTextEntry}
+          keyboardType={keyboardType}
+          textContentType={textContentType}
+          autoCapitalize={autoCapitalize}
+          autoComplete={autoComplete}
+          autoCorrect={false}
+          spellCheck={false}
+          returnKeyType={nextRef ? 'next' : 'done'}
+          blurOnSubmit={!nextRef}
+          onSubmitEditing={() => {
+            if (nextRef) {
+              nextRef.current?.focus();
+            } else {
+              Keyboard.dismiss();
+              onSubmitEditing?.();
+            }
+          }}
+          onFocus={() => {
+            setFocusedField(fieldName);
+            scrollViewRef.current?.scrollTo({
+              y: scrollY,
+              animated: true
+            });
+          }}
+          onBlur={() => setFocusedField(null)}
+          selectionColor="#3B82F6"
+          cursorColor="#3B82F6"
+          editable={editable}
+          style={{
+            flex: 1,
+            paddingHorizontal: 16,
+            paddingVertical: 14,
+            fontSize: 16,
+            color: '#F1F5FF',
+            fontFamily: 'PlusJakartaSans_400Regular',
+            backgroundColor: 'transparent',
+          }}
+        />
+        {showToggle && (
+          <TouchableOpacity
+            onPress={onToggleShow}
+            style={{ paddingHorizontal: 16, paddingVertical: 14 }}
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          >
+            <Text style={{ color: '#4E6D92', fontSize: 12 }}>
+              {secureTextEntry ? 'SHOW' : 'HIDE'}
+            </Text>
+          </TouchableOpacity>
+        )}
+      </View>
+    </View>
+  );
+};
+
 function AnimatedHexLogo({ size = 200 }) {
   const scale = size / 100;
   const orbitProgress = useRef(new Animated.Value(0)).current;
@@ -213,17 +347,28 @@ export default function LoginScreen() {
   });
 
   const [mode, setMode] = useState<'signin' | 'signup'>('signin');
-  const [companyCode, setCompanyCode] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [fullName, setFullName] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  
+  // Sign In state
+  const [signInCode, setSignInCode] = useState('');
+  const [signInEmail, setSignInEmail] = useState('');
+  const [signInPassword, setSignInPassword] = useState('');
+  const [showSignInPassword, setShowSignInPassword] = useState(false);
+  
+  // Register state
+  const [regCode, setRegCode] = useState('');
+  const [regName, setRegName] = useState('');
+  const [regEmail, setRegEmail] = useState('');
+  const [regPassword, setRegPassword] = useState('');
+  const [regConfirmPassword, setRegConfirmPassword] = useState('');
+  const [showRegPassword, setShowRegPassword] = useState(false);
+  const [showRegConfirm, setShowRegConfirm] = useState(false);
+  
+  // Focus state
+  const [focusedField, setFocusedField] = useState<string | null>(null);
+  
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
-  const [focusedField, setFocusedField] = useState<string | null>(null);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [infoSheet, setInfoSheet] = useState<'about' | 'faq' | 'contact' | null>(null);
 
@@ -231,12 +376,16 @@ export default function LoginScreen() {
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const scrollViewRef = useRef<ScrollView>(null);
   
-  // Input refs for focus management
-  const companyCodeRef = useRef<TextInput>(null);
-  const fullNameRef = useRef<TextInput>(null);
-  const emailRef = useRef<TextInput>(null);
-  const passwordRef = useRef<TextInput>(null);
-  const confirmPasswordRef = useRef<TextInput>(null);
+  // Refs — one per input, named clearly
+  const signInCodeRef = useRef<TextInput>(null);
+  const signInEmailRef = useRef<TextInput>(null);
+  const signInPasswordRef = useRef<TextInput>(null);
+  
+  const regCodeRef = useRef<TextInput>(null);
+  const regNameRef = useRef<TextInput>(null);
+  const regEmailRef = useRef<TextInput>(null);
+  const regPasswordRef = useRef<TextInput>(null);
+  const regConfirmRef = useRef<TextInput>(null);
 
   useEffect(() => {
     Animated.timing(fadeAnim, {
@@ -262,11 +411,14 @@ export default function LoginScreen() {
     setFocusedField(null);
     
     // Clear form fields when switching modes
-    setCompanyCode('');
-    setEmail('');
-    setPassword('');
-    setConfirmPassword('');
-    setFullName('');
+    setSignInCode('');
+    setSignInEmail('');
+    setSignInPassword('');
+    setRegCode('');
+    setRegName('');
+    setRegEmail('');
+    setRegPassword('');
+    setRegConfirmPassword('');
   };
 
   const handleSignIn = async () => {
@@ -274,9 +426,9 @@ export default function LoginScreen() {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     
     const errors: Record<string, string> = {};
-    if (!companyCode) errors.companyCode = 'Company code is required';
-    if (!email) errors.email = 'Email is required';
-    if (!password) errors.password = 'Password is required';
+    if (!signInCode) errors.companyCode = 'Company code is required';
+    if (!signInEmail) errors.email = 'Email is required';
+    if (!signInPassword) errors.password = 'Password is required';
     
     if (Object.keys(errors).length > 0) {
       setFieldErrors(errors);
@@ -290,7 +442,7 @@ export default function LoginScreen() {
 
     try {
       const { data: codeCheck, error: codeError } = await supabase.rpc('verify_driver_signup_code', {
-        p_plaincode: companyCode.trim(),
+        p_plaincode: signInCode.trim(),
       });
 
       if (codeError || !codeCheck?.ok) {
@@ -301,8 +453,8 @@ export default function LoginScreen() {
       }
 
       const { data, error: signInError } = await supabase.auth.signInWithPassword({
-        email,
-        password,
+        email: signInEmail,
+        password: signInPassword,
       });
 
       if (signInError) {
@@ -336,12 +488,12 @@ export default function LoginScreen() {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     
     const errors: Record<string, string> = {};
-    if (!companyCode) errors.companyCode = 'Company code is required';
-    if (!fullName) errors.fullName = 'Full name is required';
-    if (!email) errors.email = 'Email is required';
-    if (!password) errors.password = 'Password is required';
-    if (!confirmPassword) errors.confirmPassword = 'Please confirm your password';
-    else if (password !== confirmPassword) errors.confirmPassword = 'Passwords do not match';
+    if (!regCode) errors.companyCode = 'Company code is required';
+    if (!regName) errors.fullName = 'Full name is required';
+    if (!regEmail) errors.email = 'Email is required';
+    if (!regPassword) errors.password = 'Password is required';
+    if (!regConfirmPassword) errors.confirmPassword = 'Please confirm your password';
+    else if (regPassword !== regConfirmPassword) errors.confirmPassword = 'Passwords do not match';
     
     if (Object.keys(errors).length > 0) {
       setFieldErrors(errors);
@@ -355,7 +507,7 @@ export default function LoginScreen() {
 
     try {
       const { data: codeCheck, error: codeError } = await supabase.rpc('verify_driver_signup_code', {
-        p_plaincode: companyCode.trim(),
+        p_plaincode: regCode.trim(),
       });
 
       if (codeError || !codeCheck?.ok) {
@@ -368,8 +520,8 @@ export default function LoginScreen() {
       const company = { id: codeCheck.company_id };
 
       const { data: authData, error: signUpError } = await supabase.auth.signUp({
-        email,
-        password,
+        email: regEmail,
+        password: regPassword,
       });
 
       if (signUpError) {
@@ -387,8 +539,8 @@ export default function LoginScreen() {
         const { data: profileResult, error: profileError } = await supabase.rpc('create_driver_account', {
           p_user_id: authData.user.id,
           p_company_id: company.id,
-          p_full_name: fullName,
-          p_email: email,
+          p_full_name: regName,
+          p_email: regEmail,
         });
 
         if (profileError || !profileResult?.ok) {
@@ -434,20 +586,21 @@ export default function LoginScreen() {
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <KeyboardAvoidingView
-        style={{ flex: 1 }}
+        style={{ flex: 1, backgroundColor: '#03060D' }}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
+        keyboardVerticalOffset={0}
       >
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-          <ScrollView
-            ref={scrollViewRef}
-            style={{ flex: 1 }}
-            contentContainerStyle={styles.scrollContent}
-            keyboardShouldPersistTaps="handled"
-            showsVerticalScrollIndicator={false}
-            bounces={false}
-            scrollEventThrottle={16}
-          >
+        <ScrollView
+          ref={scrollViewRef}
+          style={{ flex: 1 }}
+          contentContainerStyle={{ flexGrow: 1, paddingBottom: 40 }}
+          keyboardShouldPersistTaps="handled"
+          keyboardDismissMode="none"
+          showsVerticalScrollIndicator={false}
+          bounces={true}
+        >
+          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <View style={{ flex: 1 }}>
             {STARS.map((star, i) => (
               <View
                 key={i}
@@ -501,122 +654,69 @@ export default function LoginScreen() {
                   },
                 ]}
               >
-                <View style={styles.inputGroup}>
-                  <Text style={styles.inputLabel}>COMPANY CODE</Text>
-                  <View style={[
-                    styles.inputWrapper,
-                    focusedField === 'signin-companyCode' && styles.inputWrapperFocused,
-                    fieldErrors.companyCode && styles.inputWrapperError
-                  ]}>
-                    <TextInput
-                      ref={companyCodeRef}
-                      style={styles.input}
-                      placeholder="Enter your company code"
-                      placeholderTextColor="#4E6D92"
-                      value={companyCode}
-                      onChangeText={setCompanyCode}
-                      onFocus={() => {
-                        setFocusedField('signin-companyCode');
-                        scrollViewRef.current?.scrollTo({ y: FIELD_SCROLL_POSITIONS.companyCode, animated: true });
-                      }}
-                      onBlur={() => setFocusedField(null)}
-                      onSubmitEditing={() => emailRef.current?.focus()}
-                      autoCapitalize="none"
-                      autoCorrect={false}
-                      spellCheck={false}
-                      keyboardType="default"
-                      autoComplete="off"
-                      textContentType="none"
-                      returnKeyType="next"
-                      blurOnSubmit={false}
-                      editable={!loading}
-                      selectionColor="#3B82F6"
-                      cursorColor="#3B82F6"
-                    />
-                  </View>
+                <View style={{ paddingHorizontal: 24 }}>
+                  <InputField
+                    label="Company Code"
+                    value={signInCode}
+                    onChangeText={setSignInCode}
+                    placeholder="Enter your company code"
+                    fieldName="signInCode"
+                    inputRef={signInCodeRef}
+                    nextRef={signInEmailRef}
+                    textContentType="none"
+                    autoCapitalize="none"
+                    autoComplete="off"
+                    scrollY={0}
+                    focusedField={focusedField}
+                    setFocusedField={setFocusedField}
+                    scrollViewRef={scrollViewRef}
+                    editable={!loading}
+                  />
                   {fieldErrors.companyCode && (
                     <Text style={styles.fieldError}>{fieldErrors.companyCode}</Text>
                   )}
                   <Text style={styles.helperText}>Provided by your employer</Text>
-                </View>
 
-                <View style={styles.inputGroup}>
-                  <Text style={styles.inputLabel}>EMAIL ADDRESS</Text>
-                  <View style={[
-                    styles.inputWrapper,
-                    focusedField === 'signin-email' && styles.inputWrapperFocused,
-                    fieldErrors.email && styles.inputWrapperError
-                  ]}>
-                    <TextInput
-                      ref={emailRef}
-                      style={styles.input}
-                      placeholder="you@company.com"
-                      placeholderTextColor="#4E6D92"
-                      value={email}
-                      onChangeText={setEmail}
-                      onFocus={() => {
-                        setFocusedField('signin-email');
-                        scrollViewRef.current?.scrollTo({ y: FIELD_SCROLL_POSITIONS.email, animated: true });
-                      }}
-                      onBlur={() => setFocusedField(null)}
-                      onSubmitEditing={() => passwordRef.current?.focus()}
-                      autoCapitalize="none"
-                      autoCorrect={false}
-                      spellCheck={false}
-                      keyboardType="email-address"
-                      autoComplete="email"
-                      textContentType="emailAddress"
-                      returnKeyType="next"
-                      blurOnSubmit={false}
-                      editable={!loading}
-                      selectionColor="#3B82F6"
-                      cursorColor="#3B82F6"
-                    />
-                  </View>
+                  <InputField
+                    label="Email Address"
+                    value={signInEmail}
+                    onChangeText={setSignInEmail}
+                    placeholder="you@company.com"
+                    fieldName="signInEmail"
+                    inputRef={signInEmailRef}
+                    nextRef={signInPasswordRef}
+                    keyboardType="email-address"
+                    textContentType="emailAddress"
+                    autoComplete="email"
+                    scrollY={80}
+                    focusedField={focusedField}
+                    setFocusedField={setFocusedField}
+                    scrollViewRef={scrollViewRef}
+                    editable={!loading}
+                  />
                   {fieldErrors.email && (
                     <Text style={styles.fieldError}>{fieldErrors.email}</Text>
                   )}
-                </View>
 
-                <View style={styles.inputGroup}>
-                  <Text style={styles.inputLabel}>PASSWORD</Text>
-                  <View style={[
-                    styles.inputWrapper,
-                    focusedField === 'signin-password' && styles.inputWrapperFocused,
-                    fieldErrors.password && styles.inputWrapperError
-                  ]}>
-                    <TextInput
-                      ref={passwordRef}
-                      style={[styles.input, styles.passwordInput]}
-                      placeholder="Enter your password"
-                      placeholderTextColor="#4E6D92"
-                      value={password}
-                      onChangeText={setPassword}
-                      onFocus={() => {
-                        setFocusedField('signin-password');
-                        scrollViewRef.current?.scrollTo({ y: FIELD_SCROLL_POSITIONS.password, animated: true });
-                      }}
-                      onBlur={() => setFocusedField(null)}
-                      onSubmitEditing={handleSignIn}
-                      secureTextEntry={!showPassword}
-                      autoCapitalize="none"
-                      autoCorrect={false}
-                      spellCheck={false}
-                      textContentType="password"
-                      autoComplete="password"
-                      returnKeyType="done"
-                      editable={!loading}
-                      selectionColor="#3B82F6"
-                      cursorColor="#3B82F6"
-                    />
-                    <TouchableOpacity
-                      style={styles.eyeBtn}
-                      onPress={() => setShowPassword(!showPassword)}
-                      activeOpacity={0.7}
-                    >
-                      <Text style={styles.eyeText}>{showPassword ? '👁️' : '👁️‍🗨️'}</Text>
-                    </TouchableOpacity>
-                  </View>
+                  <InputField
+                    label="Password"
+                    value={signInPassword}
+                    onChangeText={setSignInPassword}
+                    placeholder="Enter your password"
+                    fieldName="signInPassword"
+                    inputRef={signInPasswordRef}
+                    secureTextEntry={!showSignInPassword}
+                    showToggle={true}
+                    onToggleShow={() => setShowSignInPassword(!showSignInPassword)}
+                    textContentType="password"
+                    autoComplete="password"
+                    scrollY={160}
+                    onSubmitEditing={handleSignIn}
+                    focusedField={focusedField}
+                    setFocusedField={setFocusedField}
+                    scrollViewRef={scrollViewRef}
+                    editable={!loading}
+                  />
                   {fieldErrors.password && (
                     <Text style={styles.fieldError}>{fieldErrors.password}</Text>
                   )}
@@ -658,204 +758,111 @@ export default function LoginScreen() {
                   },
                 ]}
               >
-                <View style={styles.inputGroup}>
-                  <Text style={styles.inputLabel}>COMPANY CODE</Text>
-                  <View style={[
-                    styles.inputWrapper,
-                    focusedField === 'signup-companyCode' && styles.inputWrapperFocused,
-                    fieldErrors.companyCode && styles.inputWrapperError
-                  ]}>
-                    <TextInput
-                      ref={companyCodeRef}
-                      style={styles.input}
-                      placeholder="Enter your company code"
-                      placeholderTextColor="#4E6D92"
-                      value={companyCode}
-                      onChangeText={setCompanyCode}
-                      onFocus={() => {
-                        setFocusedField('signup-companyCode');
-                        scrollViewRef.current?.scrollTo({ y: FIELD_SCROLL_POSITIONS.companyCode, animated: true });
-                      }}
-                      onBlur={() => setFocusedField(null)}
-                      onSubmitEditing={() => fullNameRef.current?.focus()}
-                      autoCapitalize="none"
-                      autoCorrect={false}
-                      spellCheck={false}
-                      keyboardType="default"
-                      autoComplete="off"
-                      textContentType="none"
-                      returnKeyType="next"
-                      blurOnSubmit={false}
-                      editable={!loading}
-                      selectionColor="#3B82F6"
-                      cursorColor="#3B82F6"
-                    />
-                  </View>
+                <View style={{ paddingHorizontal: 24 }}>
+                  <InputField
+                    label="Company Code"
+                    value={regCode}
+                    onChangeText={setRegCode}
+                    placeholder="Enter your company code"
+                    fieldName="regCode"
+                    inputRef={regCodeRef}
+                    nextRef={regNameRef}
+                    textContentType="none"
+                    autoCapitalize="none"
+                    scrollY={0}
+                    focusedField={focusedField}
+                    setFocusedField={setFocusedField}
+                    scrollViewRef={scrollViewRef}
+                    editable={!loading}
+                  />
                   {fieldErrors.companyCode && (
                     <Text style={styles.fieldError}>{fieldErrors.companyCode}</Text>
                   )}
                   <Text style={styles.helperText}>Provided by your employer</Text>
-                </View>
 
-                <View style={styles.inputGroup}>
-                  <Text style={styles.inputLabel}>FULL NAME</Text>
-                  <View style={[
-                    styles.inputWrapper,
-                    focusedField === 'signup-fullName' && styles.inputWrapperFocused,
-                    fieldErrors.fullName && styles.inputWrapperError
-                  ]}>
-                    <TextInput
-                      ref={fullNameRef}
-                      style={styles.input}
-                      placeholder="John Doe"
-                      placeholderTextColor="#4E6D92"
-                      value={fullName}
-                      onChangeText={setFullName}
-                      onFocus={() => {
-                        setFocusedField('signup-fullName');
-                        scrollViewRef.current?.scrollTo({ y: FIELD_SCROLL_POSITIONS.fullName, animated: true });
-                      }}
-                      onBlur={() => setFocusedField(null)}
-                      onSubmitEditing={() => emailRef.current?.focus()}
-                      autoCapitalize="words"
-                      autoCorrect={false}
-                      spellCheck={false}
-                      textContentType="name"
-                      autoComplete="name"
-                      returnKeyType="next"
-                      blurOnSubmit={false}
-                      editable={!loading}
-                      selectionColor="#3B82F6"
-                      cursorColor="#3B82F6"
-                    />
-                  </View>
+                  <InputField
+                    label="Full Name"
+                    value={regName}
+                    onChangeText={setRegName}
+                    placeholder="John Doe"
+                    fieldName="regName"
+                    inputRef={regNameRef}
+                    nextRef={regEmailRef}
+                    textContentType="name"
+                    autoCapitalize="words"
+                    scrollY={80}
+                    focusedField={focusedField}
+                    setFocusedField={setFocusedField}
+                    scrollViewRef={scrollViewRef}
+                    editable={!loading}
+                  />
                   {fieldErrors.fullName && (
                     <Text style={styles.fieldError}>{fieldErrors.fullName}</Text>
                   )}
-                </View>
 
-                <View style={styles.inputGroup}>
-                  <Text style={styles.inputLabel}>EMAIL ADDRESS</Text>
-                  <View style={[
-                    styles.inputWrapper,
-                    focusedField === 'signup-email' && styles.inputWrapperFocused,
-                    fieldErrors.email && styles.inputWrapperError
-                  ]}>
-                    <TextInput
-                      ref={emailRef}
-                      style={styles.input}
-                      placeholder="you@company.com"
-                      placeholderTextColor="#4E6D92"
-                      value={email}
-                      onChangeText={setEmail}
-                      onFocus={() => {
-                        setFocusedField('signup-email');
-                        scrollViewRef.current?.scrollTo({ y: FIELD_SCROLL_POSITIONS.email, animated: true });
-                      }}
-                      onBlur={() => setFocusedField(null)}
-                      onSubmitEditing={() => passwordRef.current?.focus()}
-                      autoCapitalize="none"
-                      autoCorrect={false}
-                      spellCheck={false}
-                      keyboardType="email-address"
-                      autoComplete="email"
-                      textContentType="emailAddress"
-                      returnKeyType="next"
-                      blurOnSubmit={false}
-                      editable={!loading}
-                      selectionColor="#3B82F6"
-                      cursorColor="#3B82F6"
-                    />
-                  </View>
+                  <InputField
+                    label="Email Address"
+                    value={regEmail}
+                    onChangeText={setRegEmail}
+                    placeholder="you@company.com"
+                    fieldName="regEmail"
+                    inputRef={regEmailRef}
+                    nextRef={regPasswordRef}
+                    keyboardType="email-address"
+                    textContentType="emailAddress"
+                    autoComplete="email"
+                    scrollY={160}
+                    focusedField={focusedField}
+                    setFocusedField={setFocusedField}
+                    scrollViewRef={scrollViewRef}
+                    editable={!loading}
+                  />
                   {fieldErrors.email && (
                     <Text style={styles.fieldError}>{fieldErrors.email}</Text>
                   )}
-                </View>
 
-                <View style={styles.inputGroup}>
-                  <Text style={styles.inputLabel}>PASSWORD</Text>
-                  <View style={[
-                    styles.inputWrapper,
-                    focusedField === 'signup-password' && styles.inputWrapperFocused,
-                    fieldErrors.password && styles.inputWrapperError
-                  ]}>
-                    <TextInput
-                      ref={passwordRef}
-                      style={[styles.input, styles.passwordInput]}
-                      placeholder="Create a password"
-                      placeholderTextColor="#4E6D92"
-                      value={password}
-                      onChangeText={setPassword}
-                      onFocus={() => {
-                        setFocusedField('signup-password');
-                        scrollViewRef.current?.scrollTo({ y: FIELD_SCROLL_POSITIONS.password, animated: true });
-                      }}
-                      onBlur={() => setFocusedField(null)}
-                      onSubmitEditing={() => confirmPasswordRef.current?.focus()}
-                      secureTextEntry={!showPassword}
-                      autoCapitalize="none"
-                      autoCorrect={false}
-                      spellCheck={false}
-                      textContentType="newPassword"
-                      autoComplete="password-new"
-                      returnKeyType="next"
-                      blurOnSubmit={false}
-                      editable={!loading}
-                      selectionColor="#3B82F6"
-                      cursorColor="#3B82F6"
-                    />
-                    <TouchableOpacity
-                      style={styles.eyeBtn}
-                      onPress={() => setShowPassword(!showPassword)}
-                      activeOpacity={0.7}
-                    >
-                      <Text style={styles.eyeText}>{showPassword ? '👁️' : '👁️‍🗨️'}</Text>
-                    </TouchableOpacity>
-                  </View>
+                  <InputField
+                    label="Password"
+                    value={regPassword}
+                    onChangeText={setRegPassword}
+                    placeholder="Create a password"
+                    fieldName="regPassword"
+                    inputRef={regPasswordRef}
+                    nextRef={regConfirmRef}
+                    secureTextEntry={!showRegPassword}
+                    showToggle={true}
+                    onToggleShow={() => setShowRegPassword(!showRegPassword)}
+                    textContentType="newPassword"
+                    autoComplete="new-password"
+                    scrollY={240}
+                    focusedField={focusedField}
+                    setFocusedField={setFocusedField}
+                    scrollViewRef={scrollViewRef}
+                    editable={!loading}
+                  />
                   {fieldErrors.password && (
                     <Text style={styles.fieldError}>{fieldErrors.password}</Text>
                   )}
-                </View>
 
-                <View style={styles.inputGroup}>
-                  <Text style={styles.inputLabel}>CONFIRM PASSWORD</Text>
-                  <View style={[
-                    styles.inputWrapper,
-                    focusedField === 'signup-confirmPassword' && styles.inputWrapperFocused,
-                    fieldErrors.confirmPassword && styles.inputWrapperError
-                  ]}>
-                    <TextInput
-                      ref={confirmPasswordRef}
-                      style={[styles.input, styles.passwordInput]}
-                      placeholder="Confirm your password"
-                      placeholderTextColor="#4E6D92"
-                      value={confirmPassword}
-                      onChangeText={setConfirmPassword}
-                      onFocus={() => {
-                        setFocusedField('signup-confirmPassword');
-                        scrollViewRef.current?.scrollTo({ y: FIELD_SCROLL_POSITIONS.confirmPassword, animated: true });
-                      }}
-                      onBlur={() => setFocusedField(null)}
-                      onSubmitEditing={handleSignUp}
-                      secureTextEntry={!showConfirmPassword}
-                      autoCapitalize="none"
-                      autoCorrect={false}
-                      spellCheck={false}
-                      textContentType="newPassword"
-                      autoComplete="password-new"
-                      returnKeyType="done"
-                      editable={!loading}
-                      selectionColor="#3B82F6"
-                      cursorColor="#3B82F6"
-                    />
-                    <TouchableOpacity
-                      style={styles.eyeBtn}
-                      onPress={() => setShowConfirmPassword(!showConfirmPassword)}
-                      activeOpacity={0.7}
-                    >
-                      <Text style={styles.eyeText}>{showConfirmPassword ? '👁️' : '👁️‍🗨️'}</Text>
-                    </TouchableOpacity>
-                  </View>
+                  <InputField
+                    label="Confirm Password"
+                    value={regConfirmPassword}
+                    onChangeText={setRegConfirmPassword}
+                    placeholder="Confirm your password"
+                    fieldName="regConfirm"
+                    inputRef={regConfirmRef}
+                    secureTextEntry={!showRegConfirm}
+                    showToggle={true}
+                    onToggleShow={() => setShowRegConfirm(!showRegConfirm)}
+                    textContentType="newPassword"
+                    autoComplete="new-password"
+                    scrollY={320}
+                    onSubmitEditing={handleSignUp}
+                    focusedField={focusedField}
+                    setFocusedField={setFocusedField}
+                    scrollViewRef={scrollViewRef}
+                    editable={!loading}
+                  />
                   {fieldErrors.confirmPassword && (
                     <Text style={styles.fieldError}>{fieldErrors.confirmPassword}</Text>
                   )}
