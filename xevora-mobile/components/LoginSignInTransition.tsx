@@ -11,353 +11,295 @@ import {
 import Svg, { Polygon, Line, Circle, G } from 'react-native-svg'
 import { LinearGradient } from 'expo-linear-gradient'
 
-const BAR_W = 260
-const BAR_H = 3
+const BAR_W = 240
+const BAR_H = 2
 const WORD = 'XEVORA'
 
-/** Wall-clock stages from overlay open: hex 0–500ms, type+bar 500–2000ms, ready+pulse 2000–2500ms, scan+fade 2500–3000ms */
-const T_HEX_MS = 500
-const T_TYPE_START_MS = 500
-const LETTER_MS = 200
-const T_BAR_START_MS = 500
-const T_BAR_DURATION_MS = 1500
-const T_READY_MS = 2000
-const T_SCAN_MS = 2500
-const SCAN_LINE_MS = 300
-const FADE_OUT_MS = 200
+const T_HEX_APPEAR = 600
+const T_TYPE_START = 600
+const LETTER_INTERVAL = 200
+const T_BAR_START = 800
+const T_STATUS_1 = 1800
+const T_STATUS_2 = 2100
+const T_STATUS_3 = 2400
+const T_SCAN_START = 2600
+const SCAN_DURATION = 400
+const FADE_OUT_DURATION = 200
+const TOTAL_DURATION = 3200
 
 type Props = {
   visible: boolean
-  onTimelineComplete: () => void
+  progress: number
+  onExitComplete: () => void
 }
 
 export function LoginSignInTransition({
   visible,
-  onTimelineComplete,
+  progress = 0,
+  onExitComplete,
 }: Props) {
-  const { width: sw } = Dimensions.get('window')
+  const { width: sw, height: sh } = Dimensions.get('window')
+  const bgOp = useRef(new Animated.Value(0)).current
   const hexOp = useRef(new Animated.Value(0)).current
-  const hexScale = useRef(new Animated.Value(0.5)).current
+  const hexScale = useRef(new Animated.Value(0.3)).current
   const hexPulse = useRef(new Animated.Value(1)).current
-  const ringScales = [
-    useRef(new Animated.Value(0)).current,
-    useRef(new Animated.Value(0)).current,
-    useRef(new Animated.Value(0)).current,
-  ]
+  const ring1 = useRef(new Animated.Value(0)).current
+  const ring2 = useRef(new Animated.Value(0)).current
+  const ring3 = useRef(new Animated.Value(0)).current
   const [letters, setLetters] = useState(0)
-  const [showBar, setShowBar] = useState(false)
-  const barW = useRef(new Animated.Value(0)).current
+  const [statusText, setStatusText] = useState('')
+  const barProgress = useRef(new Animated.Value(0)).current
   const flareX = useRef(new Animated.Value(0)).current
-  const readyOp = useRef(new Animated.Value(0)).current
+  const statusOp = useRef(new Animated.Value(0)).current
   const scanY = useRef(new Animated.Value(0)).current
-  const rootOp = useRef(new Animated.Value(1)).current
+  const overlayOp = useRef(new Animated.Value(1)).current
   const cursorOp = useRef(new Animated.Value(1)).current
   const timers = useRef<ReturnType<typeof setTimeout>[]>([])
-  const letterTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const cursorLoopRef = useRef<Animated.CompositeAnimation | null>(null)
-  const timelineDone = useRef(false)
+  const cursorBlink = useRef<Animated.CompositeAnimation | null>(null)
+  const animProgress = useRef(new Animated.Value(0)).current
 
   useEffect(() => {
     if (!visible) {
       timers.current.forEach(clearTimeout)
       timers.current = []
-      if (letterTimerRef.current) clearTimeout(letterTimerRef.current)
-      letterTimerRef.current = null
-      cursorLoopRef.current?.stop()
-      cursorLoopRef.current = null
-      timelineDone.current = false
+      cursorBlink.current?.stop()
       setLetters(0)
-      setShowBar(false)
+      setStatusText('')
+      bgOp.setValue(0)
       hexOp.setValue(0)
-      hexScale.setValue(0.5)
+      hexScale.setValue(0.3)
       hexPulse.setValue(1)
-      ringScales.forEach((r) => r.setValue(0))
-      barW.setValue(0)
+      ring1.setValue(0)
+      ring2.setValue(0)
+      ring3.setValue(0)
+      barProgress.setValue(0)
       flareX.setValue(0)
-      readyOp.setValue(0)
+      statusOp.setValue(0)
       scanY.setValue(0)
-      rootOp.setValue(1)
+      overlayOp.setValue(1)
       cursorOp.setValue(1)
+      animProgress.setValue(0)
       return
     }
 
-    timelineDone.current = false
+    const push = (t: ReturnType<typeof setTimeout>) => timers.current.push(t)
 
-    const push = (id: ReturnType<typeof setTimeout>) => {
-      timers.current.push(id)
-    }
+    Animated.timing(bgOp, {
+      toValue: 1,
+      duration: 300,
+      useNativeDriver: true,
+    }).start()
 
     Animated.parallel([
       Animated.timing(hexOp, {
         toValue: 1,
-        duration: T_HEX_MS,
+        duration: 400,
         useNativeDriver: true,
       }),
       Animated.spring(hexScale, {
         toValue: 1,
-        friction: 7,
-        tension: 80,
+        friction: 8,
+        tension: 40,
         useNativeDriver: true,
       }),
     ]).start()
 
-    ringScales.forEach((r, i) => {
-      push(
-        setTimeout(() => {
-          Animated.spring(r, {
-            toValue: 1,
-            friction: 6,
-            tension: 40,
-            useNativeDriver: true,
-          }).start()
-        }, i * 100)
-      )
-    })
+    push(setTimeout(() => {
+      Animated.spring(ring1, { toValue: 1, friction: 8, tension: 40, useNativeDriver: true }).start()
+    }, 100))
+    push(setTimeout(() => {
+      Animated.spring(ring2, { toValue: 1, friction: 8, tension: 40, useNativeDriver: true }).start()
+    }, 200))
+    push(setTimeout(() => {
+      Animated.spring(ring3, { toValue: 1, friction: 8, tension: 40, useNativeDriver: true }).start()
+    }, 300))
 
-    push(
-      setTimeout(() => {
-        let n = 0
-        const revealNext = () => {
-          n += 1
-          setLetters(n)
-          if (n >= WORD.length) {
-            letterTimerRef.current = null
-            cursorLoopRef.current?.stop()
-            cursorLoopRef.current = Animated.loop(
-              Animated.sequence([
-                Animated.timing(cursorOp, {
-                  toValue: 0,
-                  duration: 500,
-                  useNativeDriver: true,
-                }),
-                Animated.timing(cursorOp, {
-                  toValue: 1,
-                  duration: 500,
-                  useNativeDriver: true,
-                }),
-              ])
-            )
-            cursorLoopRef.current.start()
-            return
-          }
-          letterTimerRef.current = setTimeout(revealNext, LETTER_MS)
+    push(setTimeout(() => {
+      let count = 0
+      const typeNext = () => {
+        count++
+        setLetters(count)
+        if (count < WORD.length) {
+          push(setTimeout(typeNext, LETTER_INTERVAL))
+        } else {
+          cursorBlink.current = Animated.loop(
+            Animated.sequence([
+              Animated.timing(cursorOp, { toValue: 0, duration: 500, useNativeDriver: true }),
+              Animated.timing(cursorOp, { toValue: 1, duration: 500, useNativeDriver: true }),
+            ])
+          )
+          cursorBlink.current.start()
+          push(setTimeout(() => {
+            cursorBlink.current?.stop()
+            Animated.timing(cursorOp, { toValue: 0, duration: 200, useNativeDriver: true }).start()
+          }, 1500))
         }
-        revealNext()
-      }, T_TYPE_START_MS)
-    )
+      }
+      typeNext()
+    }, T_TYPE_START))
 
-    push(
-      setTimeout(() => {
-        setShowBar(true)
-        Animated.parallel([
-          Animated.timing(barW, {
-            toValue: BAR_W,
-            duration: T_BAR_DURATION_MS,
-            useNativeDriver: false,
-          }),
-          Animated.timing(flareX, {
-            toValue: BAR_W - 6,
-            duration: T_BAR_DURATION_MS,
-            useNativeDriver: false,
-          }),
-        ]).start()
-      }, T_BAR_START_MS)
-    )
-
-    push(
-      setTimeout(() => {
-        Animated.timing(readyOp, {
+    push(setTimeout(() => {
+      Animated.parallel([
+        Animated.timing(barProgress, {
           toValue: 1,
-          duration: 200,
-          useNativeDriver: true,
-        }).start()
+          duration: 1600,
+          useNativeDriver: false,
+        }),
+        Animated.timing(flareX, {
+          toValue: BAR_W - 8,
+          duration: 1600,
+          useNativeDriver: false,
+        }),
+      ]).start()
+    }, T_BAR_START))
 
-        Animated.sequence([
-          Animated.timing(hexPulse, {
-            toValue: 1.1,
-            duration: 150,
-            useNativeDriver: true,
-          }),
-          Animated.timing(hexPulse, {
-            toValue: 1,
-            duration: 150,
-            useNativeDriver: true,
-          }),
-        ]).start()
-      }, T_READY_MS)
-    )
+    push(setTimeout(() => {
+      setStatusText('AUTHENTICATING...')
+      Animated.timing(statusOp, { toValue: 1, duration: 200, useNativeDriver: true }).start()
+    }, T_STATUS_1))
 
-    push(
-      setTimeout(() => {
-        scanY.setValue(0)
-        Animated.timing(scanY, {
-          toValue: sw,
-          duration: SCAN_LINE_MS,
-          easing: Easing.inOut(Easing.cubic),
+    push(setTimeout(() => {
+      Animated.timing(statusOp, { toValue: 0, duration: 150, useNativeDriver: true }).start(() => {
+        setStatusText('LOADING WORKSPACE...')
+        Animated.timing(statusOp, { toValue: 1, duration: 200, useNativeDriver: true }).start()
+      })
+    }, T_STATUS_2))
+
+    push(setTimeout(() => {
+      Animated.timing(statusOp, { toValue: 0, duration: 150, useNativeDriver: true }).start(() => {
+        setStatusText('READY.')
+        Animated.timing(statusOp, { toValue: 1, duration: 200, useNativeDriver: true }).start()
+      })
+      Animated.sequence([
+        Animated.timing(hexPulse, { toValue: 1.08, duration: 200, useNativeDriver: true }),
+        Animated.timing(hexPulse, { toValue: 1, duration: 200, useNativeDriver: true }),
+      ]).start()
+    }, T_STATUS_3))
+
+    push(setTimeout(() => {
+      Animated.timing(statusOp, { toValue: 0, duration: 200, useNativeDriver: true }).start()
+      Animated.timing(scanY, {
+        toValue: sh,
+        duration: SCAN_DURATION,
+        easing: Easing.inOut(Easing.quad),
+        useNativeDriver: true,
+      }).start(() => {
+        Animated.timing(overlayOp, {
+          toValue: 0,
+          duration: FADE_OUT_DURATION,
           useNativeDriver: true,
         }).start(() => {
-          Animated.timing(rootOp, {
-            toValue: 0,
-            duration: FADE_OUT_MS,
-            useNativeDriver: true,
-          }).start(() => {
-            if (timelineDone.current) return
-            timelineDone.current = true
-            onTimelineComplete()
-          })
+          onExitComplete()
         })
-      }, T_SCAN_MS)
-    )
+      })
+    }, T_SCAN_START))
 
     return () => {
       timers.current.forEach(clearTimeout)
       timers.current = []
-      if (letterTimerRef.current) clearTimeout(letterTimerRef.current)
-      letterTimerRef.current = null
-      cursorLoopRef.current?.stop()
-      cursorLoopRef.current = null
+      cursorBlink.current?.stop()
     }
-  }, [visible, hexOp, hexScale, ringScales, onTimelineComplete, sw, barW, flareX, readyOp, scanY, rootOp, cursorOp])
+  }, [visible, bgOp, hexOp, hexScale, hexPulse, ring1, ring2, ring3, barProgress, flareX, statusOp, scanY, overlayOp, cursorOp, animProgress, sh, onExitComplete])
 
-  const typingDone = letters >= WORD.length
+  useEffect(() => {
+    if (progress > 0) {
+      Animated.timing(animProgress, {
+        toValue: progress,
+        duration: 300,
+        useNativeDriver: false,
+      }).start()
+    }
+  }, [progress, animProgress])
 
   return (
-    <Modal
-      visible={visible}
-      transparent={false}
-      animationType="none"
-      statusBarTranslucent
-    >
-      <Animated.View style={[styles.root, { opacity: rootOp }]}>
-        <View style={styles.center}>
-          {ringScales.map((rs, i) => (
+    <Modal visible={visible} transparent={false} animationType="none" statusBarTranslucent>
+      <Animated.View style={[styles.root, { opacity: overlayOp }]}>
+        <View style={styles.hexContainer}>
+          {[ring1, ring2, ring3].map((ring, i) => (
             <Animated.View
               key={i}
               style={[
                 styles.ring,
                 {
-                  width: 110 + i * 35,
-                  height: 110 + i * 35,
-                  borderRadius: (110 + i * 35) / 2,
-                  marginLeft: -(110 + i * 35) / 2,
-                  marginTop: -(110 + i * 35) / 2,
-                  opacity: rs.interpolate({
+                  width: 140 + i * 40,
+                  height: 140 + i * 40,
+                  borderRadius: (140 + i * 40) / 2,
+                  opacity: ring.interpolate({
                     inputRange: [0, 1],
-                    outputRange: [0, 0.35 - i * 0.08],
+                    outputRange: [0, 0.4 - i * 0.1],
                   }),
-                  transform: [{ scale: rs }],
+                  transform: [{ scale: ring.interpolate({ inputRange: [0, 1], outputRange: [1, 1.4] }) }],
                 },
               ]}
             />
           ))}
-
-          <Animated.View
-            style={{
-              opacity: hexOp,
-              transform: [{ scale: hexScale }],
-            }}
-          >
+          <Animated.View style={{ opacity: hexOp, transform: [{ scale: hexScale }] }}>
             <Animated.View style={{ transform: [{ scale: hexPulse }] }}>
-              <Svg width={88} height={88} viewBox="0 0 100 100">
-                <G>
-                  <Polygon
-                    points="50,8 92,32 92,68 50,92 8,68 8,32"
-                    fill="#060B14"
-                    stroke="#1E3A6E"
-                    strokeWidth={1.5}
-                  />
-                  <Line
-                    x1={22}
-                    y1={22}
-                    x2={78}
-                    y2={78}
-                    stroke="#3B82F6"
-                    strokeWidth={10}
-                    strokeLinecap="round"
-                  />
-                  <Line
-                    x1={78}
-                    y1={22}
-                    x2={22}
-                    y2={78}
-                    stroke="#3B82F6"
-                    strokeWidth={10}
-                    strokeLinecap="round"
-                  />
-                  <Line
-                    x1={22}
-                    y1={22}
-                    x2={78}
-                    y2={78}
-                    stroke="#93c5fd"
-                    strokeWidth={3}
-                    strokeLinecap="round"
-                    opacity={0.75}
-                  />
-                  <Line
-                    x1={78}
-                    y1={22}
-                    x2={22}
-                    y2={78}
-                    stroke="#93c5fd"
-                    strokeWidth={3}
-                    strokeLinecap="round"
-                    opacity={0.75}
-                  />
-                  <Circle cx={50} cy={50} r={3.5} fill="#bfdbfe" />
-                </G>
+              <Svg width={80} height={80} viewBox="0 0 100 100">
+                <Polygon points="50,8 92,32 92,68 50,92 8,68 8,32" fill="#060B14" stroke="#2563EB" strokeWidth={2} />
+                <Line x1={22} y1={22} x2={78} y2={78} stroke="#3B82F6" strokeWidth={10} strokeLinecap="round" />
+                <Line x1={78} y1={22} x2={22} y2={78} stroke="#3B82F6" strokeWidth={10} strokeLinecap="round" />
+                <Line x1={22} y1={22} x2={78} y2={78} stroke="#93c5fd" strokeWidth={3} strokeLinecap="round" opacity={0.8} />
+                <Line x1={78} y1={22} x2={22} y2={78} stroke="#93c5fd" strokeWidth={3} strokeLinecap="round" opacity={0.8} />
+                <Circle cx={50} cy={50} r={3.5} fill="#bfdbfe" />
               </Svg>
             </Animated.View>
           </Animated.View>
         </View>
 
-        <View style={styles.wordmarkBlock}>
+        <View style={styles.wordmarkContainer}>
           <View style={styles.wordmarkRow}>
             <Text style={styles.wordmark}>{WORD.slice(0, letters)}</Text>
-            {typingDone ? (
-              <Animated.Text style={[styles.cursor, { opacity: cursorOp }]}>
-                |
-              </Animated.Text>
-            ) : null}
+            {letters >= WORD.length && (
+              <Animated.Text style={[styles.cursor, { opacity: cursorOp }]}>|</Animated.Text>
+            )}
           </View>
         </View>
 
-        {showBar ? (
-          <View style={styles.barSection}>
-            <View style={styles.barTrack}>
-              <Animated.View style={[styles.barFillWrap, { width: barW }]}>
-                <LinearGradient
-                  colors={['#1D4ED8', '#3B82F6', '#60A5FA']}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 0 }}
-                  style={StyleSheet.absoluteFill}
-                />
-              </Animated.View>
-              <Animated.View
-                style={[
-                  styles.flare,
-                  {
-                    left: flareX,
-                  },
-                ]}
+        <View style={styles.barContainer}>
+          <View style={styles.barTrack}>
+            <Animated.View
+              style={[
+                styles.barFill,
+                {
+                  width: barProgress.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [0, BAR_W],
+                  }),
+                },
+              ]}
+            >
+              <LinearGradient
+                colors={['#1d4ed8', '#3B82F6', '#60a5fa']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={StyleSheet.absoluteFill}
               />
-            </View>
+            </Animated.View>
+            <Animated.View style={[styles.flare, { left: flareX }]} />
           </View>
-        ) : null}
+        </View>
 
-        <Animated.Text style={[styles.ready, { opacity: readyOp }]}>
-          READY.
+        <Animated.Text style={[styles.status, { opacity: statusOp }]}>
+          {statusText}
         </Animated.Text>
 
         <Animated.View
           pointerEvents="none"
           style={[
-            styles.scan,
+            styles.scanLine,
             {
               transform: [{ translateY: scanY }],
             },
           ]}
-        />
+        >
+          <LinearGradient
+            colors={['transparent', '#93c5fd', '#ffffff', '#93c5fd', 'transparent']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={StyleSheet.absoluteFill}
+          />
+        </Animated.View>
       </Animated.View>
     </Modal>
   )
@@ -370,7 +312,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  center: {
+  hexContainer: {
     width: 220,
     height: 220,
     alignItems: 'center',
@@ -378,14 +320,12 @@ const styles = StyleSheet.create({
   },
   ring: {
     position: 'absolute',
-    left: '50%',
-    top: '50%',
     borderWidth: 1,
     borderColor: '#2563EB',
   },
-  wordmarkBlock: {
+  wordmarkContainer: {
     marginTop: 24,
-    minHeight: 40,
+    minHeight: 36,
     justifyContent: 'center',
   },
   wordmarkRow: {
@@ -395,64 +335,57 @@ const styles = StyleSheet.create({
   },
   wordmark: {
     fontFamily: 'PlusJakartaSans_800ExtraBold',
-    fontSize: 22,
+    fontSize: 28,
     letterSpacing: 6,
     color: '#F1F5FF',
-    textAlign: 'center',
   },
   cursor: {
     fontFamily: 'PlusJakartaSans_800ExtraBold',
-    fontSize: 22,
+    fontSize: 28,
     letterSpacing: 6,
     color: '#F1F5FF',
+    marginLeft: 2,
   },
-  barSection: {
-    marginTop: 28,
+  barContainer: {
+    marginTop: 32,
     width: BAR_W,
   },
   barTrack: {
     width: BAR_W,
     height: BAR_H,
-    borderRadius: 2,
-    backgroundColor: 'rgba(255,255,255,0.08)',
+    borderRadius: 1,
+    backgroundColor: 'rgba(255,255,255,0.1)',
     overflow: 'hidden',
   },
-  barFillWrap: {
+  barFill: {
     height: BAR_H,
-    overflow: 'hidden',
-    borderRadius: 2,
+    borderRadius: 1,
   },
   flare: {
     position: 'absolute',
     top: -3,
-    width: 10,
-    height: 10,
-    borderRadius: 5,
+    width: 8,
+    height: 8,
+    borderRadius: 4,
     backgroundColor: '#fff',
     shadowColor: '#3B82F6',
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 1,
-    shadowRadius: 8,
-    elevation: 6,
+    shadowRadius: 12,
+    elevation: 8,
   },
-  ready: {
-    marginTop: 20,
-    fontFamily: 'PlusJakartaSans_800ExtraBold',
-    fontSize: 18,
-    color: '#3B82F6',
+  status: {
+    marginTop: 24,
+    fontFamily: 'JetBrainsMono_400Regular',
+    fontSize: 11,
+    color: '#4E6D92',
     letterSpacing: 2,
   },
-  scan: {
+  scanLine: {
     position: 'absolute',
     left: 0,
     right: 0,
     top: 0,
-    height: 2,
-    backgroundColor: 'rgba(255,255,255,0.15)',
-    shadowColor: '#3B82F6',
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.9,
-    shadowRadius: 15,
-    elevation: 12,
+    height: 1,
   },
 })

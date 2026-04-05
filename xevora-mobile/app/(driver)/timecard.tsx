@@ -154,16 +154,44 @@ export default function TimecardScreen() {
         flat_weekly_rate: w.flat_weekly_rate as number | null,
       });
 
-      const { data: rows, error: sErr } = await supabase
+      let rows: any[] | null = null;
+      const { data: rowsWithClients, error: sErr } = await supabase
         .from('shifts')
-        .select(
-          'id, company_id, worker_id, clock_in, clock_out, status, meal_breaks, total_hours, edit_status, edit_note, original_clock_in, original_clock_out, original_meal_breaks, clients(abbreviation)'
-        )
+        .select('*, clients(abbreviation, name)')
         .eq('worker_id', w.id)
         .gte('clock_in', monday.toISOString())
         .lte('clock_in', sunday.toISOString())
         .order('clock_in', { ascending: true });
-      if (sErr) throw sErr;
+      
+      if (sErr) {
+        const { data: rowsNoJoin } = await supabase
+          .from('shifts')
+          .select('*')
+          .eq('worker_id', w.id)
+          .gte('clock_in', monday.toISOString())
+          .lte('clock_in', sunday.toISOString())
+          .order('clock_in', { ascending: true });
+        
+        rows = rowsNoJoin || [];
+        
+        const clientIds = [...new Set(rows.map((s: any) => s.client_id).filter(Boolean))];
+        if (clientIds.length > 0) {
+          const { data: clients } = await supabase
+            .from('clients')
+            .select('id, abbreviation, name')
+            .in('id', clientIds);
+          
+          if (clients) {
+            rows = rows.map((s: any) => {
+              const client = clients.find((c: any) => c.id === s.client_id);
+              return { ...s, clients: client || null };
+            });
+          }
+        }
+      } else {
+        rows = rowsWithClients;
+      }
+      
       setShifts((rows as unknown as Shift[]) || []);
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Failed to load');
@@ -175,6 +203,24 @@ export default function TimecardScreen() {
   useEffect(() => {
     load();
   }, [load]);
+
+  useEffect(() => {
+    if (!worker?.id) return;
+    const channel = supabase
+      .channel('timecard-shifts')
+      .on('postgres_changes', {
+        event: '*',
+        schema: 'public',
+        table: 'shifts',
+        filter: `worker_id=eq.${worker.id}`,
+      }, () => {
+        load();
+      })
+      .subscribe();
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [worker?.id, load]);
 
   const summary = useMemo(() => {
     const completed = shifts.filter((s) => s.clock_out);

@@ -54,7 +54,7 @@ export async function signIn(email: string, password: string): Promise<{ user: A
 }
 
 export async function signOut() {
-  await AsyncStorage.removeItem('xevora_last_auth_time');
+  await AsyncStorage.multiRemove(['xevora_last_auth_time', 'xevora_quick_clock_seen']);
   await supabase.auth.signOut();
 }
 

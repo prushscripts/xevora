@@ -126,7 +126,13 @@ export default function RootLayout() {
       if (workerRole === 'admin' || workerRole === 'manager') {
         router.replace('/(admin)');
       } else {
-        router.replace('/(driver)');
+        AsyncStorage.getItem('xevora_quick_clock_seen').then((seen) => {
+          if (!seen) {
+            router.replace('/(auth)/quick-clock');
+          } else {
+            router.replace('/(driver)');
+          }
+        });
       }
     }
   }, [session, workerRole, segments, fontsLoaded, router]);
