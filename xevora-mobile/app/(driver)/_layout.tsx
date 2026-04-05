@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Tabs, useRouter } from 'expo-router';
 import { View, ActivityIndicator, StyleSheet } from 'react-native';
 import Svg, { Path, Circle, Rect } from 'react-native-svg';
@@ -8,7 +8,7 @@ import { supabase } from '../../lib/supabase';
 function TabBarIcon({ name, focused }: { name: string; focused: boolean }) {
   const color = focused ? theme.bright : theme.muted;
 
-  const icons: Record<string, JSX.Element> = {
+  const icons: Record<string, React.ReactElement> = {
     home: (
       <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
         <Path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />

@@ -15,14 +15,14 @@
   };
 
   var STATUS = [
-    { at: 0,    text: 'INITIALIZING...' },
-    { at: 500,  text: 'AUTHENTICATING...' },
-    { at: 1000, text: 'LOADING WORKSPACE...' },
-    { at: 1500, text: 'ALMOST READY...' },
-    { at: 1800, text: 'READY.' }
+    { at: 0,    text: 'INITIALIZING...',       color: '#4E6D92' },
+    { at: 500,  text: 'AUTHENTICATING...',     color: '#4E6D92' },
+    { at: 1000, text: 'LOADING WORKSPACE...', color: '#4E6D92' },
+    { at: 1500, text: 'ALMOST READY...',       color: '#4E6D92' },
+    { at: 1900, text: 'READY.',                color: '#3B82F6' }
   ];
 
-  var lastStatus = -1;
+  var lastStatusIndex = -1;
 
   function easeInOut(t) {
     return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
@@ -40,325 +40,295 @@
     return Math.max(min, Math.min(max, val));
   }
 
-  var sparkColors = ['#ffffff','#ffffff','#fffbeb','#fef08a','#93c5fd','#60a5fa','#e0f2fe','#bfdbfe'];
+  var SPARK_COLORS = [
+    '#ffffff','#ffffff','#ffffff',
+    '#fff9c4','#fef08a',
+    '#bfdbfe','#93c5fd'
+  ];
 
-  function createSpark() {
-    if (!flareContainer) return;
-    var rect = flareContainer.getBoundingClientRect();
-    var originX = rect.left + rect.width / 2;
-    var originY = rect.top + rect.height / 2;
+  function createSpark(originX, originY) {
+    var el = document.createElement('div');
     
-    var spark = document.createElement('div');
-    var size = Math.random() * 3.5 + 1.5;
-    var color = sparkColors[Math.floor(Math.random() * sparkColors.length)];
-    var angle = (Math.random() * 140) - 130;
+    var len = Math.random() * 14 + 6;
+    var wid = Math.random() * 1.2 + 0.4;
+    var color = SPARK_COLORS[Math.floor(Math.random() * SPARK_COLORS.length)];
+    
+    var angleBase = -110;
+    var angleSpread = Math.random() * 120 - 60;
+    var angle = angleBase + angleSpread;
     var rad = angle * Math.PI / 180;
-    var speed = Math.random() * 9 + 4;
+    var speed = Math.random() * 7 + 3;
+    
     var vx = Math.cos(rad) * speed;
-    var vy = Math.sin(rad) * speed - 3;
-    var gravity = 0.35 + Math.random() * 0.2;
-    var lifetime = Math.random() * 350 + 200;
-    var willHitFloor = Math.random() < 0.18;
-
-    spark.style.cssText = [
+    var vy = Math.sin(rad) * speed;
+    var gravity = 0.28 + Math.random() * 0.18;
+    var lifetime = Math.random() * 300 + 180;
+    var rotation = angle;
+    
+    el.style.cssText = [
       'position:fixed',
-      'width:' + size + 'px',
-      'height:' + (size * 1.6) + 'px',
-      'border-radius:50% 50% 30% 30%',
-      'background:' + color,
+      'width:' + len + 'px',
+      'height:' + wid + 'px',
+      'border-radius:' + wid + 'px',
+      'background:linear-gradient(90deg,' + color + ' 0%,rgba(255,255,255,0.3) 100%)',
       'pointer-events:none',
       'z-index:100001',
       'left:' + originX + 'px',
       'top:' + originY + 'px',
-      'box-shadow:0 0 ' + (size*2) + 'px ' + size + 'px ' + color
+      'transform-origin:left center',
+      'transform:rotate(' + rotation + 'deg)',
+      'opacity:1',
+      'box-shadow:0 0 2px 0px ' + color
     ].join(';');
-    document.body.appendChild(spark);
+    document.body.appendChild(el);
 
-    var startTime = performance.now();
-    var rotation = Math.random() * 360;
-    var hasHitFloor = false;
-    var screenH = window.innerHeight;
-    var floorLine = screenH * 0.72;
+    var t0 = performance.now();
+    var hasLanded = false;
+    var floorY = window.innerHeight * 0.68;
 
-    function animateSpark(now) {
-      var elapsed = now - startTime;
+    function tick(now) {
+      var elapsed = now - t0;
       var progress = elapsed / lifetime;
+      if (progress >= 1) { el.remove(); return; }
 
-      if (progress >= 1) {
-        spark.remove();
+      vx *= 0.975;
+      vy += gravity;
+      rotation = Math.atan2(vy, vx) * (180 / Math.PI);
+
+      var x = parseFloat(el.style.left) + vx;
+      var y = parseFloat(el.style.top) + vy;
+
+      if (!hasLanded && y >= floorY) {
+        hasLanded = true;
+        floorSkitter(x, floorY, color);
+        el.remove();
         return;
       }
 
-      vx *= 0.97;
-      vy += gravity;
-      rotation += vx * 3;
+      var opacity = progress < 0.2 
+        ? 1 
+        : 1 - ((progress - 0.2) / 0.8);
+      opacity = Math.max(0, opacity);
 
-      var x = parseFloat(spark.style.left) + vx;
-      var y = parseFloat(spark.style.top) + vy;
-
-      if (willHitFloor && !hasHitFloor && y >= floorLine) {
-        hasHitFloor = true;
-        createFloorSplash(x, floorLine, color);
-        vy = -(Math.abs(vy) * 0.3);
-        vx *= 0.4;
-      }
-
-      var opacity = progress < 0.15 
-        ? progress / 0.15 
-        : 1 - ((progress - 0.15) / 0.85);
-      opacity = Math.max(0, opacity * (1 - progress * 0.3));
-
-      spark.style.left = x + 'px';
-      spark.style.top = y + 'px';
-      spark.style.opacity = opacity;
-      spark.style.transform = 'rotate(' + rotation + 'deg) scaleY(' + (1 + Math.abs(vy) * 0.04) + ')';
-
-      requestAnimationFrame(animateSpark);
+      el.style.left = x + 'px';
+      el.style.top = y + 'px';
+      el.style.transform = 'rotate(' + rotation + 'deg)';
+      el.style.opacity = opacity;
+      requestAnimationFrame(tick);
     }
-    requestAnimationFrame(animateSpark);
+    requestAnimationFrame(tick);
   }
 
-  function createFloorSplash(x, y, color) {
-    var count = Math.floor(Math.random() * 3) + 2;
+  function floorSkitter(x, y, color) {
+    if (Math.random() > 0.30) return;
+    
+    var count = Math.floor(Math.random() * 2) + 1;
     for (var i = 0; i < count; i++) {
-      var floorSpark = document.createElement('div');
-      var fs = Math.random() * 2 + 0.8;
-      var fvx = (Math.random() - 0.5) * 6;
-      var fvy = -(Math.random() * 2 + 0.5);
-      floorSpark.style.cssText = [
+      var sk = document.createElement('div');
+      var skLen = Math.random() * 8 + 3;
+      var skVx = (Math.random() - 0.5) * 5;
+      var skVy = -(Math.random() * 1.5);
+      var skColor = Math.random() > 0.5 ? '#ffffff' : color;
+      
+      sk.style.cssText = [
         'position:fixed',
-        'width:' + fs + 'px',
-        'height:' + fs + 'px',
-        'border-radius:50%',
-        'background:' + color,
-        'box-shadow:0 0 3px 1px ' + color,
+        'width:' + skLen + 'px',
+        'height:1px',
+        'border-radius:1px',
+        'background:linear-gradient(90deg,' + skColor + ',transparent)',
         'pointer-events:none',
         'z-index:100001',
         'left:' + x + 'px',
         'top:' + y + 'px',
         'opacity:0.9'
       ].join(';');
-      document.body.appendChild(floorSpark);
+      document.body.appendChild(sk);
 
-      var fsStart = performance.now();
-      var fsLife = Math.random() * 250 + 150;
-      ;(function(el, fvx, fvy) {
-        function animateFloorSpark(now) {
-          var elapsed = now - fsStart;
-          var prog = elapsed / fsLife;
+      var sk0 = performance.now();
+      var skLife = Math.random() * 200 + 100;
+      ;(function(el, vx, vy) {
+        function animSk(now) {
+          var prog = (now - sk0) / skLife;
           if (prog >= 1) { el.remove(); return; }
-          fvx *= 0.92;
-          fvy += 0.15;
-          el.style.left = (parseFloat(el.style.left) + fvx) + 'px';
-          el.style.top = (parseFloat(el.style.top) + fvy) + 'px';
+          vx *= 0.88;
+          vy += 0.08;
+          el.style.left = (parseFloat(el.style.left) + vx) + 'px';
+          el.style.top = (parseFloat(el.style.top) + vy) + 'px';
           el.style.opacity = (1 - prog) * 0.8;
-          requestAnimationFrame(animateFloorSpark);
+          requestAnimationFrame(animSk);
         }
-        requestAnimationFrame(animateFloorSpark);
-      })(floorSpark, fvx, fvy);
+        requestAnimationFrame(animSk);
+      })(sk, skVx, skVy);
     }
 
-    var splat = document.createElement('div');
-    splat.style.cssText = [
-      'position:fixed',
-      'width:20px',
-      'height:4px',
-      'border-radius:50%',
-      'background:radial-gradient(ellipse, rgba(96,165,250,0.6) 0%, transparent 70%)',
-      'pointer-events:none',
-      'z-index:100000',
-      'left:' + (x - 10) + 'px',
-      'top:' + (y - 2) + 'px',
-      'opacity:0.8'
-    ].join(';');
-    document.body.appendChild(splat);
-    var splatStart = performance.now();
-    function animateSplat(now) {
-      var prog = (now - splatStart) / 400;
-      if (prog >= 1) { splat.remove(); return; }
-      splat.style.opacity = (1 - prog) * 0.8;
-      splat.style.width = (20 + prog * 30) + 'px';
-      splat.style.left = (x - 10 - prog * 15) + 'px';
-      requestAnimationFrame(animateSplat);
+    if (Math.random() > 0.5) {
+      var splat = document.createElement('div');
+      splat.style.cssText = [
+        'position:fixed',
+        'width:16px','height:3px',
+        'border-radius:50%',
+        'background:radial-gradient(ellipse,rgba(147,197,253,0.5) 0%,transparent 70%)',
+        'pointer-events:none',
+        'z-index:100000',
+        'left:' + (x-8) + 'px',
+        'top:' + (y-1) + 'px'
+      ].join(';');
+      document.body.appendChild(splat);
+      var sp0 = performance.now();
+      function animSplat(now) {
+        var prog = Math.min((now-sp0)/350, 1);
+        splat.style.opacity = (1-prog) * 0.6;
+        splat.style.width = (16 + prog*20) + 'px';
+        splat.style.left = (x - 8 - prog*10) + 'px';
+        if (prog < 1) requestAnimationFrame(animSplat);
+        else splat.remove();
+      }
+      requestAnimationFrame(animSplat);
     }
-    requestAnimationFrame(animateSplat);
   }
 
-  function createSmoke() {
-    if (!flareContainer) return;
-    var rect = flareContainer.getBoundingClientRect();
-    var originX = rect.left + rect.width / 2;
-    var originY = rect.top + rect.height / 2;
+  function createSmoke(ox, oy) {
+    var sm = document.createElement('div');
+    var sz = Math.random() * 6 + 3;
+    sm.style.cssText = [
+      'position:fixed',
+      'width:' + sz + 'px',
+      'height:' + sz + 'px',
+      'border-radius:50%',
+      'background:rgba(147,197,253,0.12)',
+      'filter:blur(3px)',
+      'pointer-events:none',
+      'z-index:100000',
+      'left:' + ox + 'px',
+      'top:' + oy + 'px'
+    ].join(';');
+    document.body.appendChild(sm);
+    var sm0 = performance.now();
+    var smLife = Math.random() * 600 + 500;
+    var smVx = (Math.random()-0.4) * 0.6;
+    var smVy = -(Math.random() * 0.9 + 0.5);
+    function animSmoke(now) {
+      var prog = (now - sm0) / smLife;
+      if (prog >= 1) { sm.remove(); return; }
+      var nsz = sz + prog * 16;
+      sm.style.width = nsz + 'px';
+      sm.style.height = nsz + 'px';
+      sm.style.left = (parseFloat(sm.style.left) + smVx) + 'px';
+      sm.style.top = (parseFloat(sm.style.top) + smVy) + 'px';
+      sm.style.opacity = (1 - prog) * 0.14;
+      requestAnimationFrame(animSmoke);
+    }
+    requestAnimationFrame(animSmoke);
+  }
+
+
+  function triggerExit() {
+    var seq = performance.now();
     
-    var smoke = document.createElement('div');
-    var size = Math.random() * 8 + 4;
-    smoke.style.cssText = [
-      'position:fixed',
-      'width:' + size + 'px',
-      'height:' + size + 'px',
-      'border-radius:50%',
-      'background:radial-gradient(circle, rgba(147,197,253,0.2) 0%, transparent 70%)',
-      'pointer-events:none',
-      'z-index:100000',
-      'left:' + originX + 'px',
-      'top:' + originY + 'px',
-      'filter:blur(2px)'
-    ].join(';');
-    document.body.appendChild(smoke);
-
-    var startTime = performance.now();
-    var lifetime = Math.random() * 500 + 600;
-    var vx = (Math.random() - 0.3) * 0.8;
-    var vy = -(Math.random() * 1.2 + 0.6);
-
-    function animateSmoke(now) {
-      var elapsed = now - startTime;
-      var progress = elapsed / lifetime;
-      if (progress >= 1) { smoke.remove(); return; }
-
-      var x = parseFloat(smoke.style.left) + vx;
-      var y = parseFloat(smoke.style.top) + vy;
-      var currentSize = size + progress * 20;
-      var opacity = (1 - progress) * 0.18;
-
-      smoke.style.left = x + 'px';
-      smoke.style.top = y + 'px';
-      smoke.style.width = currentSize + 'px';
-      smoke.style.height = currentSize + 'px';
-      smoke.style.opacity = opacity;
-      requestAnimationFrame(animateSmoke);
+    // Phase 1 (0-200ms): Everything fades out cleanly
+    if (barContainer) {
+      barContainer.style.transition = 'opacity 200ms';
+      barContainer.style.opacity = '0';
     }
-    requestAnimationFrame(animateSmoke);
-  }
-
-
-  function triggerEntrance() {
-    // Step 1: Bar + status fade out
-    if (barContainer) barContainer.style.transition = 'opacity 200ms';
-    if (barContainer) barContainer.style.opacity = '0';
-    if (statusEl) statusEl.style.transition = 'opacity 200ms';
-    if (statusEl) statusEl.style.opacity = '0';
-
-    // Step 2: Status text → READY. and hex pulse
+    if (statusEl) {
+      statusEl.style.transition = 'opacity 200ms';
+      statusEl.style.opacity = '0';
+    }
+    if (hexWrap) {
+      hexWrap.style.transition = 'opacity 200ms';
+      hexWrap.style.opacity = '0';
+    }
+    if (wordmark) {
+      wordmark.style.transition = 'opacity 200ms';
+      wordmark.style.opacity = '0';
+    }
+    
+    // Phase 2 (200-700ms): PRECISION SCAN LINE
     setTimeout(function() {
-      if (statusEl) {
-        statusEl.textContent = 'READY.';
-        statusEl.style.color = '#3B82F6';
-        statusEl.style.opacity = '1';
-      }
-      if (hexWrap) {
-        var hexPulseStart = performance.now();
-        function pulseHex(now) {
-          var elapsed = now - hexPulseStart;
-          var progress = Math.min(elapsed / 300, 1);
-          var scale = progress < 0.5 
-            ? 1 + (progress * 2) * 0.12 
-            : 1.12 - ((progress - 0.5) * 2) * 0.12;
-          hexWrap.style.transform = 'scale(' + scale + ')';
-          if (progress < 1) requestAnimationFrame(pulseHex);
-        }
-        requestAnimationFrame(pulseHex);
-      }
-    }, 200);
-
-    // Step 3: Horizontal scan line (starts at 500ms)
-    setTimeout(function() {
-      var scanLine = document.createElement('div');
-      scanLine.style.cssText = [
+      var scan = document.createElement('div');
+      scan.style.cssText = [
         'position:fixed',
         'left:0',
+        'top:0',
         'width:100%',
-        'height:2px',
-        'background:linear-gradient(90deg, transparent 0%, #3B82F6 20%, #93c5fd 50%, #3B82F6 80%, transparent 100%)',
-        'box-shadow:0 0 20px 10px rgba(59,130,246,0.4), 0 0 60px 30px rgba(59,130,246,0.15)',
+        'height:1px',
         'pointer-events:none',
-        'z-index:100005',
-        'top:-2px'
+        'z-index:100010',
+        'background:linear-gradient(90deg,transparent 0%,rgba(59,130,246,0.3) 15%,rgba(147,197,253,0.9) 40%,rgba(255,255,255,1) 50%,rgba(147,197,253,0.9) 60%,rgba(59,130,246,0.3) 85%,transparent 100%)',
+        'box-shadow:0 0 8px 2px rgba(147,197,253,0.6),0 0 25px 8px rgba(59,130,246,0.25)',
+        'will-change:transform'
       ].join(';');
-      document.body.appendChild(scanLine);
+      document.body.appendChild(scan);
 
-      var scanStart = performance.now();
-      function animateScan(now) {
-        var elapsed = now - scanStart;
-        var progress = Math.min(elapsed / 500, 1);
-        var eased = progress < 0.5 
-          ? 2 * progress * progress 
-          : -1 + (4 - 2 * progress) * progress;
-        scanLine.style.top = (eased * window.innerHeight) + 'px';
-        if (progress < 1) {
-          requestAnimationFrame(animateScan);
+      var scanDuration = 480;
+      var sc0 = performance.now();
+      function animScan(now) {
+        var prog = Math.min((now - sc0) / scanDuration, 1);
+        var eased = prog < 0.5 
+          ? 4*prog*prog*prog 
+          : 1 - Math.pow(-2*prog+2,3)/2;
+        scan.style.transform = 'translateY(' + (eased * window.innerHeight) + 'px)';
+        if (prog < 1) {
+          requestAnimationFrame(animScan);
         } else {
-          scanLine.remove();
-          triggerFinalWarp();
+          scan.remove();
+          triggerFadeOut();
         }
       }
-      requestAnimationFrame(animateScan);
-    }, 500);
+      requestAnimationFrame(animScan);
+    }, 200);
 
-    // Step 4: Warp effect
-    function triggerFinalWarp() {
-      var warpOverlay = document.createElement('div');
-      warpOverlay.style.cssText = [
+    function triggerFadeOut() {
+      var fade = document.createElement('div');
+      fade.style.cssText = [
         'position:fixed',
         'inset:0',
         'background:#03060D',
-        'z-index:100006',
+        'z-index:100011',
         'opacity:0',
         'pointer-events:none',
         'will-change:opacity'
       ].join(';');
-      document.body.appendChild(warpOverlay);
+      document.body.appendChild(fade);
 
-      // Concentric rings expand from center
-      for (var r = 0; r < 4; r++) {
-        ;(function(delay) {
+      // Two brief light streaks across screen
+      for (var s = 0; s < 2; s++) {
+        ;(function(delay, yPos) {
           setTimeout(function() {
-            var ring = document.createElement('div');
-            ring.style.cssText = [
+            var streak = document.createElement('div');
+            streak.style.cssText = [
               'position:fixed',
-              'border-radius:50%',
-              'border:1px solid rgba(59,130,246,0.6)',
+              'left:-100%',
+              'top:' + yPos,
+              'width:40%',
+              'height:1px',
+              'background:linear-gradient(90deg,transparent,rgba(147,197,253,0.6),transparent)',
               'pointer-events:none',
-              'z-index:100007',
-              'left:50%',
-              'top:50%',
-              'width:10px',
-              'height:10px',
-              'transform:translate(-50%,-50%) scale(1)',
-              'opacity:0.8'
+              'z-index:100012',
+              'transition:left 300ms ease-in'
             ].join(';');
-            document.body.appendChild(ring);
-
-            var rStart = performance.now();
-            var rDur = 600;
-            function animateRing(now) {
-              var prog = Math.min((now - rStart) / rDur, 1);
-              var scale = 1 + prog * 180;
-              ring.style.transform = 'translate(-50%,-50%) scale(' + scale + ')';
-              ring.style.opacity = (1 - prog) * 0.6;
-              if (prog < 1) {
-                requestAnimationFrame(animateRing);
-              } else {
-                ring.remove();
-              }
-            }
-            requestAnimationFrame(animateRing);
+            document.body.appendChild(streak);
+            setTimeout(function() {
+              streak.style.left = '150%';
+            }, 20);
+            setTimeout(function() { streak.remove(); }, 400);
           }, delay);
-        })(r * 80);
+        })(s * 60, (30 + s * 15) + '%');
       }
 
-      // Overlay fades in over 400ms then redirect
-      var fadeStart = performance.now();
-      function fadeToDark(now) {
-        var prog = Math.min((now - fadeStart) / 400, 1);
-        warpOverlay.style.opacity = prog * prog;
+      // Fade in the dark overlay
+      var f0 = performance.now();
+      var fadeDur = 350;
+      function animFade(now) {
+        var prog = Math.min((now - f0) / fadeDur, 1);
+        fade.style.opacity = prog * prog;
         if (prog < 1) {
-          requestAnimationFrame(fadeToDark);
+          requestAnimationFrame(animFade);
         } else {
           window.location.href = 'https://app.xevora.io/auth/login';
         }
       }
-      requestAnimationFrame(fadeToDark);
+      requestAnimationFrame(animFade);
     }
   }
 
@@ -393,24 +363,22 @@
         flareContainer.style.left = (easedLoad * 100) + '%';
       }
 
-      // Status text
+      // Status text cycling - single element content swap
       for (var i = STATUS.length - 1; i >= 0; i--) {
-        if (elapsed >= STATUS[i].at && lastStatus !== i) {
-          lastStatus = i;
+        if (elapsed >= STATUS[i].at && lastStatusIndex !== i) {
+          lastStatusIndex = i;
           if (statusEl) {
             statusEl.style.opacity = '0';
             statusEl.style.transform = 'translateY(4px)';
-            ;(function(text, isReady) {
+            ;(function(txt, col) {
               setTimeout(function() {
-                statusEl.textContent = text;
+                statusEl.textContent = txt;
+                statusEl.style.color = col;
                 statusEl.style.transition = 'opacity 200ms, transform 200ms';
                 statusEl.style.opacity = '1';
                 statusEl.style.transform = 'translateY(0)';
-                if (isReady) {
-                  statusEl.style.color = '#3B82F6';
-                }
-              }, 100);
-            })(STATUS[i].text, STATUS[i].text === 'READY.');
+              }, 120);
+            })(STATUS[i].text, STATUS[i].color);
           }
           break;
         }
@@ -460,10 +428,10 @@
       }
     }
 
-    // STAGE 4: Entrance sequence (1900ms - when bar finishes)
+    // STAGE 4: Exit sequence (1900ms - when bar finishes)
     if (elapsed >= 1900 && !redirected) {
       redirected = true;
-      triggerEntrance();
+      triggerExit();
       return;
     }
 
@@ -627,83 +595,43 @@
     ].join(';');
     barTrack.appendChild(barFill);
 
-    // Multi-layer flare container
+    // Plasma flare container
     flareContainer = document.createElement('div');
     flareContainer.style.cssText = [
       'position:absolute',
       'top:50%',
       'left:0%',
-      'transform:translate(-50%,-50%)',
-      'width:32px',
-      'height:32px',
+      'width:0',
+      'height:0',
       'pointer-events:none',
-      'z-index:10'
+      'z-index:5'
     ].join(';');
     barTrack.appendChild(flareContainer);
 
-    // Outer glow ring - larger and more dramatic
-    var flareGlowRing = document.createElement('div');
-    flareGlowRing.style.cssText = [
+    var flareOuter = document.createElement('div');
+    flareOuter.style.cssText = [
       'position:absolute',
-      'left:50%',
-      'top:50%',
-      'transform:translate(-50%,-50%)',
       'width:40px',
       'height:40px',
       'border-radius:50%',
-      'background:radial-gradient(circle, rgba(255,255,255,0.3) 0%, rgba(96,165,250,0.5) 20%, rgba(59,130,246,0.2) 50%, transparent 70%)',
-      'z-index:9',
-      'animation:flarePulse 0.35s ease-in-out infinite alternate'
-    ].join(';');
-    flareContainer.appendChild(flareGlowRing);
-
-    // Mid glow layer
-    var flareMidGlow = document.createElement('div');
-    flareMidGlow.style.cssText = [
-      'position:absolute',
-      'left:50%',
-      'top:50%',
       'transform:translate(-50%,-50%)',
-      'width:16px',
-      'height:16px',
-      'border-radius:50%',
-      'background:radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(147,197,253,0.6) 50%, transparent 100%)',
-      'box-shadow:0 0 8px 4px rgba(255,255,255,0.6)',
-      'z-index:10'
+      'background:radial-gradient(circle,rgba(255,255,255,0.95) 0%,rgba(147,197,253,0.5) 20%,rgba(59,130,246,0.15) 50%,transparent 70%)',
+      'animation:plasmaCore 0.3s ease-in-out infinite'
     ].join(';');
-    flareContainer.appendChild(flareMidGlow);
 
-    // Core dot - bright hard spark
     var flareCore = document.createElement('div');
     flareCore.style.cssText = [
       'position:absolute',
-      'left:50%',
-      'top:50%',
-      'transform:translate(-50%,-50%)',
-      'width:8px',
-      'height:8px',
+      'width:5px',
+      'height:5px',
       'border-radius:50%',
+      'transform:translate(-50%,-50%)',
       'background:#ffffff',
-      'box-shadow:0 0 3px 1px #ffffff, 0 0 8px 3px #ffffff, 0 0 15px 6px #60a5fa, 0 0 25px 10px #3B82F6, 0 0 40px 15px rgba(37,99,235,0.4)',
-      'z-index:11'
+      'box-shadow:0 0 2px 1px #fff,0 0 6px 3px #93c5fd,0 0 14px 6px #3B82F6,0 0 28px 10px rgba(37,99,235,0.7)'
     ].join(';');
-    flareContainer.appendChild(flareCore);
 
-    // Hot center point
-    var flareHotPoint = document.createElement('div');
-    flareHotPoint.style.cssText = [
-      'position:absolute',
-      'left:50%',
-      'top:50%',
-      'transform:translate(-50%,-50%)',
-      'width:3px',
-      'height:3px',
-      'border-radius:50%',
-      'background:#ffffff',
-      'box-shadow:0 0 2px 1px #ffffff',
-      'z-index:12'
-    ].join(';');
-    flareContainer.appendChild(flareHotPoint);
+    flareContainer.appendChild(flareOuter);
+    flareContainer.appendChild(flareCore);
 
     // Keyframes for animations
     var style = document.createElement('style');
@@ -711,7 +639,7 @@
       '@keyframes ringPulse0{0%,100%{opacity:0.12;transform:translate(-50%,-50%) scale(1)}50%{opacity:0.04;transform:translate(-50%,-50%) scale(1.06)}}',
       '@keyframes ringPulse1{0%,100%{opacity:0.08;transform:translate(-50%,-50%) scale(1)}50%{opacity:0.02;transform:translate(-50%,-50%) scale(1.06)}}',
       '@keyframes ringPulse2{0%,100%{opacity:0.04;transform:translate(-50%,-50%) scale(1)}50%{opacity:0.01;transform:translate(-50%,-50%) scale(1.06)}}',
-      '@keyframes flarePulse{from{transform:translate(-50%,-50%) scale(0.85);opacity:0.7}to{transform:translate(-50%,-50%) scale(1.15);opacity:1.0}}'
+      '@keyframes plasmaCore{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:1}50%{transform:translate(-50%,-50%) scale(1.3);opacity:0.85}}'
     ].join('');
     document.head.appendChild(style);
 
@@ -720,10 +648,22 @@
     // Particle intervals during loading
     setTimeout(function() {
       sparkInterval = setInterval(function() {
-        createSpark();
-        createSpark();
-      }, 35);
-      wispInterval = setInterval(createSmoke, 100);
+        if (!flareContainer || !barTrack) return;
+        var rect = barTrack.getBoundingClientRect();
+        var barPct = parseFloat(barFill.style.width) / 100;
+        var ox = rect.left + (rect.width * barPct);
+        var oy = rect.top + rect.height / 2;
+        createSpark(ox, oy);
+        createSpark(ox, oy);
+      }, 30);
+      wispInterval = setInterval(function() {
+        if (!flareContainer || !barTrack) return;
+        var rect = barTrack.getBoundingClientRect();
+        var barPct = parseFloat(barFill.style.width) / 100;
+        var ox = rect.left + (rect.width * barPct);
+        var oy = rect.top + rect.height / 2;
+        createSmoke(ox, oy);
+      }, 110);
     }, 400);
 
     // Kick off rAF loop
