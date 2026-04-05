@@ -14,7 +14,6 @@ import {
   Animated,
   Dimensions,
   Modal,
-  findNodeHandle,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -36,6 +35,14 @@ const STARS = Array.from({ length: 40 }, (_, i) => ({
   opacity: Math.random() * 0.2 + 0.1,
   pulses: i < 12,
 }));
+
+const FIELD_SCROLL_POSITIONS: Record<string, number> = {
+  companyCode: 0,
+  fullName: 80,
+  email: 160,
+  password: 240,
+  confirmPassword: 320,
+};
 
 const HEX_VERTICES = [
   { x: 50, y: 8 },
@@ -239,22 +246,6 @@ export default function LoginScreen() {
     }).start();
   }, []);
 
-  const scrollToField = (fieldRef: React.RefObject<TextInput | null>) => {
-    if (fieldRef.current && scrollViewRef.current) {
-      setTimeout(() => {
-        fieldRef.current?.measureLayout(
-          findNodeHandle(scrollViewRef.current!) as number,
-          (x, y) => {
-            scrollViewRef.current?.scrollTo({ 
-              y: Math.max(0, y - 120), 
-              animated: true 
-            });
-          },
-          () => {}
-        );
-      }, 100);
-    }
-  };
 
   const switchMode = (newMode: 'signin' | 'signup') => {
     if (newMode === mode) return;
@@ -523,22 +514,24 @@ export default function LoginScreen() {
                       placeholder="Enter your company code"
                       placeholderTextColor="#4E6D92"
                       value={companyCode}
-                      onChangeText={(text) => setCompanyCode(text.toUpperCase())}
+                      onChangeText={setCompanyCode}
                       onFocus={() => {
                         setFocusedField('signin-companyCode');
-                        scrollToField(companyCodeRef);
+                        scrollViewRef.current?.scrollTo({ y: FIELD_SCROLL_POSITIONS.companyCode, animated: true });
                       }}
                       onBlur={() => setFocusedField(null)}
                       onSubmitEditing={() => emailRef.current?.focus()}
-                      autoCapitalize="characters"
+                      autoCapitalize="none"
                       autoCorrect={false}
                       spellCheck={false}
+                      keyboardType="default"
                       autoComplete="off"
                       textContentType="none"
                       returnKeyType="next"
                       blurOnSubmit={false}
                       editable={!loading}
                       selectionColor="#3B82F6"
+                      cursorColor="#3B82F6"
                     />
                   </View>
                   {fieldErrors.companyCode && (
@@ -563,7 +556,7 @@ export default function LoginScreen() {
                       onChangeText={setEmail}
                       onFocus={() => {
                         setFocusedField('signin-email');
-                        scrollToField(emailRef);
+                        scrollViewRef.current?.scrollTo({ y: FIELD_SCROLL_POSITIONS.email, animated: true });
                       }}
                       onBlur={() => setFocusedField(null)}
                       onSubmitEditing={() => passwordRef.current?.focus()}
@@ -577,6 +570,7 @@ export default function LoginScreen() {
                       blurOnSubmit={false}
                       editable={!loading}
                       selectionColor="#3B82F6"
+                      cursorColor="#3B82F6"
                     />
                   </View>
                   {fieldErrors.email && (
@@ -600,7 +594,7 @@ export default function LoginScreen() {
                       onChangeText={setPassword}
                       onFocus={() => {
                         setFocusedField('signin-password');
-                        scrollToField(passwordRef);
+                        scrollViewRef.current?.scrollTo({ y: FIELD_SCROLL_POSITIONS.password, animated: true });
                       }}
                       onBlur={() => setFocusedField(null)}
                       onSubmitEditing={handleSignIn}
@@ -613,6 +607,7 @@ export default function LoginScreen() {
                       returnKeyType="done"
                       editable={!loading}
                       selectionColor="#3B82F6"
+                      cursorColor="#3B82F6"
                     />
                     <TouchableOpacity
                       style={styles.eyeBtn}
@@ -676,22 +671,24 @@ export default function LoginScreen() {
                       placeholder="Enter your company code"
                       placeholderTextColor="#4E6D92"
                       value={companyCode}
-                      onChangeText={(text) => setCompanyCode(text.toUpperCase())}
+                      onChangeText={setCompanyCode}
                       onFocus={() => {
                         setFocusedField('signup-companyCode');
-                        scrollToField(companyCodeRef);
+                        scrollViewRef.current?.scrollTo({ y: FIELD_SCROLL_POSITIONS.companyCode, animated: true });
                       }}
                       onBlur={() => setFocusedField(null)}
                       onSubmitEditing={() => fullNameRef.current?.focus()}
-                      autoCapitalize="characters"
+                      autoCapitalize="none"
                       autoCorrect={false}
                       spellCheck={false}
+                      keyboardType="default"
                       autoComplete="off"
                       textContentType="none"
                       returnKeyType="next"
                       blurOnSubmit={false}
                       editable={!loading}
                       selectionColor="#3B82F6"
+                      cursorColor="#3B82F6"
                     />
                   </View>
                   {fieldErrors.companyCode && (
@@ -716,7 +713,7 @@ export default function LoginScreen() {
                       onChangeText={setFullName}
                       onFocus={() => {
                         setFocusedField('signup-fullName');
-                        scrollToField(fullNameRef);
+                        scrollViewRef.current?.scrollTo({ y: FIELD_SCROLL_POSITIONS.fullName, animated: true });
                       }}
                       onBlur={() => setFocusedField(null)}
                       onSubmitEditing={() => emailRef.current?.focus()}
@@ -729,6 +726,7 @@ export default function LoginScreen() {
                       blurOnSubmit={false}
                       editable={!loading}
                       selectionColor="#3B82F6"
+                      cursorColor="#3B82F6"
                     />
                   </View>
                   {fieldErrors.fullName && (
@@ -752,7 +750,7 @@ export default function LoginScreen() {
                       onChangeText={setEmail}
                       onFocus={() => {
                         setFocusedField('signup-email');
-                        scrollToField(emailRef);
+                        scrollViewRef.current?.scrollTo({ y: FIELD_SCROLL_POSITIONS.email, animated: true });
                       }}
                       onBlur={() => setFocusedField(null)}
                       onSubmitEditing={() => passwordRef.current?.focus()}
@@ -766,6 +764,7 @@ export default function LoginScreen() {
                       blurOnSubmit={false}
                       editable={!loading}
                       selectionColor="#3B82F6"
+                      cursorColor="#3B82F6"
                     />
                   </View>
                   {fieldErrors.email && (
@@ -789,7 +788,7 @@ export default function LoginScreen() {
                       onChangeText={setPassword}
                       onFocus={() => {
                         setFocusedField('signup-password');
-                        scrollToField(passwordRef);
+                        scrollViewRef.current?.scrollTo({ y: FIELD_SCROLL_POSITIONS.password, animated: true });
                       }}
                       onBlur={() => setFocusedField(null)}
                       onSubmitEditing={() => confirmPasswordRef.current?.focus()}
@@ -803,6 +802,7 @@ export default function LoginScreen() {
                       blurOnSubmit={false}
                       editable={!loading}
                       selectionColor="#3B82F6"
+                      cursorColor="#3B82F6"
                     />
                     <TouchableOpacity
                       style={styles.eyeBtn}
@@ -833,7 +833,7 @@ export default function LoginScreen() {
                       onChangeText={setConfirmPassword}
                       onFocus={() => {
                         setFocusedField('signup-confirmPassword');
-                        scrollToField(confirmPasswordRef);
+                        scrollViewRef.current?.scrollTo({ y: FIELD_SCROLL_POSITIONS.confirmPassword, animated: true });
                       }}
                       onBlur={() => setFocusedField(null)}
                       onSubmitEditing={handleSignUp}
@@ -846,6 +846,7 @@ export default function LoginScreen() {
                       returnKeyType="done"
                       editable={!loading}
                       selectionColor="#3B82F6"
+                      cursorColor="#3B82F6"
                     />
                     <TouchableOpacity
                       style={styles.eyeBtn}
@@ -1075,7 +1076,7 @@ const styles = StyleSheet.create({
     borderColor: '#EF4444',
   },
   input: {
-    backgroundColor: 'transparent',
+    backgroundColor: '#0A1628',
     borderWidth: 0,
     paddingHorizontal: 16,
     paddingVertical: 14,
