@@ -328,7 +328,6 @@ export default function LoginScreen() {
   const [error, setError] = useState('')
   const [focusedField, setFocusedField] = useState<string | null>(null)
   const [signInOverlay, setSignInOverlay] = useState(false)
-  const [signInProgress, setSignInProgress] = useState(0)
   const [staySignedIn, setStaySignedIn] = useState(true)
   const [showRegBanner, setShowRegBanner] = useState(false)
   const bannerOp = useRef(new Animated.Value(0)).current
@@ -350,10 +349,41 @@ export default function LoginScreen() {
     }).start()
   }, [staySignedIn, thumbX])
 
-  const onSignInExitComplete = useCallback(() => {
-    setSignInOverlay(false)
-    setSignInProgress(0)
+  const MIN_ANIMATION_MS = 3000
+  const authCompletedRef = useRef(false)
+  const animationDoneRef = useRef(false)
+  const animStartRef = useRef(0)
+  const dismissTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  const clearDismissTimer = useCallback(() => {
+    if (dismissTimerRef.current) {
+      clearTimeout(dismissTimerRef.current)
+      dismissTimerRef.current = null
+    }
   }, [])
+
+  const tryDismissOverlay = useCallback(() => {
+    if (!authCompletedRef.current || !animationDoneRef.current) return
+    if (dismissTimerRef.current) return
+    const elapsed = Date.now() - animStartRef.current
+    const remaining = Math.max(0, MIN_ANIMATION_MS - elapsed)
+    const finish = () => {
+      dismissTimerRef.current = null
+      setSignInOverlay(false)
+      authCompletedRef.current = false
+      animationDoneRef.current = false
+    }
+    if (remaining > 0) {
+      dismissTimerRef.current = setTimeout(finish, remaining)
+    } else {
+      finish()
+    }
+  }, [])
+
+  const handleTimelineComplete = useCallback(() => {
+    animationDoneRef.current = true
+    tryDismissOverlay()
+  }, [tryDismissOverlay])
 
   // Sign in state
   const [siCode, setSiCode] = useState('')
@@ -387,8 +417,11 @@ export default function LoginScreen() {
       return
     }
     setError('')
+    clearDismissTimer()
+    authCompletedRef.current = false
+    animationDoneRef.current = false
+    animStartRef.current = Date.now()
     setSignInOverlay(true)
-    setSignInProgress(0)
     setTimeout(() => {
       void handleSignIn()
     }, 50)
@@ -407,6 +440,9 @@ export default function LoginScreen() {
 
         if (codeError || !codeCheck?.ok) {
           setError('Invalid company code')
+          clearDismissTimer()
+          authCompletedRef.current = false
+          animationDoneRef.current = false
           setSignInOverlay(false)
           setLoading(false)
           return
@@ -419,17 +455,22 @@ export default function LoginScreen() {
       })
       if (authError) {
         setError(authError.message)
+        clearDismissTimer()
+        authCompletedRef.current = false
+        animationDoneRef.current = false
         setSignInOverlay(false)
         setLoading(false)
         return
       }
-      setSignInProgress(0.4)
 
       const {
         data: { user: authUser },
       } = await supabase.auth.getUser()
       if (!authUser) {
         setError('Auth failed')
+        clearDismissTimer()
+        authCompletedRef.current = false
+        animationDoneRef.current = false
         setSignInOverlay(false)
         setLoading(false)
         return
@@ -441,8 +482,6 @@ export default function LoginScreen() {
         .eq('user_id', authUser.id)
         .single()
 
-      setSignInProgress(0.65)
-
       const target: 'admin' | 'driver' =
         worker?.role === 'admin' || worker?.role === 'manager'
           ? 'admin'
@@ -451,11 +490,14 @@ export default function LoginScreen() {
       if (target === 'driver' && worker?.id) {
         await prefetchDriverHomeData(worker.id)
       }
-      setSignInProgress(0.9)
 
-      setSignInProgress(1)
+      authCompletedRef.current = true
+      tryDismissOverlay()
     } catch (e) {
       setError('Something went wrong. Please try again.')
+      clearDismissTimer()
+      authCompletedRef.current = false
+      animationDoneRef.current = false
       setSignInOverlay(false)
     }
     setLoading(false)
@@ -763,8 +805,7 @@ export default function LoginScreen() {
 
       <LoginSignInTransition
         visible={signInOverlay}
-        progress={signInProgress}
-        onExitComplete={onSignInExitComplete}
+        onTimelineComplete={handleTimelineComplete}
       />
     </KeyboardAvoidingView>
   )

@@ -99,6 +99,13 @@ function dayCircleColor(d: Date): string {
   return palette[d.getDay() % palette.length]!;
 }
 
+const getGreeting = () => {
+  const hour = new Date().getHours();
+  if (hour < 12) return 'Good morning,';
+  if (hour < 17) return 'Good afternoon,';
+  return 'Good evening,';
+};
+
 function MiniHexMuted() {
   return (
     <Svg width={40} height={40} viewBox="0 0 100 100" opacity={0.35}>

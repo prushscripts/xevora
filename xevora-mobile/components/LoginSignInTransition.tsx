@@ -15,16 +15,25 @@ const BAR_W = 260
 const BAR_H = 3
 const WORD = 'XEVORA'
 
+/** Wall-clock stages from overlay open: hex 0–500ms, type+bar 500–2000ms, ready+pulse 2000–2500ms, scan+fade 2500–3000ms */
+const T_HEX_MS = 500
+const T_TYPE_START_MS = 500
+const LETTER_MS = 200
+const T_BAR_START_MS = 500
+const T_BAR_DURATION_MS = 1500
+const T_READY_MS = 2000
+const T_SCAN_MS = 2500
+const SCAN_LINE_MS = 300
+const FADE_OUT_MS = 200
+
 type Props = {
   visible: boolean
-  progress: number
-  onExitComplete: () => void
+  onTimelineComplete: () => void
 }
 
 export function LoginSignInTransition({
   visible,
-  progress,
-  onExitComplete,
+  onTimelineComplete,
 }: Props) {
   const { width: sw } = Dimensions.get('window')
   const hexOp = useRef(new Animated.Value(0)).current
@@ -37,26 +46,28 @@ export function LoginSignInTransition({
   ]
   const [letters, setLetters] = useState(0)
   const [showBar, setShowBar] = useState(false)
-  const [showCursor, setShowCursor] = useState(false)
   const barW = useRef(new Animated.Value(0)).current
   const flareX = useRef(new Animated.Value(0)).current
   const readyOp = useRef(new Animated.Value(0)).current
   const scanY = useRef(new Animated.Value(0)).current
   const rootOp = useRef(new Animated.Value(1)).current
+  const cursorOp = useRef(new Animated.Value(1)).current
   const timers = useRef<ReturnType<typeof setTimeout>[]>([])
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
-  const exitStarted = useRef(false)
+  const letterTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const cursorLoopRef = useRef<Animated.CompositeAnimation | null>(null)
+  const timelineDone = useRef(false)
 
   useEffect(() => {
     if (!visible) {
       timers.current.forEach(clearTimeout)
       timers.current = []
-      if (intervalRef.current) clearInterval(intervalRef.current)
-      intervalRef.current = null
-      exitStarted.current = false
+      if (letterTimerRef.current) clearTimeout(letterTimerRef.current)
+      letterTimerRef.current = null
+      cursorLoopRef.current?.stop()
+      cursorLoopRef.current = null
+      timelineDone.current = false
       setLetters(0)
       setShowBar(false)
-      setShowCursor(false)
       hexOp.setValue(0)
       hexScale.setValue(0.5)
       hexPulse.setValue(1)
@@ -66,13 +77,20 @@ export function LoginSignInTransition({
       readyOp.setValue(0)
       scanY.setValue(0)
       rootOp.setValue(1)
+      cursorOp.setValue(1)
       return
+    }
+
+    timelineDone.current = false
+
+    const push = (id: ReturnType<typeof setTimeout>) => {
+      timers.current.push(id)
     }
 
     Animated.parallel([
       Animated.timing(hexOp, {
         toValue: 1,
-        duration: 400,
+        duration: T_HEX_MS,
         useNativeDriver: true,
       }),
       Animated.spring(hexScale, {
@@ -84,7 +102,7 @@ export function LoginSignInTransition({
     ]).start()
 
     ringScales.forEach((r, i) => {
-      timers.current.push(
+      push(
         setTimeout(() => {
           Animated.spring(r, {
             toValue: 1,
@@ -96,87 +114,112 @@ export function LoginSignInTransition({
       )
     })
 
-    timers.current.push(
+    push(
       setTimeout(() => {
         let n = 0
-        intervalRef.current = setInterval(() => {
+        const revealNext = () => {
           n += 1
           setLetters(n)
           if (n >= WORD.length) {
-            if (intervalRef.current) clearInterval(intervalRef.current)
-            intervalRef.current = null
-            setShowCursor(true)
+            letterTimerRef.current = null
+            cursorLoopRef.current?.stop()
+            cursorLoopRef.current = Animated.loop(
+              Animated.sequence([
+                Animated.timing(cursorOp, {
+                  toValue: 0,
+                  duration: 500,
+                  useNativeDriver: true,
+                }),
+                Animated.timing(cursorOp, {
+                  toValue: 1,
+                  duration: 500,
+                  useNativeDriver: true,
+                }),
+              ])
+            )
+            cursorLoopRef.current.start()
+            return
           }
-        }, 160)
-      }, 400)
+          letterTimerRef.current = setTimeout(revealNext, LETTER_MS)
+        }
+        revealNext()
+      }, T_TYPE_START_MS)
     )
 
-    timers.current.push(setTimeout(() => setShowBar(true), 600))
+    push(
+      setTimeout(() => {
+        setShowBar(true)
+        Animated.parallel([
+          Animated.timing(barW, {
+            toValue: BAR_W,
+            duration: T_BAR_DURATION_MS,
+            useNativeDriver: false,
+          }),
+          Animated.timing(flareX, {
+            toValue: BAR_W - 6,
+            duration: T_BAR_DURATION_MS,
+            useNativeDriver: false,
+          }),
+        ]).start()
+      }, T_BAR_START_MS)
+    )
+
+    push(
+      setTimeout(() => {
+        Animated.timing(readyOp, {
+          toValue: 1,
+          duration: 200,
+          useNativeDriver: true,
+        }).start()
+
+        Animated.sequence([
+          Animated.timing(hexPulse, {
+            toValue: 1.1,
+            duration: 150,
+            useNativeDriver: true,
+          }),
+          Animated.timing(hexPulse, {
+            toValue: 1,
+            duration: 150,
+            useNativeDriver: true,
+          }),
+        ]).start()
+      }, T_READY_MS)
+    )
+
+    push(
+      setTimeout(() => {
+        scanY.setValue(0)
+        Animated.timing(scanY, {
+          toValue: sw,
+          duration: SCAN_LINE_MS,
+          easing: Easing.inOut(Easing.cubic),
+          useNativeDriver: true,
+        }).start(() => {
+          Animated.timing(rootOp, {
+            toValue: 0,
+            duration: FADE_OUT_MS,
+            useNativeDriver: true,
+          }).start(() => {
+            if (timelineDone.current) return
+            timelineDone.current = true
+            onTimelineComplete()
+          })
+        })
+      }, T_SCAN_MS)
+    )
 
     return () => {
       timers.current.forEach(clearTimeout)
       timers.current = []
-      if (intervalRef.current) clearInterval(intervalRef.current)
-      intervalRef.current = null
+      if (letterTimerRef.current) clearTimeout(letterTimerRef.current)
+      letterTimerRef.current = null
+      cursorLoopRef.current?.stop()
+      cursorLoopRef.current = null
     }
-  }, [visible, hexOp, hexScale, ringScales])
+  }, [visible, hexOp, hexScale, ringScales, onTimelineComplete, sw, barW, flareX, readyOp, scanY, rootOp, cursorOp])
 
-  useEffect(() => {
-    if (!visible) return
-    const w = Math.max(0, Math.min(1, progress)) * BAR_W
-    Animated.parallel([
-      Animated.timing(barW, {
-        toValue: w,
-        duration: 220,
-        useNativeDriver: false,
-      }),
-      Animated.timing(flareX, {
-        toValue: Math.max(0, w - 6),
-        duration: 220,
-        useNativeDriver: false,
-      }),
-    ]).start()
-  }, [progress, visible, barW, flareX])
-
-  useEffect(() => {
-    if (!visible || progress < 1 || exitStarted.current) return
-    exitStarted.current = true
-
-    Animated.timing(readyOp, {
-      toValue: 1,
-      duration: 200,
-      useNativeDriver: true,
-    }).start()
-
-    Animated.sequence([
-      Animated.timing(hexPulse, {
-        toValue: 1.1,
-        duration: 150,
-        useNativeDriver: true,
-      }),
-      Animated.timing(hexPulse, {
-        toValue: 1,
-        duration: 150,
-        useNativeDriver: true,
-      }),
-    ]).start()
-
-    scanY.setValue(0)
-    Animated.timing(scanY, {
-      toValue: sw,
-      duration: 400,
-      easing: Easing.inOut(Easing.cubic),
-      useNativeDriver: true,
-    }).start(() => {
-      Animated.timing(rootOp, {
-        toValue: 0,
-        duration: 200,
-        useNativeDriver: true,
-      }).start(() => {
-        onExitComplete()
-      })
-    })
-  }, [progress, visible, readyOp, hexPulse, scanY, rootOp, sw, onExitComplete])
+  const typingDone = letters >= WORD.length
 
   return (
     <Modal
@@ -269,10 +312,14 @@ export function LoginSignInTransition({
         </View>
 
         <View style={styles.wordmarkBlock}>
-          <Text style={styles.wordmark}>
-            {WORD.slice(0, letters)}
-            {showCursor ? <Text style={styles.cursor}>|</Text> : null}
-          </Text>
+          <View style={styles.wordmarkRow}>
+            <Text style={styles.wordmark}>{WORD.slice(0, letters)}</Text>
+            {typingDone ? (
+              <Animated.Text style={[styles.cursor, { opacity: cursorOp }]}>
+                |
+              </Animated.Text>
+            ) : null}
+          </View>
         </View>
 
         {showBar ? (
@@ -341,6 +388,11 @@ const styles = StyleSheet.create({
     minHeight: 40,
     justifyContent: 'center',
   },
+  wordmarkRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   wordmark: {
     fontFamily: 'PlusJakartaSans_800ExtraBold',
     fontSize: 22,
@@ -349,7 +401,10 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   cursor: {
-    opacity: 0.6,
+    fontFamily: 'PlusJakartaSans_800ExtraBold',
+    fontSize: 22,
+    letterSpacing: 6,
+    color: '#F1F5FF',
   },
   barSection: {
     marginTop: 28,
