@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { redirect } from "next/navigation";
 import DashboardShellMotion from "@/components/dashboard/DashboardShellMotion";
+import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
 import { createClient } from "@/lib/supabase-server";
 
 function getUserDisplayName(email: string | undefined, firstName: unknown) {
@@ -33,7 +34,9 @@ export default async function DashboardLayout({ children }: { children: ReactNod
 
   return (
     <div className="min-h-screen bg-[var(--bg)]">
-      <DashboardShellMotion userName={userName}>{children}</DashboardShellMotion>
+      <DashboardShellMotion userName={userName}>
+        <ErrorBoundary>{children}</ErrorBoundary>
+      </DashboardShellMotion>
     </div>
   );
 }

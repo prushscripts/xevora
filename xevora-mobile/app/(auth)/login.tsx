@@ -805,7 +805,8 @@ export default function LoginScreen() {
 
       <LoginSignInTransition
         visible={signInOverlay}
-        onTimelineComplete={handleTimelineComplete}
+        progress={0}
+        onExitComplete={handleTimelineComplete}
       />
     </KeyboardAvoidingView>
   )

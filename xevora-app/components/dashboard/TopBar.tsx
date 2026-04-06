@@ -20,7 +20,6 @@ function getTitle(pathname: string) {
   if (pathname.startsWith("/dashboard/workers/")) return "Worker Profile";
   if (pathname.startsWith("/dashboard/workers")) return "Workers";
   if (pathname.startsWith("/settings")) return "Settings";
-  if (pathname.startsWith("/dashboard/settings")) return "Settings";
   if (pathname.startsWith("/dashboard")) return "Dashboard";
   return "Xevora";
 }
