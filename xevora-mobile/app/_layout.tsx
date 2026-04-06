@@ -3,6 +3,7 @@ import { View, Text } from 'react-native';
 import { Slot, useRouter, useSegments } from 'expo-router';
 import { useFonts } from 'expo-font';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as SecureStore from 'expo-secure-store';
 import * as LocalAuthentication from 'expo-local-authentication';
 import type { Session } from '@supabase/supabase-js';
 import {
@@ -160,13 +161,24 @@ export default function RootLayout() {
         return;
       }
 
-      const biometricEnabled = await AsyncStorage.getItem('xevora_biometric_enabled');
+      let biometricEnabled = 'false';
+      try {
+        biometricEnabled = await SecureStore.getItemAsync('xevora_biometric_enabled') || 'false';
+      } catch {
+        /* ignore */
+      }
+      
       if (biometricEnabled !== 'true') {
         if (!cancelled) setAppReady(true);
         return;
       }
 
-      const lastAuth = await AsyncStorage.getItem('xevora_last_auth_time');
+      let lastAuth: string | null = null;
+      try {
+        lastAuth = await SecureStore.getItemAsync('xevora_last_auth_time');
+      } catch {
+        /* ignore */
+      }
       const now = Date.now();
       const fiveMinutes = 5 * 60 * 1000;
       if (lastAuth && now - parseInt(lastAuth, 10) <= fiveMinutes) {
@@ -181,18 +193,28 @@ export default function RootLayout() {
         return;
       }
 
+      const types = await LocalAuthentication.supportedAuthenticationTypesAsync();
+      const hasFaceID = types.includes(
+        LocalAuthentication.AuthenticationType.FACIAL_RECOGNITION
+      );
+
       if (!cancelled) setAppReady(false);
 
       const result = await LocalAuthentication.authenticateAsync({
-        promptMessage: 'Welcome back to Xevora',
-        fallbackLabel: 'Use password',
-        cancelLabel: 'Sign out',
+        promptMessage: hasFaceID ? 'Use Face ID to sign in to Xevora' : 'Use biometrics to sign in to Xevora',
+        fallbackLabel: 'Use Password',
+        disableDeviceFallback: false,
+        cancelLabel: 'Cancel',
       });
 
       if (cancelled) return;
 
       if (result.success) {
-        await AsyncStorage.setItem('xevora_last_auth_time', String(now));
+        try {
+          await SecureStore.setItemAsync('xevora_last_auth_time', String(now));
+        } catch {
+          /* ignore */
+        }
         if (!cancelled) setAppReady(true);
         return;
       }
@@ -202,7 +224,11 @@ export default function RootLayout() {
           ? String((result as { error?: string }).error)
           : '';
       if (err === 'user_cancel') {
-        await AsyncStorage.multiRemove(['xevora_last_auth_time']);
+        try {
+          await SecureStore.deleteItemAsync('xevora_last_auth_time');
+        } catch {
+          /* ignore */
+        }
         await supabase.auth.signOut();
       }
       if (!cancelled) setAppReady(true);

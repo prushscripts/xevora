@@ -585,6 +585,7 @@ export default function LoginScreen() {
         style={[s.scroll, { zIndex: 1 }]}
         contentContainerStyle={s.scrollContent}
         keyboardShouldPersistTaps="handled"
+        scrollEventThrottle={16}
         keyboardDismissMode="none"
         showsVerticalScrollIndicator={false}
         bounces={false}

@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import * as SecureStore from 'expo-secure-store'
 
 const PREF_KEY = 'xevora_stay_signed_in'
 const memoryStore: Record<string, string> = {}
@@ -29,23 +30,35 @@ export function getStaySignedInSync(): boolean {
   return staySignedIn
 }
 
-/** Supabase auth storage: persisted session when "stay signed in" is on, memory-only when off */
+/** Supabase auth storage: persisted session using SecureStore when "stay signed in" is on, memory-only when off */
 export const authSessionStorage = {
   getItem: async (key: string) => {
     if (!staySignedIn) {
       return memoryStore[key] ?? null
     }
-    return AsyncStorage.getItem(key)
+    try {
+      return await SecureStore.getItemAsync(key)
+    } catch {
+      return null
+    }
   },
   setItem: async (key: string, value: string) => {
     if (!staySignedIn) {
       memoryStore[key] = value
       return
     }
-    await AsyncStorage.setItem(key, value)
+    try {
+      await SecureStore.setItemAsync(key, value)
+    } catch {
+      /* ignore */
+    }
   },
   removeItem: async (key: string) => {
     delete memoryStore[key]
-    await AsyncStorage.removeItem(key)
+    try {
+      await SecureStore.deleteItemAsync(key)
+    } catch {
+      /* ignore */
+    }
   },
 }

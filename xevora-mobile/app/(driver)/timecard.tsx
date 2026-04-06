@@ -569,6 +569,8 @@ export default function TimecardScreen() {
           renderItem={renderItem}
           contentContainerStyle={styles.listContent}
           showsVerticalScrollIndicator={false}
+          removeClippedSubviews={true}
+          scrollEventThrottle={16}
         />
       )}
 

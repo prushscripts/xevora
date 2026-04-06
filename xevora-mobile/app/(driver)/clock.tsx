@@ -7,6 +7,7 @@ import {
   Modal,
   Animated,
   Platform,
+  ScrollView,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
@@ -292,36 +293,42 @@ export default function ClockScreen() {
   const ringSize = 120 * 4.2;
 
   return (
-    <SafeAreaView style={styles.root} edges={['top']}>
+    <SafeAreaView style={styles.root} edges={['top', 'bottom']}>
       <StatusBar style="light" />
       {!online ? <OfflineBanner /> : null}
+      <ScrollView 
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+        scrollEventThrottle={16}
+      >
+        <Text style={styles.dateTop}>{dateStr}</Text>
 
-      <Text style={styles.dateTop}>{dateStr}</Text>
+        {error ? (
+          <View style={styles.errBar}>
+            <Text style={styles.errText}>{error}</Text>
+            <TouchableOpacity onPress={load}>
+              <Text style={styles.retry}>Retry</Text>
+            </TouchableOpacity>
+          </View>
+        ) : null}
 
-      {error ? (
-        <View style={styles.errBar}>
-          <Text style={styles.errText}>{error}</Text>
-          <TouchableOpacity onPress={load}>
-            <Text style={styles.retry}>Retry</Text>
-          </TouchableOpacity>
-        </View>
-      ) : null}
-
-      <View style={styles.center}>
-        <View style={{ width: ringSize, height: ringSize, alignItems: 'center', justifyContent: 'center' }}>
-          <HexLogo
-            size={120}
-            glowColor={glow}
-            ringColor={glow}
-            animated={!loading}
-          />
-          <View style={styles.timeOverlay} pointerEvents="none">
-            <Text style={styles.hexTime} key={tick}>
-              {nowStr}
-            </Text>
+        <View style={styles.center}>
+          <View style={{ width: ringSize, height: ringSize, alignItems: 'center', justifyContent: 'center' }}>
+            <HexLogo
+              size={120}
+              glowColor={glow}
+              ringColor={glow}
+              animated={!loading}
+            />
+            <View style={styles.timeOverlay} pointerEvents="none">
+              <Text style={styles.hexTime} key={tick}>
+                {nowStr}
+              </Text>
+            </View>
           </View>
         </View>
-      </View>
+      </ScrollView>
 
       <View style={styles.actions}>
         {phase === 'out' && (
@@ -409,6 +416,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#03060D',
   },
+  scrollView: {
+    flex: 1,
+  },
+  scrollContent: {
+    flexGrow: 1,
+  },
   dateTop: {
     marginTop: 8,
     textAlign: 'center',
@@ -430,6 +443,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    minHeight: 400,
   },
   timeOverlay: {
     position: 'absolute',
@@ -444,8 +458,9 @@ const styles = StyleSheet.create({
   },
   actions: {
     paddingHorizontal: 20,
-    paddingBottom: Platform.OS === 'ios' ? 28 : 20,
+    paddingBottom: Platform.OS === 'ios' ? 34 : 20,
     gap: 12,
+    backgroundColor: '#03060D',
   },
   btnPrimary: {
     backgroundColor: '#2563EB',

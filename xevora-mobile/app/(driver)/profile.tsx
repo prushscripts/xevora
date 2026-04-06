@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert, Linking } 
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as SecureStore from 'expo-secure-store';
 import * as LocalAuthentication from 'expo-local-authentication';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../hooks/useAuth';
@@ -59,7 +60,12 @@ export default function DriverProfileScreen() {
   }
 
   async function loadSettings() {
-    const bio = await AsyncStorage.getItem('xevora_biometric_enabled');
+    let bio = 'false';
+    try {
+      bio = await SecureStore.getItemAsync('xevora_biometric_enabled') || 'false';
+    } catch {
+      /* ignore */
+    }
     const notif = await AsyncStorage.getItem('xevora_notifications_enabled');
     const quick = await AsyncStorage.getItem('xevora_quick_clock_enabled');
     setBiometricEnabled(bio === 'true');
@@ -85,16 +91,32 @@ export default function DriverProfileScreen() {
         return;
       }
 
+      const types = await LocalAuthentication.supportedAuthenticationTypesAsync();
+      const hasFaceID = types.includes(
+        LocalAuthentication.AuthenticationType.FACIAL_RECOGNITION
+      );
+
       const result = await LocalAuthentication.authenticateAsync({
-        promptMessage: 'Enable biometric authentication',
+        promptMessage: hasFaceID ? 'Use Face ID to enable biometric authentication' : 'Use biometrics to enable authentication',
+        fallbackLabel: 'Use Password',
+        disableDeviceFallback: false,
+        cancelLabel: 'Cancel',
       });
 
       if (result.success) {
-        await AsyncStorage.setItem('xevora_biometric_enabled', 'true');
+        try {
+          await SecureStore.setItemAsync('xevora_biometric_enabled', 'true');
+        } catch {
+          /* ignore */
+        }
         setBiometricEnabled(true);
       }
     } else {
-      await AsyncStorage.removeItem('xevora_biometric_enabled');
+      try {
+        await SecureStore.deleteItemAsync('xevora_biometric_enabled');
+      } catch {
+        /* ignore */
+      }
       setBiometricEnabled(false);
     }
   }
@@ -153,7 +175,13 @@ export default function DriverProfileScreen() {
 
   return (
     <SafeAreaView style={s.container}>
-      <ScrollView style={s.scroll} contentContainerStyle={s.scrollContent}>
+      <ScrollView 
+        style={s.scroll} 
+        contentContainerStyle={s.scrollContent}
+        showsVerticalScrollIndicator={false}
+        scrollEventThrottle={16}
+        decelerationRate="fast"
+      >
         {/* WORKER CARD */}
         <View style={s.workerCard}>
           <View style={s.avatar}>

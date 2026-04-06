@@ -11,7 +11,13 @@ export default function SettingsScreen() {
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
-      <ScrollView style={styles.scrollView} contentContainerStyle={styles.content}>
+      <ScrollView 
+        style={styles.scrollView} 
+        contentContainerStyle={styles.content}
+        showsVerticalScrollIndicator={false}
+        scrollEventThrottle={16}
+        decelerationRate="fast"
+      >
         <Text style={styles.title}>Settings</Text>
 
         <View style={styles.section}>

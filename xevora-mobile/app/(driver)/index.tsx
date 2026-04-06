@@ -558,6 +558,8 @@ export default function DriverHomeScreen() {
         style={styles.scrollView}
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
+        scrollEventThrottle={16}
+        decelerationRate="fast"
       >
         <View style={styles.hexHeroContainer}>
           <View style={styles.hexHeroInner}>

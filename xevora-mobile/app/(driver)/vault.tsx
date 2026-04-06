@@ -6,7 +6,13 @@ import { theme } from '../../constants/theme';
 export default function VaultScreen() {
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
-      <ScrollView style={styles.scrollView} contentContainerStyle={styles.content}>
+      <ScrollView 
+        style={styles.scrollView} 
+        contentContainerStyle={styles.content}
+        showsVerticalScrollIndicator={false}
+        scrollEventThrottle={16}
+        decelerationRate="fast"
+      >
         <Text style={styles.title}>Xevora Vault</Text>
 
         <View style={styles.setupCard}>

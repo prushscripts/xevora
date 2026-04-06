@@ -1,5 +1,6 @@
 import { supabase } from './supabase'
 import * as Location from 'expo-location'
+import * as SecureStore from 'expo-secure-store'
 import { Alert } from 'react-native'
 
 type LocationResult = {
@@ -128,6 +129,13 @@ export async function clockIn(workerId: string, clientId: string, companyId: str
   }).select().single()
   
   if (error) throw error
+  
+  try {
+    await SecureStore.setItemAsync('xevora_active_shift', data.id)
+  } catch {
+    /* ignore */
+  }
+  
   return data
 }
 
@@ -220,6 +228,13 @@ export async function clockOut(shiftId: string, clockIn: string, mealBreaks: any
     .single()
   
   if (error) throw error
+  
+  try {
+    await SecureStore.deleteItemAsync('xevora_active_shift')
+  } catch {
+    /* ignore */
+  }
+  
   return data
 }
 
