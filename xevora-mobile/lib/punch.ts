@@ -83,6 +83,10 @@ async function getLocation(): Promise<{ location: LocationResult; error?: Locati
 function calculateShiftHours(clockIn: Date, clockOut: Date, mealBreaks: any[]) {
   let totalMinutes = (clockOut.getTime() - clockIn.getTime()) / 1000 / 60
   
+  if (totalMinutes < 0) {
+    throw new Error('Clock-out time cannot be before clock-in time. Please contact your administrator.')
+  }
+  
   if (mealBreaks && mealBreaks.length > 0) {
     for (const brk of mealBreaks) {
       if (brk.start && brk.end) {
@@ -137,6 +141,12 @@ export async function takeMeal(shiftId: string) {
   if (fetchError) throw fetchError
   
   const breaks = shift?.meal_breaks || []
+  
+  const hasOpenBreak = breaks.some((b: any) => b.start && b.end === null)
+  if (hasOpenBreak) {
+    throw new Error('A meal break is already in progress')
+  }
+  
   breaks.push({ start: new Date().toISOString(), end: null })
   
   const { data, error } = await supabase
@@ -176,6 +186,14 @@ export async function endMeal(shiftId: string) {
 
 export async function clockOut(shiftId: string, clockIn: string, mealBreaks: any[]) {
   const { location, error: locationError } = await getLocation()
+  
+  if (locationError?.type === 'permission_denied') {
+    throw new Error(locationError.message)
+  }
+  
+  if (locationError?.type === 'timeout') {
+    throw new Error(locationError.message)
+  }
   
   if (locationError?.type === 'low_accuracy' && location) {
     Alert.alert('Low GPS Accuracy', locationError.message, [{ text: 'OK' }])

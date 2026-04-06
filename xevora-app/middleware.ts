@@ -80,17 +80,18 @@ export async function middleware(request: NextRequest) {
     return response;
   }
 
-  const { data: worker } = await supabase
-    .from("workers")
-    .select("role")
-    .eq("user_id", user.id)
-    .maybeSingle();
-
-  const { data: ownedCompany } = await supabase
-    .from("companies")
-    .select("id")
-    .eq("owner_id", user.id)
-    .maybeSingle();
+  const [{ data: worker }, { data: ownedCompany }] = await Promise.all([
+    supabase
+      .from("workers")
+      .select("role")
+      .eq("user_id", user.id)
+      .maybeSingle(),
+    supabase
+      .from("companies")
+      .select("id")
+      .eq("owner_id", user.id)
+      .maybeSingle(),
+  ]);
 
   const isOwner = !!ownedCompany;
   const isDriver = worker?.role === "driver";
@@ -142,7 +143,7 @@ export const config = {
     "/driver/:path*",
     "/settings",
     "/settings/:path*",
-    "/onboarding",
+    "/onboarding/:path*",
     "/auth/login",
     "/auth/signup",
     "/auth/join-driver",
