@@ -55,12 +55,14 @@ workforce and payroll platform built ground-up for field operators
 Update this every single session before stopping work.
 
 CURRENT SAVE POINT:
-  Phase:           1
-  Step:            P1-S1 (not started)
-  Last completed:  HTML prototype — login + dashboard
-  Next task:       Scaffold Next.js 14 app in Cursor
-  Blocker:         None
-  Date:            April 1, 2026
+    Phase: 1
+    Step: P1-S3 (Onboarding Wizard — not started)
+    Last completed: P1-S2 Authentication — all auth 
+        pages built, lint + build passing clean
+    Next task: Build onboarding wizard (3-step 
+        company setup)
+    Blocker: None
+    Date: April 2, 2026
 
 ---
 
@@ -101,25 +103,25 @@ Goal: Solid Next.js app with real auth, company setup, worker management
 Save Point ID: P1
 
 ### P1-S1: Project Scaffold
-[ ] Next.js 14 App Router with TypeScript
-[ ] Tailwind CSS + DM Sans + Syne fonts configured
-[ ] Supabase client initialized
-[ ] Environment variables (.env.local)
-[ ] Folder structure (/app, /components, /lib, /types)
-[ ] Vercel project connected to GitHub
-[ ] xevora.io domain pointing to Vercel
+[ x] Next.js 14 App Router with TypeScript
+[ x] Tailwind CSS + DM Sans + Syne fonts configured
+[ x] Supabase client initialized
+[ x] Environment variables (.env.local)
+[ x] Folder structure (/app, /components, /lib, /types)
+[ x] Vercel project connected to GitHub
+[ x] xevora.io domain pointing to Vercel
 
 ### P1-S2: Authentication
-[ ] Email/password sign up with validation
-[ ] Email/password sign in
-[ ] Email verification (Supabase handles)
-[ ] Password reset — REAL Supabase integration
-[ ] Middleware protecting all /dashboard routes
-[ ] Auth context provider (useAuth hook)
-[ ] Persistent session across page refreshes
-[ ] Sign out clears session fully
-[ ] Loading states during auth operations
-[ ] Error messages (wrong password, unverified, etc)
+[ x] Email/password sign up with validation
+[ x] Email/password sign in
+[ x] Email verification (Supabase handles)
+[ x] Password reset — REAL Supabase integration
+[ x] Middleware protecting all /dashboard routes
+[ x] Auth context provider (useAuth hook)
+[ x] Persistent session across page refreshes
+[ x] Sign out clears session fully
+[ x] Loading states during auth operations
+[ x] Error messages (wrong password, unverified, etc)
 
 ### P1-S3: Onboarding Wizard
 [ ] 3-step company setup (shown on first login only)
