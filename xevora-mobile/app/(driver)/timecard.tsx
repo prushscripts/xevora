@@ -139,7 +139,7 @@ export default function TimecardScreen() {
         .from('workers')
         .select('id, company_id, pay_type, pay_rate, ot_pay_rate, flat_weekly_rate')
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
       if (wErr || !w) {
         setError(wErr?.message || 'Worker not found');
         setLoading(false);

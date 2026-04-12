@@ -126,9 +126,10 @@ export async function clockIn(workerId: string, clientId: string, companyId: str
     gps_accuracy: location?.accuracy || null,
     status: 'active',
     meal_breaks: [],
-  }).select().single()
+  }).select().maybeSingle()
   
   if (error) throw error
+  if (!data) throw new Error('Failed to create shift')
   
   try {
     await SecureStore.setItemAsync('xevora_active_shift', data.id)
@@ -144,9 +145,10 @@ export async function takeMeal(shiftId: string) {
     .from('shifts')
     .select('meal_breaks')
     .eq('id', shiftId)
-    .single()
+    .maybeSingle()
   
   if (fetchError) throw fetchError
+  if (!shift) throw new Error('Shift not found')
   
   const breaks = shift?.meal_breaks || []
   
@@ -162,9 +164,10 @@ export async function takeMeal(shiftId: string) {
     .update({ meal_breaks: breaks })
     .eq('id', shiftId)
     .select()
-    .single()
+    .maybeSingle()
   
   if (error) throw error
+  if (!data) throw new Error('Failed to update shift')
   return data
 }
 
@@ -173,9 +176,10 @@ export async function endMeal(shiftId: string) {
     .from('shifts')
     .select('meal_breaks')
     .eq('id', shiftId)
-    .single()
+    .maybeSingle()
   
   if (fetchError) throw fetchError
+  if (!shift) throw new Error('Shift not found')
   
   const breaks = (shift?.meal_breaks || []).map((b: any) =>
     b.end === null ? { ...b, end: new Date().toISOString() } : b
@@ -186,9 +190,10 @@ export async function endMeal(shiftId: string) {
     .update({ meal_breaks: breaks })
     .eq('id', shiftId)
     .select()
-    .single()
+    .maybeSingle()
   
   if (error) throw error
+  if (!data) throw new Error('Failed to update shift')
   return data
 }
 
@@ -225,9 +230,10 @@ export async function clockOut(shiftId: string, clockIn: string, mealBreaks: any
     })
     .eq('id', shiftId)
     .select()
-    .single()
+    .maybeSingle()
   
   if (error) throw error
+  if (!data) throw new Error('Failed to complete shift')
   
   try {
     await SecureStore.deleteItemAsync('xevora_active_shift')

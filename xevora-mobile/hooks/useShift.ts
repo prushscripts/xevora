@@ -26,7 +26,7 @@ export function useShift(workerId: string) {
       .is('clock_out', null)
       .order('clock_in', { ascending: false })
       .limit(1)
-      .single();
+      .maybeSingle();
 
     if (!error && data) {
       setActiveShift(data as Shift);

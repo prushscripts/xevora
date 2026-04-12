@@ -72,7 +72,7 @@ export default function ClockScreen() {
         .from('workers')
         .select('id, company_id')
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
       if (wErr || !w) {
         setError(wErr?.message || 'Worker not found');
         setLoading(false);

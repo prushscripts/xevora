@@ -41,7 +41,7 @@ export default function QuickClockScreen() {
       .from('workers')
       .select('*')
       .eq('user_id', user.id)
-      .single()
+      .maybeSingle()
 
     if (workerData) {
       setWorker(workerData)
@@ -53,9 +53,9 @@ export default function QuickClockScreen() {
         .eq('status', 'active')
         .order('clock_in', { ascending: false })
         .limit(1)
-        .single()
+        .maybeSingle()
 
-      setActiveShift(shift)
+      setActiveShift(shift ?? null)
     }
   }
 

@@ -227,7 +227,7 @@ export default function AdminDashboardScreen() {
         .from('workers')
         .select('company_id')
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
       if (!me?.company_id) return;
       const cid = me.company_id as string;
       setCompanyId(cid);

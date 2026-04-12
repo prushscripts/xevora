@@ -480,7 +480,7 @@ export default function LoginScreen() {
         .from('workers')
         .select('id, role, first_name, full_name')
         .eq('user_id', authUser.id)
-        .single()
+        .maybeSingle()
 
       const target: 'admin' | 'driver' =
         worker?.role === 'admin' || worker?.role === 'manager'

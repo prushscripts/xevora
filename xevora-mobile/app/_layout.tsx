@@ -85,7 +85,7 @@ export default function RootLayout() {
       .from('workers')
       .select('role')
       .eq('user_id', userId)
-      .single();
+      .maybeSingle();
     setWorkerRole(data?.role ?? 'driver');
   }, []);
 
@@ -94,11 +94,13 @@ export default function RootLayout() {
   }, []);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session: s } }) => {
-      setSession(s ?? null);
-      if (s) {
-        void fetchWorkerRole(s.user.id);
+    supabase.auth.getUser().then(({ data: { user }, error }) => {
+      if (error || !user) {
+        setSession(null);
+        return;
       }
+      void fetchWorkerRole(user.id);
+      setSession({ user } as Session);
     });
 
     const {

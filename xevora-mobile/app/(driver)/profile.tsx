@@ -30,7 +30,7 @@ export default function DriverProfileScreen() {
       .from('workers')
       .select('*, clients(abbreviation, name)')
       .eq('user_id', user.id)
-      .single();
+      .maybeSingle();
 
     if (workerData) {
       setWorker(workerData);
