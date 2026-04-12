@@ -25,15 +25,15 @@ export async function signIn(email: string, password: string): Promise<{ user: A
       return { user: null, error: 'No user returned' };
     }
 
-    const { data: workerData, error: workerError } = await supabase
+    const { data: workerData } = await supabase
       .from('workers')
       .select('id, role, company_id')
       .eq('user_id', data.user.id)
-      .single();
+      .maybeSingle();
 
-    if (workerError || !workerData) {
+    if (!workerData) {
       await supabase.auth.signOut();
-      return { user: null, error: 'Worker profile not found' };
+      return { user: null, error: 'No worker profile found for this account. Contact your administrator.' };
     }
 
     return {
@@ -67,25 +67,25 @@ export async function signOut() {
 
 export async function getSession(): Promise<AuthUser | null> {
   try {
-    const { data: { session } } = await supabase.auth.getSession();
-    
-    if (!session?.user) {
+    const { data: { user }, error } = await supabase.auth.getUser();
+
+    if (error || !user) {
       return null;
     }
 
     const { data: workerData } = await supabase
       .from('workers')
       .select('id, role, company_id')
-      .eq('user_id', session.user.id)
-      .single();
+      .eq('user_id', user.id)
+      .maybeSingle();
 
     if (!workerData) {
       return null;
     }
 
     return {
-      id: session.user.id,
-      email: session.user.email!,
+      id: user.id,
+      email: user.email!,
       role: workerData.role as 'driver' | 'admin' | 'manager',
       workerId: workerData.id,
       companyId: workerData.company_id,

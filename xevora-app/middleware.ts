@@ -95,7 +95,7 @@ export async function middleware(request: NextRequest) {
 
   const isOwner = !!ownedCompany;
   const isDriver = worker?.role === "driver";
-  const isStaff = worker?.role === "admin" || worker?.role === "manager";
+  const isManager = worker?.role === "manager";
   const isAdminRole = worker?.role === "admin";
   const pendingDriver =
     !worker &&
@@ -104,7 +104,8 @@ export async function middleware(request: NextRequest) {
     user.user_metadata !== null &&
     (user.user_metadata as Record<string, unknown>).registration_intent === "driver";
 
-  const canAccessSettings = isOwner || isAdminRole;
+  const canAccessSettings =
+    isOwner || (isAdminRole && !isManager);
 
   if (path.startsWith("/settings")) {
     if (!canAccessSettings) {

@@ -13,7 +13,7 @@ git add -A
 
 set TIMESTAMP=%date:~10,4%-%date:~4,2%-%date:~7,2% %time:~0,2%:%time:~3,2%
 echo  [2/4] Committing: %TIMESTAMP%
-git commit -m "deploy: %TIMESTAMP%"
+git commit -m "security: mobile auth (getSession via getUser, signIn workers maybeSingle); app middleware manager vs settings clarity [%TIMESTAMP%]"
 if errorlevel 1 (
   echo  [INFO] Nothing new to commit.
 )
