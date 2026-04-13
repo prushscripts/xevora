@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { createClient } from "@/lib/supabase";
 import type { WorkerClientRates, WorkerPayProfile } from "@/lib/payroll";
 
@@ -60,30 +60,24 @@ export function useDriverProfile() {
   return v;
 }
 
-export default function DriverProvider({ children }: { children: React.ReactNode }) {
+export default function DriverProvider({ children, userId }: { children: React.ReactNode; userId: string }) {
   const [profile, setProfile] = useState<DriverProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const fetchedRef = useRef(false);
 
-  const load = useCallback(async () => {
+  const load = useCallback(async (force = false) => {
+    if (fetchedRef.current && !force) return;
+    fetchedRef.current = true;
     setLoading(true);
     const supabase = createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) {
-      setProfile(null);
-      setError("Not signed in");
-      setLoading(false);
-      return;
-    }
 
     const { data: w, error: we } = await supabase
       .from("workers")
       .select(
         "id, company_id, full_name, hourly_rate, created_at, truck_id, worker_type, pay_type, pay_rate, ot_pay_rate, flat_weekly_rate, default_client_id, vault_enabled, vault_percentage",
       )
-      .eq("user_id", user.id)
+      .eq("user_id", userId)
       .maybeSingle();
 
     if (we || !w) {
@@ -192,15 +186,20 @@ export default function DriverProvider({ children }: { children: React.ReactNode
     });
     setError(null);
     setLoading(false);
-  }, []);
+  }, [userId]);
 
   useEffect(() => {
     void load();
   }, [load]);
 
+  const refresh = useCallback(async () => {
+    fetchedRef.current = false;
+    await load(true);
+  }, [load]);
+
   const value = useMemo(
-    () => ({ profile, loading, error, refresh: load }),
-    [profile, loading, error, load],
+    () => ({ profile, loading, error, refresh }),
+    [profile, loading, error, refresh],
   );
 
   return <DriverCtx.Provider value={value}>{children}</DriverCtx.Provider>;
