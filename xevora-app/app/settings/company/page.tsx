@@ -119,8 +119,7 @@ export default function SettingsCompanyPage() {
       <section className="mt-8 max-w-xl rounded-xl border border-[#0f1729] bg-[#03060D] p-6">
         <h3 className="text-lg font-bold text-[#F1F5FF]">Driver access code</h3>
         <p className="mt-2 text-sm leading-relaxed text-[#4E6D92]">
-          Drivers use this code on the <span className="font-jb text-[#F1F5FF]">Join your fleet</span> page to create an
-          account linked to your company.
+          Share this code with your drivers. They enter it when signing up to join your company automatically.
         </p>
 
         <div className="mt-4 flex items-center gap-2 text-sm">
@@ -149,10 +148,10 @@ export default function SettingsCompanyPage() {
           <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
             <div
               style={{
-                fontFamily: "monospace",
-                fontSize: 24,
+                fontFamily: "JetBrains Mono, monospace",
+                fontSize: 28,
                 fontWeight: 700,
-                letterSpacing: "0.3em",
+                letterSpacing: "0.15em",
                 color: "#3B82F6",
                 background: "rgba(37,99,235,0.08)",
                 border: "1px solid rgba(37,99,235,0.2)",
@@ -172,7 +171,7 @@ export default function SettingsCompanyPage() {
             </button>
           </div>
           <p style={{ fontSize: 11, color: "#4E6D92", marginTop: 10 }}>
-            Go to Settings → Company in Xevora to find this code
+            Regenerate anytime — existing drivers keep access until you change it.
           </p>
         </div>
 
