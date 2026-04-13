@@ -5,10 +5,9 @@ import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import ClientChip from "@/components/driver/ClientChip";
 import ShiftTimer from "@/components/driver/ShiftTimer";
-import { useDriverProfile } from "@/components/driver/DriverProvider";
+import { useCurrentShift, useDriverProfile } from "@/components/driver/DriverProvider";
 import {
   activeMealBreak,
-  getCurrentShift,
   getPayPeriodSummary,
   resolvePayPeriodForSummary,
   type ShiftRow,
@@ -28,22 +27,12 @@ function formatShortDate(iso: string) {
 
 export default function DriverHomePage() {
   const { profile, loading: profileLoading, error: profileError } = useDriverProfile();
-  const [shift, setShift] = useState<ShiftRow | null>(null);
-  const [shiftLoading, setShiftLoading] = useState(true);
+  const { shift, loading: shiftLoading } = useCurrentShift();
   const [recent, setRecent] = useState<ShiftRow[]>([]);
   const [summaryHours, setSummaryHours] = useState(0);
   const [summaryPay, setSummaryPay] = useState(0);
   const [summaryRange, setSummaryRange] = useState<string | null>(null);
   const [summaryLoading, setSummaryLoading] = useState(true);
-
-  const loadShift = useCallback(async () => {
-    if (!profile?.id) return;
-    setShiftLoading(true);
-    const supabase = createClient();
-    const { shift: s } = await getCurrentShift(supabase, profile.id);
-    setShift(s);
-    setShiftLoading(false);
-  }, [profile?.id]);
 
   const loadRecent = useCallback(async () => {
     if (!profile?.id) return;
@@ -93,10 +82,6 @@ export default function DriverHomePage() {
   }, [profile]);
 
   useEffect(() => {
-    void loadShift();
-  }, [loadShift]);
-
-  useEffect(() => {
     void loadRecent();
   }, [loadRecent]);
 
@@ -130,9 +115,9 @@ export default function DriverHomePage() {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.12, ease: "easeOut" }}
       className="space-y-6"
     >
       <header className="flex items-start justify-between gap-3">

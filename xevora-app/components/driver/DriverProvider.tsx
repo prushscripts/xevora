@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { getCurrentShift, type ShiftRow } from "@/lib/driver";
 import { createClient } from "@/lib/supabase";
 import type { WorkerClientRates, WorkerPayProfile } from "@/lib/payroll";
 
@@ -47,6 +48,9 @@ type DriverContextValue = {
   profile: DriverProfile | null;
   loading: boolean;
   error: string | null;
+  currentShift: ShiftRow | null;
+  shiftLoading: boolean;
+  setCurrentShift: React.Dispatch<React.SetStateAction<ShiftRow | null>>;
   refresh: () => Promise<void>;
 };
 
@@ -60,11 +64,31 @@ export function useDriverProfile() {
   return v;
 }
 
+export function useCurrentShift() {
+  const v = useContext(DriverCtx);
+  if (!v) {
+    throw new Error("useCurrentShift must be used within DriverProvider");
+  }
+  return { shift: v.currentShift, loading: v.shiftLoading, setShift: v.setCurrentShift };
+}
+
 export default function DriverProvider({ children, userId }: { children: React.ReactNode; userId: string }) {
   const [profile, setProfile] = useState<DriverProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [currentShift, setCurrentShift] = useState<ShiftRow | null>(null);
+  const [shiftLoading, setShiftLoading] = useState(true);
   const fetchedRef = useRef(false);
+  const shiftRef = useRef<ShiftRow | null | "unfetched">("unfetched");
+
+  const fetchShift = useCallback(async (workerId: string) => {
+    if (shiftRef.current !== "unfetched") return;
+    const supabase = createClient();
+    const { shift } = await getCurrentShift(supabase, workerId);
+    shiftRef.current = shift;
+    setCurrentShift(shift);
+    setShiftLoading(false);
+  }, []);
 
   const load = useCallback(async (force = false) => {
     if (fetchedRef.current && !force) return;
@@ -192,14 +216,26 @@ export default function DriverProvider({ children, userId }: { children: React.R
     void load();
   }, [load]);
 
+  useEffect(() => {
+    if (profile?.id) {
+      void fetchShift(profile.id);
+      return;
+    }
+    setCurrentShift(null);
+    shiftRef.current = null;
+    setShiftLoading(false);
+  }, [profile?.id, fetchShift]);
+
   const refresh = useCallback(async () => {
     fetchedRef.current = false;
+    shiftRef.current = "unfetched";
+    setShiftLoading(true);
     await load(true);
   }, [load]);
 
   const value = useMemo(
-    () => ({ profile, loading, error, refresh }),
-    [profile, loading, error, refresh],
+    () => ({ profile, loading, error, currentShift, shiftLoading, setCurrentShift, refresh }),
+    [profile, loading, error, currentShift, shiftLoading, refresh],
   );
 
   return <DriverCtx.Provider value={value}>{children}</DriverCtx.Provider>;

@@ -5,14 +5,12 @@ import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import HexClock from "@/components/driver/HexClock";
 import ShiftTimer from "@/components/driver/ShiftTimer";
-import { useDriverProfile } from "@/components/driver/DriverProvider";
+import { useCurrentShift, useDriverProfile } from "@/components/driver/DriverProvider";
 import {
   activeMealBreak,
   clockIn,
   clockOut,
-  getCurrentShift,
   updateShiftMealBreaks,
-  type ShiftRow,
 } from "@/lib/driver";
 import type { MealBreak } from "@/lib/payroll";
 import { checkGeofenceEnforcement } from "@/lib/gps";
@@ -26,8 +24,7 @@ function readCoords(pos: GeolocationPosition): { lat: number; lng: number } {
 
 export default function DriverClockPage() {
   const { profile, loading: profileLoading, error: profileError } = useDriverProfile();
-  const [shift, setShift] = useState<ShiftRow | null>(null);
-  const [shiftLoading, setShiftLoading] = useState(true);
+  const { shift, loading: shiftLoading, setShift } = useCurrentShift();
   const [note, setNote] = useState("");
   const [geo, setGeo] = useState<GeoState>("idle");
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
@@ -51,19 +48,6 @@ export default function DriverClockPage() {
     () => clients.find((c) => c.client_id === selectedClientId) ?? null,
     [clients, selectedClientId],
   );
-
-  const refreshShift = useCallback(async () => {
-    if (!profile?.id) return;
-    setShiftLoading(true);
-    const supabase = createClient();
-    const { shift: s } = await getCurrentShift(supabase, profile.id);
-    setShift(s);
-    setShiftLoading(false);
-  }, [profile?.id]);
-
-  useEffect(() => {
-    void refreshShift();
-  }, [refreshShift]);
 
   useEffect(() => {
     const tick = () => {
@@ -203,7 +187,6 @@ export default function DriverClockPage() {
     if (error) setActionError(error.message);
     else setShift(null);
     setActionLoading(false);
-    void refreshShift();
   }
 
   async function onStartMeal() {
@@ -254,8 +237,9 @@ export default function DriverClockPage() {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.12, ease: "easeOut" }}
       className="flex min-h-[calc(100dvh-7rem)] flex-col"
     >
       <div className="flex flex-1 flex-col items-center justify-center py-4">

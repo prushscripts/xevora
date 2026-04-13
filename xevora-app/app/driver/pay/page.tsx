@@ -154,9 +154,9 @@ export default function DriverPayPage() {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.12, ease: "easeOut" }}
       className="space-y-6"
     >
       <h1 className="font-sans text-xl font-extrabold text-[#F1F5FF]">Pay</h1>

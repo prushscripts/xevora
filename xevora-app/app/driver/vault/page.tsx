@@ -97,7 +97,12 @@ export default function DriverVaultPage() {
   const companyVaultOff = !profile.company.vault_enabled;
 
   return (
-    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-8 pb-6">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.12, ease: "easeOut" }}
+      className="space-y-8 pb-6"
+    >
       <header className="flex items-center gap-3">
         <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-[#F59E0B]/30 bg-[#F59E0B]/10">
           <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden>
