@@ -75,54 +75,62 @@ export default function SettingsClientsPage() {
         </button>
       </div>
 
-      <div className="mt-8 overflow-x-auto rounded-xl border border-[#0f1729]">
-        <table className="w-full min-w-[640px] text-left text-sm">
-          <thead className="border-b border-[#0f1729] bg-[#03060D] text-[11px] font-bold uppercase tracking-wider text-[#4E6D92]">
-            <tr>
-              <th className="px-4 py-3">Name</th>
-              <th className="px-4 py-3">Abbr</th>
-              <th className="px-4 py-3">Address</th>
-              <th className="px-4 py-3">Geofence</th>
-              <th className="px-4 py-3 text-right">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.length === 0 ? (
-              <tr>
-                <td colSpan={5} className="px-4 py-10 text-center text-[#4E6D92]">
-                  No clients yet. Add your first site.
-                </td>
-              </tr>
-            ) : (
-              rows.map((r) => (
-                <tr key={r.id} className="border-b border-[#0f1729] last:border-0">
-                  <td className="px-4 py-3 font-medium text-[#F1F5FF]">{r.name}</td>
-                  <td className="px-4 py-3">
-                    <span className="inline-flex rounded-full border border-[#2563EB]/35 bg-[#2563EB]/10 px-2.5 py-0.5 font-jb text-xs text-[#93C5FD]">
-                      {r.abbreviation}
-                    </span>
-                  </td>
-                  <td className="max-w-[220px] truncate px-4 py-3 text-[#4E6D92]">{r.address ?? "—"}</td>
-                  <td className="px-4 py-3 text-xs text-[#4E6D92]">
-                    <span className="font-jb text-[#F1F5FF]">{r.geofence_radius_meters}m</span>
-                    <span className="mx-1">·</span>
-                    <span className="uppercase">{r.gps_enforcement}</span>
-                  </td>
-                  <td className="px-4 py-3 text-right">
-                    <button
-                      type="button"
-                      onClick={() => openEdit(r)}
-                      className="inline-flex items-center gap-1 rounded-lg border border-[#0f1729] px-3 py-1.5 text-xs font-semibold text-[#93C5FD] transition hover:border-[#2563EB]/40"
-                    >
-                      <PencilSquareIcon className="h-4 w-4" />
-                      Edit
-                    </button>
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+      <div className="mt-8">
+        {rows.length === 0 ? (
+          <div className="rounded-xl border border-dashed border-[#0f1729] bg-[#03060D] px-4 py-10 text-center text-[#4E6D92]">
+            No clients yet. Add your first site.
+          </div>
+        ) : (
+          rows.map((client) => (
+            <div
+              key={client.id}
+              style={{
+                background: "rgba(255,255,255,0.03)",
+                border: "1px solid rgba(255,255,255,0.08)",
+                borderRadius: 12,
+                padding: "14px 16px",
+                marginBottom: 10,
+              }}
+            >
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12 }}>
+                <div style={{ minWidth: 0 }}>
+                  <div style={{ fontSize: 15, fontWeight: 600 }}>{client.name}</div>
+                  <div style={{ fontSize: 12, color: "#4E6D92", marginTop: 2, wordBreak: "break-word" }}>
+                    {client.address ?? "—"}
+                  </div>
+                  <div style={{ fontSize: 11, color: "#4E6D92", marginTop: 6 }}>
+                    {client.geofence_radius_meters}m · {String(client.gps_enforcement).toUpperCase()}
+                  </div>
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
+                  <div
+                    style={{
+                      background: "rgba(37,99,235,0.15)",
+                      border: "1px solid rgba(37,99,235,0.3)",
+                      color: "#60A5FA",
+                      fontSize: 11,
+                      fontWeight: 600,
+                      padding: "3px 10px",
+                      borderRadius: 6,
+                      letterSpacing: "0.06em",
+                      fontFamily: "monospace",
+                    }}
+                  >
+                    {client.abbreviation}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => openEdit(client)}
+                    className="inline-flex items-center gap-1 rounded-lg border border-[#0f1729] px-2.5 py-1.5 text-xs font-semibold text-[#93C5FD] transition hover:border-[#2563EB]/40"
+                  >
+                    <PencilSquareIcon className="h-4 w-4" />
+                    Edit
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))
+        )}
       </div>
 
       <ClientForm

@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { redirect } from "next/navigation";
-import DashboardShellMotion from "@/components/dashboard/DashboardShellMotion";
+import DashboardShell from "@/components/dashboard/DashboardShell";
 import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
 import { createClient } from "@/lib/supabase-server";
 
@@ -34,9 +34,9 @@ export default async function DashboardLayout({ children }: { children: ReactNod
 
   return (
     <div className="min-h-screen bg-[var(--bg)]">
-      <DashboardShellMotion userName={userName}>
+      <DashboardShell userName={userName}>
         <ErrorBoundary>{children}</ErrorBoundary>
-      </DashboardShellMotion>
+      </DashboardShell>
     </div>
   );
 }

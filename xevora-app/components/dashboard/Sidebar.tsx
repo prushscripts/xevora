@@ -20,14 +20,6 @@ const desktopNav = [
   { label: "Settings", href: "/settings/clients", icon: Cog6ToothIcon },
 ];
 
-const mobileNav = [
-  { label: "Dashboard", href: "/dashboard", icon: Squares2X2Icon },
-  { label: "Workers", href: "/dashboard/workers", icon: UserGroupIcon },
-  { label: "Time", href: "/dashboard/time", icon: ClockIcon },
-  { label: "Payroll", href: "/dashboard/payroll", icon: CurrencyDollarIcon },
-  { label: "More", href: "/settings/clients", icon: Cog6ToothIcon },
-];
-
 function LogoMark() {
   return (
     <svg width="32" height="32" viewBox="0 0 88 88" fill="none" aria-hidden="true">
@@ -95,29 +87,7 @@ export default function Sidebar() {
         </div>
       </aside>
 
-      <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-[var(--border)] bg-[var(--surface)] px-2 py-2 lg:hidden">
-        <ul className="grid grid-cols-5 gap-1">
-          {mobileNav.map((item) => {
-            const isActive =
-              pathname === item.href ||
-              (item.href !== "/dashboard" && pathname.startsWith(item.href));
-            const Icon = item.icon;
-            return (
-              <li key={item.href}>
-                <Link
-                  href={item.href}
-                  className={`flex flex-col items-center gap-1 rounded-md py-1 text-[10px] ${
-                    isActive ? "text-[var(--blue-bright)]" : "text-[var(--muted)]"
-                  }`}
-                >
-                  <Icon className="h-5 w-5" />
-                  {item.label}
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
-      </nav>
+      
     </>
   );
 }
