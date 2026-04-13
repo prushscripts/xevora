@@ -11,9 +11,8 @@ export default function SettingsCompanyPage() {
   const supabase = useMemo(() => createClient(), []);
   const [companyId, setCompanyId] = useState<string | null>(null);
   const [companyName, setCompanyName] = useState<string | null>(null);
+  const [inviteCode, setInviteCode] = useState("");
   const [codeConfigured, setCodeConfigured] = useState(false);
-  const [newCode, setNewCode] = useState("");
-  const [confirmCode, setConfirmCode] = useState("");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -25,8 +24,13 @@ export default function SettingsCompanyPage() {
     const { companyId: cid } = await getStaffCompanyId(supabase);
     setCompanyId(cid);
     if (cid) {
-      const { data: row } = await supabase.from("companies").select("name").eq("id", cid).maybeSingle();
+      const { data: row } = await supabase
+        .from("companies")
+        .select("name, driver_invite_code")
+        .eq("id", cid)
+        .maybeSingle();
       setCompanyName((row?.name as string) ?? null);
+      setInviteCode((row?.driver_invite_code as string | null) ?? "");
       const { data: status, error: rpcErr } = await supabase.rpc("get_driver_signup_status", {
         p_company_id: cid,
       });
@@ -48,51 +52,30 @@ export default function SettingsCompanyPage() {
     void load();
   }, [load]);
 
-  async function onSave(event: React.FormEvent) {
-    event.preventDefault();
+  async function onGenerateCode() {
     setError(null);
     setSuccess(null);
 
     if (!companyId) return;
-
-    if (newCode.trim() === "" && confirmCode.trim() === "") {
-      if (!codeConfigured) {
-        setError("Enter a new access code, or nothing to change.");
-        return;
-      }
-    } else if (newCode !== confirmCode) {
-      setError("Codes do not match.");
-      return;
-    }
-
     setSaving(true);
+    const generatedCode = Math.random().toString(36).substring(2, 8).toUpperCase();
 
-    if (newCode.trim() === "" && confirmCode.trim() === "" && codeConfigured) {
-      const { data, error: rpcErr } = await supabase.rpc("set_driver_signup_code", {
-        p_company_id: companyId,
-        p_plaincode: "",
-      });
+    const { error: updateErr } = await supabase
+      .from("companies")
+      .update({ driver_invite_code: generatedCode })
+      .eq("id", companyId);
+    if (updateErr) {
       setSaving(false);
-      if (rpcErr) {
-        setError(rpcErr.message);
-        return;
-      }
-      const r = data as RpcOk;
-      if (!r?.ok) {
-        setError(r?.error === "forbidden" ? "You can’t change this setting." : "Could not clear code.");
-        return;
-      }
-      setCodeConfigured(false);
-      setSuccess("Driver access code removed.");
+      setError(updateErr.message);
       return;
     }
 
     const { data, error: rpcErr } = await supabase.rpc("set_driver_signup_code", {
       p_company_id: companyId,
-      p_plaincode: newCode.trim(),
+      p_plaincode: generatedCode,
     });
-    setSaving(false);
     if (rpcErr) {
+      setSaving(false);
       setError(rpcErr.message);
       return;
     }
@@ -105,12 +88,19 @@ export default function SettingsCompanyPage() {
       } else {
         setError("Could not save code.");
       }
+      setSaving(false);
       return;
     }
+    setInviteCode(generatedCode);
     setCodeConfigured(true);
-    setNewCode("");
-    setConfirmCode("");
-    setSuccess("Driver access code saved. Share it only with your drivers.");
+    setSuccess("New driver invite code generated and activated.");
+    setSaving(false);
+  }
+
+  async function onCopyCode() {
+    if (!inviteCode) return;
+    await navigator.clipboard.writeText(inviteCode);
+    setSuccess("Code copied to clipboard.");
   }
 
   if (loading) {
@@ -130,7 +120,7 @@ export default function SettingsCompanyPage() {
         <h3 className="text-lg font-bold text-[#F1F5FF]">Driver access code</h3>
         <p className="mt-2 text-sm leading-relaxed text-[#4E6D92]">
           Drivers use this code on the <span className="font-jb text-[#F1F5FF]">Join your fleet</span> page to create an
-          account linked to your company. The code is stored securely (hashed); you can rotate it anytime.
+          account linked to your company.
         </p>
 
         <div className="mt-4 flex items-center gap-2 text-sm">
@@ -142,28 +132,51 @@ export default function SettingsCompanyPage() {
           </span>
         </div>
 
-        <form onSubmit={(e) => void onSave(e)} className="mt-6 space-y-4">
-          <div>
-            <label className="mb-1.5 block text-[11px] uppercase tracking-wider text-[#4E6D92]">New code</label>
-            <input
-              type="text"
-              value={newCode}
-              onChange={(e) => setNewCode(e.target.value)}
-              className="block w-full rounded-xl border border-[#0f1729] bg-[#060B14] px-4 py-3 font-jb text-sm text-[#F1F5FF] outline-none focus:border-[#2563EB]"
-              placeholder="e.g. plg2026!"
-              autoComplete="new-password"
-            />
+        <div
+          style={{
+            background: "rgba(255,255,255,0.03)",
+            border: "1px solid rgba(255,255,255,0.08)",
+            borderRadius: 12,
+            padding: "20px 24px",
+            marginTop: 24,
+          }}
+        >
+          <h3 style={{ fontSize: 14, fontWeight: 600, marginBottom: 4 }}>Driver Invite Code</h3>
+          <p style={{ fontSize: 12, color: "#4E6D92", marginBottom: 16 }}>
+            Share this code with your drivers. They enter it when creating their account to join your company
+            automatically.
+          </p>
+          <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
+            <div
+              style={{
+                fontFamily: "monospace",
+                fontSize: 24,
+                fontWeight: 700,
+                letterSpacing: "0.3em",
+                color: "#3B82F6",
+                background: "rgba(37,99,235,0.08)",
+                border: "1px solid rgba(37,99,235,0.2)",
+                borderRadius: 10,
+                padding: "12px 20px",
+              }}
+            >
+              {inviteCode || "------"}
+            </div>
+            <button
+              type="button"
+              onClick={() => void onCopyCode()}
+              disabled={!inviteCode}
+              className="rounded-xl border border-[#1f3f7d] bg-[#0B1328] px-4 py-2 text-sm text-[#C8D8F0] transition hover:bg-[#111c35] disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              Copy
+            </button>
           </div>
-          <div>
-            <label className="mb-1.5 block text-[11px] uppercase tracking-wider text-[#4E6D92]">Confirm code</label>
-            <input
-              type="text"
-              value={confirmCode}
-              onChange={(e) => setConfirmCode(e.target.value)}
-              className="block w-full rounded-xl border border-[#0f1729] bg-[#060B14] px-4 py-3 font-jb text-sm text-[#F1F5FF] outline-none focus:border-[#2563EB]"
-              autoComplete="new-password"
-            />
-          </div>
+          <p style={{ fontSize: 11, color: "#4E6D92", marginTop: 10 }}>
+            Go to Settings → Company in Xevora to find this code
+          </p>
+        </div>
+
+        <div className="mt-6 space-y-4">
 
           {error ? (
             <p className="flex items-start gap-2 text-sm text-red-300">
@@ -175,21 +188,15 @@ export default function SettingsCompanyPage() {
 
           <div className="flex flex-wrap gap-3 pt-2">
             <button
-              type="submit"
+              type="button"
+              onClick={() => void onGenerateCode()}
               disabled={saving}
               className="rounded-xl bg-[#2563EB] px-5 py-2.5 text-sm font-medium text-white shadow-[0_4px_16px_rgba(37,99,235,0.25)] transition hover:bg-[#1D4ED8] disabled:opacity-60"
             >
-              {saving ? "Saving…" : codeConfigured ? "Update code" : "Save code"}
+              {saving ? "Generating…" : "Generate new code"}
             </button>
           </div>
-        </form>
-
-        {codeConfigured ? (
-          <p className="mt-4 text-xs text-[#4E6D92]">
-            To disable driver self-registration, clear both fields above and click{" "}
-            <span className="text-[#F1F5FF]">Update code</span>.
-          </p>
-        ) : null}
+        </div>
       </section>
     </div>
   );

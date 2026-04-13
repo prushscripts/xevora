@@ -6,18 +6,12 @@ import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { createClient } from "@/lib/supabase";
 
-type RpcResult = { ok?: boolean; error?: string };
+type RpcResult = { success?: boolean; error?: string };
 
 function mapRpcError(code: string | undefined) {
   switch (code) {
-    case "invalid_code":
+    case "Invalid invite code":
       return "That access code doesn’t match any active company. Check with your dispatcher.";
-    case "already_registered":
-      return "This account is already linked. Sign in from the main login page.";
-    case "use_admin_portal":
-      return "This account is a fleet owner. Use the standard sign-in for the admin dashboard.";
-    case "not_authenticated":
-      return "Please sign in again, then retry.";
     case "duplicate":
       return "Could not complete registration. Contact support if this persists.";
     default:
@@ -53,17 +47,19 @@ export default function JoinDriverPage() {
     });
   }, [supabase]);
 
-  async function runRegisterRpc(fullName: string, accessCode: string): Promise<boolean> {
-    const { data, error: rpcError } = await supabase.rpc("register_driver_with_code", {
-      p_full_name: fullName,
+  async function runRegisterRpc(first: string, last: string, accessCode: string, userId: string): Promise<boolean> {
+    const { data, error: rpcError } = await supabase.rpc("join_company_with_invite_code", {
       p_code: accessCode,
+      p_user_id: userId,
+      p_first_name: first,
+      p_last_name: last,
     });
     if (rpcError) {
       setError(rpcError.message);
       return false;
     }
     const res = data as RpcResult;
-    if (!res?.ok) {
+    if (!res?.success) {
       setError(mapRpcError(res?.error));
       return false;
     }
@@ -79,9 +75,8 @@ export default function JoinDriverPage() {
       return;
     }
 
-    const fullName = `${firstName} ${lastName}`.trim();
-    if (!fullName) {
-      setError("Enter your name.");
+    if (!firstName.trim() || !lastName.trim()) {
+      setError("Enter your first and last name.");
       return;
     }
     if (!code.trim()) {
@@ -96,7 +91,7 @@ export default function JoinDriverPage() {
     } = await supabase.auth.getSession();
 
     if (session?.user) {
-      const ok = await runRegisterRpc(fullName, code);
+      const ok = await runRegisterRpc(firstName.trim(), lastName.trim(), code.trim(), session.user.id);
       setLoading(false);
       if (ok) {
         router.replace("/driver");
@@ -130,7 +125,7 @@ export default function JoinDriverPage() {
     }
 
     if (signUpData.session) {
-      const ok = await runRegisterRpc(fullName, code);
+      const ok = await runRegisterRpc(firstName.trim(), lastName.trim(), code.trim(), signUpData.session.user.id);
       setLoading(false);
       if (ok) {
         router.replace("/driver");
