@@ -25,6 +25,7 @@ const mono = JetBrains_Mono({
 interface DashboardMetrics {
   firstName: string;
   companyId: string | null;
+  inviteCode: string;
   activeWorkers: number;
   hoursThisWeek: number;
   hoursLastWeek: number;
@@ -99,6 +100,7 @@ export default function DashboardPage() {
   const [metrics, setMetrics] = useState<DashboardMetrics>({
     firstName: "there",
     companyId: null,
+    inviteCode: "------",
     activeWorkers: 0,
     hoursThisWeek: 0,
     hoursLastWeek: 0,
@@ -152,6 +154,11 @@ export default function DashboardPage() {
       }
 
       const companyId = company.id;
+      const { data: companyDetails } = await supabase
+        .from("companies")
+        .select("driver_invite_code")
+        .eq("id", companyId)
+        .maybeSingle();
       const thisWeek = getWeekRange(0);
       const lastWeek = getWeekRange(-1);
       const todayStart = new Date();
@@ -235,6 +242,7 @@ export default function DashboardPage() {
       setMetrics({
         firstName,
         companyId,
+        inviteCode: (companyDetails?.driver_invite_code as string | null) ?? "------",
         activeWorkers,
         hoursThisWeek: thisWeekHours,
         hoursLastWeek: lastWeekHours,
@@ -387,220 +395,350 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="space-y-6 pb-6">
-      {toast ? (
-        <div className="fixed right-4 top-20 z-50 rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2 text-sm text-[var(--text)] shadow-xl">
+    <div style={{ paddingBottom: 24 }}>
+      {toast && (
+        <div
+          style={{
+            position: "fixed",
+            right: 16,
+            top: 72,
+            zIndex: 50,
+            background: "#0A1020",
+            border: "1px solid rgba(255,255,255,0.1)",
+            borderRadius: 10,
+            padding: "10px 16px",
+            fontSize: 13,
+            color: "#F1F5FF",
+            boxShadow: "0 8px 32px rgba(0,0,0,0.4)",
+          }}
+        >
           {toast}
         </div>
-      ) : null}
+      )}
 
-      <section>
-        <h2 className="text-[clamp(24px,3vw,32px)] font-extrabold">
-          {getGreeting()} {metrics.firstName} 👋
-        </h2>
-        <p className="mt-1 text-sm font-light text-[var(--muted)]">{formatDate()}</p>
-      </section>
+      <div style={{ padding: "20px 16px 12px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div>
+          <p style={{ fontSize: 12, color: "#4E6D92", margin: "0 0 2px", letterSpacing: "0.04em" }}>{getGreeting()}</p>
+          <p style={{ fontSize: 22, fontWeight: 700, margin: 0, color: "#F1F5FF" }}>{metrics.firstName} 👋</p>
+        </div>
+      </div>
 
-      <section className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
-        {[
-          {
-            icon: UserGroupIcon,
-            label: "ACTIVE WORKERS",
-            value: String(metrics.activeWorkers),
-            sub: "↑ 0 this week",
-          },
-          {
-            icon: ClockIcon,
-            label: "HOURS THIS WEEK",
-            value: String(Number(metrics.hoursThisWeek.toFixed(1))),
-            sub: `↑ ${Math.max(0, Number(hoursDelta.toFixed(0)))}% vs last week`,
-          },
-          {
-            icon: BanknotesIcon,
-            label: "NEXT PAYROLL",
-            value: "—",
-            sub: "Set up payroll",
-            href: "/settings/pay-rules",
-          },
-          {
-            icon: ChartBarIcon,
-            label: "YTD PAID OUT",
-            value: "$0",
-            sub: "No payrolls run yet",
-          },
-        ].map((card, index) => {
-          const Icon = card.icon;
-          return (
-            <motion.article
-              key={card.label}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.34, delay: 0.1 * (index + 1), ease: "easeOut" }}
-              className="relative overflow-hidden rounded-[14px] border border-[rgba(37,99,235,0.1)] bg-[rgba(6,11,20,0.95)] p-6"
-            >
-              {index === 0 ? (
-                <div className="pointer-events-none absolute -right-6 -top-6 h-20 w-20 rounded-full bg-[radial-gradient(circle,rgba(37,99,235,0.35),transparent_70%)]" />
-              ) : null}
-              <Icon className="h-5 w-5 text-[var(--blue-bright)]" />
-              <p className={`${mono.className} mt-3 text-[9px] uppercase tracking-[2px] text-[var(--muted)]`}>{card.label}</p>
-              <p className="mt-2 text-4xl font-extrabold">{card.value}</p>
-              {card.href ? (
-                <Link href={card.href} className="mt-2 inline-block text-xs text-[var(--blue-bright)] hover:underline">
-                  {card.sub}
-                </Link>
-              ) : (
-                <p className={`mt-2 text-xs ${index === 3 ? "text-[var(--muted)]" : "text-[var(--green)]"}`}>{card.sub}</p>
-              )}
-            </motion.article>
-          );
-        })}
-      </section>
+      {metrics.activeClockedIn.length > 0 && (
+        <div
+          onClick={() => router.push("/dashboard/time")}
+          style={{
+            margin: "0 16px 14px",
+            background: "rgba(16,185,129,0.06)",
+            border: "1px solid rgba(16,185,129,0.18)",
+            borderRadius: 12,
+            padding: "11px 14px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            cursor: "pointer",
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <div
+              style={{
+                width: 8,
+                height: 8,
+                borderRadius: "50%",
+                background: "#10B981",
+                boxShadow: "0 0 6px #10B981",
+                flexShrink: 0,
+              }}
+            />
+            <div>
+              <p style={{ fontSize: 12, color: "#10B981", margin: 0, fontWeight: 500 }}>
+                {metrics.activeClockedIn.length} worker{metrics.activeClockedIn.length !== 1 ? "s" : ""} clocked in
+              </p>
+              <p style={{ fontSize: 11, color: "#4E6D92", margin: 0 }}>
+                {metrics.activeClockedIn.map((w) => w.name.split(" ")[0]).join(" · ")}
+              </p>
+            </div>
+          </div>
+          <span style={{ fontSize: 11, color: "#3B82F6", whiteSpace: "nowrap" }}>View →</span>
+        </div>
+      )}
 
-      <section className="rounded-[14px] border border-[var(--border)] bg-[rgba(6,11,20,0.95)] p-5">
-        <div className="mb-4 flex items-center justify-between">
-          <h3 className="text-base font-bold">Workers - Clocked In</h3>
-          <span className="rounded-full border border-[rgba(37,99,235,0.25)] bg-[rgba(37,99,235,0.14)] px-3 py-1 text-xs text-[var(--blue-bright)]">
-            {metrics.activeClockedIn.length} Active
-          </span>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, margin: "0 16px 10px" }}>
+        <div
+          style={{
+            background: "rgba(255,255,255,0.03)",
+            border: "1px solid rgba(255,255,255,0.07)",
+            borderRadius: 12,
+            padding: 14,
+          }}
+        >
+          <p style={{ fontSize: 10, color: "#4E6D92", margin: "0 0 6px", letterSpacing: "0.08em", textTransform: "uppercase" }}>Workers</p>
+          <p style={{ fontSize: 28, fontWeight: 700, margin: 0, lineHeight: 1, color: "#F1F5FF" }}>{metrics.activeWorkers}</p>
+          <p style={{ fontSize: 11, color: "#4E6D92", margin: "6px 0 0" }}>on your team</p>
+        </div>
+        <div
+          style={{
+            background: "rgba(255,255,255,0.03)",
+            border: "1px solid rgba(255,255,255,0.07)",
+            borderRadius: 12,
+            padding: 14,
+          }}
+        >
+          <p style={{ fontSize: 10, color: "#4E6D92", margin: "0 0 6px", letterSpacing: "0.08em", textTransform: "uppercase" }}>Hours this week</p>
+          <p style={{ fontSize: 28, fontWeight: 700, margin: 0, lineHeight: 1, color: "#F1F5FF" }}>{Number(metrics.hoursThisWeek.toFixed(1))}</p>
+          <p style={{ fontSize: 11, color: "#4E6D92", margin: "6px 0 0" }}>
+            {hoursDelta >= 0 ? "↑" : "↓"} {Math.abs(Number(hoursDelta.toFixed(0)))}% vs last week
+          </p>
+        </div>
+      </div>
+
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, margin: "0 16px 16px" }}>
+        <div
+          onClick={() => router.push("/settings/pay-rules")}
+          style={{
+            background: "rgba(255,255,255,0.03)",
+            border: "1px solid rgba(255,255,255,0.07)",
+            borderRadius: 12,
+            padding: 14,
+            cursor: "pointer",
+          }}
+        >
+          <p style={{ fontSize: 10, color: "#4E6D92", margin: "0 0 6px", letterSpacing: "0.08em", textTransform: "uppercase" }}>Next payroll</p>
+          <p style={{ fontSize: 22, fontWeight: 700, margin: 0, lineHeight: 1, color: "#F1F5FF" }}>—</p>
+          <p style={{ fontSize: 11, color: "#3B82F6", margin: "6px 0 0" }}>Set up →</p>
+        </div>
+        <div
+          style={{
+            background: "rgba(255,255,255,0.03)",
+            border: "1px solid rgba(255,255,255,0.07)",
+            borderRadius: 12,
+            padding: 14,
+          }}
+        >
+          <p style={{ fontSize: 10, color: "#4E6D92", margin: "0 0 6px", letterSpacing: "0.08em", textTransform: "uppercase" }}>YTD paid out</p>
+          <p style={{ fontSize: 22, fontWeight: 700, margin: 0, lineHeight: 1, color: "#F1F5FF" }}>$0</p>
+          <p style={{ fontSize: 11, color: "#4E6D92", margin: "6px 0 0" }}>no runs yet</p>
+        </div>
+      </div>
+
+      <div style={{ margin: "0 16px 16px" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+          <p style={{ fontSize: 13, fontWeight: 600, margin: 0, color: "#F1F5FF" }}>Live — clocked in</p>
+          <p style={{ fontSize: 11, color: "#4E6D92", margin: 0 }}>
+            {new Intl.DateTimeFormat("en-US", { weekday: "short", month: "short", day: "numeric" }).format(new Date())}
+          </p>
         </div>
 
         {metrics.activeClockedIn.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-12 text-center">
-            <ClockIcon className="h-12 w-12 text-[var(--muted)]" />
-            <p className="mt-3 text-sm">No one clocked in</p>
-            <p className="mt-1 text-sm text-[var(--muted)]">Workers can clock in at xevora.io/clock/[slug]</p>
+          <div
+            style={{
+              background: "rgba(255,255,255,0.02)",
+              border: "1px dashed rgba(255,255,255,0.07)",
+              borderRadius: 12,
+              padding: "24px 16px",
+              textAlign: "center",
+            }}
+          >
+            <p style={{ fontSize: 13, color: "#4E6D92", margin: 0 }}>No one clocked in right now</p>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[520px] text-left text-sm">
-              <thead className="text-xs uppercase tracking-[1px] text-[var(--muted)]">
-                <tr>
-                  <th className="pb-3">Name</th>
-                  <th className="pb-3">Hours Today</th>
-                  <th className="pb-3">Status</th>
-                  <th className="pb-3">Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {metrics.activeClockedIn.map((entry) => (
-                  <tr key={entry.workerId} className="border-t border-[var(--border)]">
-                    <td className="py-3">{entry.name}</td>
-                    <td className="py-3">{entry.hoursToday.toFixed(1)}</td>
-                    <td className="py-3">
-                      <span
-                        className={`inline-flex items-center gap-1 rounded-full px-2 py-1 text-xs ${
-                          entry.status === "On Break"
-                            ? "bg-[rgba(245,158,11,0.12)] text-[var(--amber)]"
-                            : "bg-[rgba(52,211,153,0.12)] text-[var(--green)]"
-                        }`}
-                      >
-                        <span
-                          className={`h-1.5 w-1.5 rounded-full ${
-                            entry.status === "On Break" ? "bg-[var(--amber)]" : "bg-[var(--green)]"
-                          }`}
-                        />
-                        {entry.status}
-                      </span>
-                    </td>
-                    <td className="py-3">
-                      <button
-                        type="button"
-                        onClick={() => router.push(`/dashboard/workers/${entry.workerId}`)}
-                        className="text-xs text-[var(--blue-bright)] hover:underline"
-                      >
-                        View
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div
+            style={{
+              background: "rgba(255,255,255,0.03)",
+              border: "1px solid rgba(255,255,255,0.07)",
+              borderRadius: 12,
+              overflow: "hidden",
+            }}
+          >
+            {metrics.activeClockedIn.map((entry, i) => (
+              <div
+                key={entry.workerId}
+                onClick={() => router.push(`/dashboard/workers/${entry.workerId}`)}
+                style={{
+                  padding: "12px 14px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  borderTop: i > 0 ? "1px solid rgba(255,255,255,0.05)" : "none",
+                  cursor: "pointer",
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                  <div
+                    style={{
+                      width: 32,
+                      height: 32,
+                      borderRadius: "50%",
+                      background: "rgba(37,99,235,0.15)",
+                      border: "1px solid rgba(37,99,235,0.25)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: 11,
+                      fontWeight: 700,
+                      color: "#60A5FA",
+                      flexShrink: 0,
+                    }}
+                  >
+                    {entry.name
+                      .split(" ")
+                      .map((n: string) => n[0])
+                      .join("")
+                      .slice(0, 2)}
+                  </div>
+                  <div>
+                    <p style={{ fontSize: 13, fontWeight: 600, margin: 0 }}>{entry.name}</p>
+                    <p style={{ fontSize: 11, color: "#4E6D92", margin: 0 }}>
+                      {entry.status === "On Break" ? "On break · " : ""}
+                      {entry.hoursToday.toFixed(1)}h on clock
+                    </p>
+                  </div>
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                  <div
+                    style={{
+                      width: 6,
+                      height: 6,
+                      borderRadius: "50%",
+                      background: entry.status === "On Break" ? "#F59E0B" : "#10B981",
+                    }}
+                  />
+                  <span style={{ fontSize: 11, color: entry.status === "On Break" ? "#F59E0B" : "#10B981" }}>
+                    {entry.status === "On Break" ? "Break" : "Active"}
+                  </span>
+                </div>
+              </div>
+            ))}
           </div>
         )}
-      </section>
+      </div>
 
-      <section className="grid grid-cols-1 gap-4 md:grid-cols-3">
-        {[
-          {
-            title: "Add Worker",
-            sub: "Invite a new team member",
-            icon: UserPlusIcon,
-            action: () => router.push("/dashboard/workers/new"),
-            beta: false,
-          },
-          {
-            title: "View Reports",
-            sub: "Labor cost and time analytics",
-            icon: ChartBarIcon,
-            action: () => router.push("/dashboard/reports"),
-            beta: false,
-          },
-          {
-            title: "AI Assistant",
-            sub: "Ask anything about your workforce",
-            icon: SparklesIcon,
-            action: () => setToast("Coming soon"),
-            beta: true,
-          },
-        ].map((item) => {
-          const Icon = item.icon;
-          return (
+      <div style={{ margin: "0 16px 16px" }}>
+        <p style={{ fontSize: 13, fontWeight: 600, margin: "0 0 10px", color: "#F1F5FF" }}>Quick actions</p>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8 }}>
+          {[
+            { emoji: "👤", label: "Add worker", action: () => router.push("/dashboard/workers/new") },
+            { emoji: "📊", label: "Reports", action: () => router.push("/dashboard/reports") },
+            { emoji: "✨", label: "AI assist", action: () => setToast("Coming soon"), soon: true },
+          ].map((item) => (
             <button
-              key={item.title}
-              type="button"
+              key={item.label}
               onClick={item.action}
-              className="relative rounded-[14px] border border-[var(--border)] bg-[rgba(6,11,20,0.95)] p-5 text-left transition hover:-translate-y-0.5 hover:border-[rgba(59,130,246,0.55)]"
-            >
-              {item.beta ? (
-                <span className="absolute right-4 top-4 rounded-full bg-[rgba(245,158,11,0.16)] px-2 py-0.5 text-[10px] text-[var(--amber)]">
-                  Beta
-                </span>
-              ) : null}
-              <Icon className="h-6 w-6 text-[var(--blue-bright)]" />
-              <p className="mt-3 text-[15px] font-medium">{item.title}</p>
-              <p className="mt-1 text-[13px] text-[var(--muted)]">{item.sub}</p>
-            </button>
-          );
-        })}
-      </section>
-
-      {!dismissed ? (
-        <section className="rounded-[14px] border border-[var(--border)] bg-[rgba(6,11,20,0.95)] p-5">
-          <div className="mb-3 flex items-center justify-between gap-3">
-            <h3 className="text-base font-bold">Get started with Xevora</h3>
-            <button
-              type="button"
-              onClick={() => {
-                localStorage.setItem("xevora_checklist_dismissed", "true");
-                setDismissed(true);
+              style={{
+                background: "rgba(255,255,255,0.03)",
+                border: "1px solid rgba(255,255,255,0.07)",
+                borderRadius: 12,
+                padding: "12px 8px",
+                textAlign: "center",
+                cursor: "pointer",
+                position: "relative",
               }}
-              className="text-xs text-[var(--muted)] hover:text-[var(--blue-bright)]"
             >
-              Dismiss
+              {item.soon && (
+                <div
+                  style={{
+                    position: "absolute",
+                    top: 6,
+                    right: 6,
+                    background: "rgba(245,158,11,0.15)",
+                    border: "1px solid rgba(245,158,11,0.25)",
+                    color: "#F59E0B",
+                    fontSize: 8,
+                    padding: "1px 5px",
+                    borderRadius: 4,
+                  }}
+                >
+                  Soon
+                </div>
+              )}
+              <div style={{ fontSize: 18, marginBottom: 6 }}>{item.emoji}</div>
+              <p style={{ fontSize: 11, color: "#8BA3C4", margin: 0, lineHeight: 1.3 }}>{item.label}</p>
             </button>
+          ))}
+        </div>
+      </div>
+
+      <div style={{ margin: "0 16px 16px" }}>
+        <div
+          style={{
+            background: "rgba(37,99,235,0.05)",
+            border: "1px solid rgba(37,99,235,0.15)",
+            borderRadius: 12,
+            padding: "14px 16px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <div>
+            <p style={{ fontSize: 11, color: "#4E6D92", margin: "0 0 4px" }}>Driver invite code</p>
+            <p
+              style={{
+                fontSize: 20,
+                fontWeight: 700,
+                margin: 0,
+                fontFamily: "monospace",
+                letterSpacing: "0.15em",
+                color: "#3B82F6",
+              }}
+            >
+              {metrics.inviteCode}
+            </p>
           </div>
-          <div className="mb-4 flex items-center justify-between text-xs text-[var(--muted)]">
-            <span>{completed}/5 complete</span>
+          <button
+            onClick={() => {
+              navigator.clipboard.writeText(metrics.inviteCode);
+              setToast("Copied!");
+            }}
+            style={{
+              background: "rgba(37,99,235,0.15)",
+              border: "1px solid rgba(37,99,235,0.25)",
+              color: "#60A5FA",
+              fontSize: 12,
+              fontWeight: 500,
+              padding: "7px 14px",
+              borderRadius: 8,
+              cursor: "pointer",
+            }}
+          >
+            Copy
+          </button>
+        </div>
+      </div>
+
+      {!dismissed && (
+        <div style={{ margin: "0 16px" }}>
+          <div
+            style={{
+              background: "rgba(255,255,255,0.02)",
+              border: "1px solid rgba(255,255,255,0.07)",
+              borderRadius: 12,
+              padding: "14px 16px",
+            }}
+          >
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+              <p style={{ fontSize: 12, fontWeight: 600, margin: 0, color: "#F1F5FF" }}>Setup checklist</p>
+              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                <p style={{ fontSize: 11, color: "#3B82F6", margin: 0 }}>{completed}/5 done</p>
+                <button
+                  onClick={() => {
+                    localStorage.setItem("xevora_checklist_dismissed", "true");
+                    setDismissed(true);
+                  }}
+                  style={{ background: "none", border: "none", color: "#4E6D92", fontSize: 11, cursor: "pointer", padding: 0 }}
+                >
+                  Dismiss
+                </button>
+              </div>
+            </div>
+            <div style={{ height: 3, background: "rgba(37,99,235,0.12)", borderRadius: 2, marginBottom: 10 }}>
+              <div style={{ width: `${progress}%`, height: "100%", background: "#2563EB", borderRadius: 2 }} />
+            </div>
+            <p style={{ fontSize: 12, color: "#4E6D92", margin: 0 }}>
+              Next: {checklistItems.find((i) => !i.done)?.label ?? "All done!"} →
+            </p>
           </div>
-          <div className="mb-4 h-2 w-full rounded-full bg-[rgba(37,99,235,0.16)]">
-            <div className="h-full rounded-full bg-[var(--blue)]" style={{ width: `${progress}%` }} />
-          </div>
-          <ul className="space-y-2">
-            {checklistItems.map((item) => (
-              <li key={item.label} className="flex items-center justify-between text-sm">
-                <span className={item.done ? "text-[var(--text)]" : "text-[var(--muted)]"}>
-                  {item.done ? "✅" : "⬜"} {item.label}
-                </span>
-                {!item.done ? (
-                  <Link href={item.href} className="inline-flex items-center gap-1 text-[var(--blue-bright)] hover:underline">
-                    <ArrowRightIcon className="h-3 w-3" />
-                  </Link>
-                ) : null}
-              </li>
-            ))}
-          </ul>
-        </section>
-      ) : null}
+        </div>
+      )}
     </div>
   );
 }
